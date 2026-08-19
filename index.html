@@ -3,1040 +3,932 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#010a14">
+<meta name="theme-color" content="#0a151f">
 <title>UEG 行政管理中心 | 地球联合政府 · 行政总署</title>
 <link rel="icon" type="image/png" href="/img/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --deep-void:#010a14;
-  --void-2:#02101a;
-  --void-3:#031b2c;
-  --surface:#021a28;
-  --surface-2:#062c52;
-  --navy-mid:#073461;
-  --telemetry-cyan:#00d2ff;
-  --cyan-dim:#2388a2;
-  --cyan-glow:rgba(0,210,255,0.35);
-  --cyan-border:rgba(0,210,255,0.2);
-  --text-primary:#e0eef7;
-  --text-secondary:#8ba8bd;
-  --text-dim:#4a6a80;
-  --amber:#c9a96e;
-  --amber-dim:#8a7340;
-  --danger:#ff4757;
-  --success:#2ed573;
-  --font-mono:'JetBrains Mono',monospace;
-  --font-display:'Rajdhani','Noto Sans SC',sans-serif;
-  --font-body:'Noto Sans SC','Rajdhani',sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;overflow:hidden}
-body{
-  font-family:var(--font-body);
-  background:var(--deep-void);
-  color:var(--text-primary);
-  position:relative;
-}
-/* ===== 背景层 ===== */
-.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none}
-.grid-bg{
-  background-image:
-    linear-gradient(rgba(0,210,255,0.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,210,255,0.04) 1px,transparent 1px);
-  background-size:50px 50px;
-  animation:gridMove 20s linear infinite;
-}
-@keyframes gridMove{0%{background-position:0 0}100%{background-position:50px 50px}}
-.radial-glow{
-  background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(0,210,255,0.08) 0%,transparent 70%);
-}
-.scanlines{
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);
-  opacity:0.4;
-}
-.scanline-beam{
-  position:fixed;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--telemetry-cyan),transparent);
-  opacity:0.6;z-index:1;pointer-events:none;
-  animation:scanBeam 6s linear infinite;
-}
-@keyframes scanBeam{0%{top:-2px}100%{top:100vh}}
-#particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* ===== 自定义字体 ===== */
+@font-face{font-family:'UEG-Body';src:url('/fonts/zhonghei.ttf') format('truetype');font-weight:400 700;font-display:swap}
+@font-face{font-family:'Rajdhani';src:url('/fonts/rajdhani-medium.otf') format('opentype');font-weight:500;font-display:swap}
+@font-face{font-family:'DIN';src:url('/fonts/din-mittelschrift.otf') format('opentype');font-weight:500;font-display:swap}
 
-/* ===== 通用 HUD 面板 ===== */
-.hud-panel{
-  background:linear-gradient(135deg,rgba(3,27,44,0.9),rgba(2,16,26,0.95));
-  border:1px solid var(--cyan-border);
-  position:relative;
-  backdrop-filter:blur(8px);
+:root{
+  --bg-0:#0a151f;--bg-1:#0e2031;--bg-2:#12293c;
+  --surface:rgba(20,43,62,0.72);--surface-solid:#142b3e;--surface-2:#1a3550;
+  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.14);
+  --text:#eef1f4;--text-muted:rgba(238,241,244,0.62);--text-faint:rgba(238,241,244,0.42);
+  --gold:#d4ba8a;--gold-bright:#e6cf9f;--gold-dark:#b3975f;
+  --blue:#8fc3e0;--green:#8ed3a6;--red:#e08a8a;
+  --radius:14px;--radius-sm:10px;--radius-lg:20px;
+  --shadow-card:0 18px 44px -24px rgba(0,0,0,0.7);
+  --shadow-soft:0 10px 30px -20px rgba(0,0,0,0.6);
+  --font-zh:'UEG-Body','Microsoft YaHei','PingFang SC',sans-serif;
+  --font-en:'Rajdhani','UEG-Body',sans-serif;
+  --font-din:'DIN','Rajdhani',sans-serif;
 }
-.hud-panel::before,.hud-panel::after,
-.hud-panel>.corner-tl,.hud-panel>.corner-tr,.hud-panel>.corner-bl,.hud-panel>.corner-br{
-  content:'';position:absolute;width:14px;height:14px;
-  border-color:var(--telemetry-cyan);border-style:solid;
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  background:radial-gradient(1200px 600px at 70% -10%,rgba(42,78,108,0.45),transparent 60%),
+             linear-gradient(180deg,var(--bg-0),var(--bg-1) 60%,var(--bg-0));
+  background-color:var(--bg-0);
+  color:var(--text);font-family:var(--font-zh);font-size:14px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
 }
-.hud-panel::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
-.hud-panel::after{top:-1px;right:-1px;border-width:2px 2px 0 0}
-.hud-panel>.corner-bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
-.hud-panel>.corner-br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+#root{min-height:100vh}
+::selection{background:rgba(212,186,138,0.3);color:#fff}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.22)}
+.mono{font-family:var(--font-en)}
+.muted{color:var(--text-muted)}
+.small{font-size:12px}
 
 /* ===== 登录页 ===== */
-#login-view{
-  position:fixed;inset:0;z-index:10;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:24px;
+.login-wrap{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px;position:relative;
+  background:radial-gradient(900px 520px at 20% -10%,rgba(46,86,116,0.5),transparent 60%),
+             radial-gradient(700px 500px at 90% 110%,rgba(31,48,66,0.5),transparent 60%),
+             linear-gradient(160deg,var(--bg-0),var(--bg-1) 55%,#0a1824);
 }
-.login-header{text-align:center;margin-bottom:8px}
-.login-ueg-logo{
-  width:90px;height:90px;margin:0 auto 16px;
-  border-radius:50%;
-  border:2px solid var(--cyan-border);
-  box-shadow:0 0 30px var(--cyan-glow),inset 0 0 20px rgba(0,210,255,0.1);
-  object-fit:cover;
-  animation:logoPulse 3s ease-in-out infinite;
+.bg-photo{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-size:cover;background-position:center;
+  background-image:url('/img/bg-qq1.webp');
 }
-@keyframes logoPulse{0%,100%{box-shadow:0 0 20px var(--cyan-glow),inset 0 0 15px rgba(0,210,255,0.1)}50%{box-shadow:0 0 40px var(--cyan-glow),inset 0 0 25px rgba(0,210,255,0.15)}}
-.login-title{
-  font-family:var(--font-display);
-  font-size:28px;font-weight:700;letter-spacing:6px;
-  color:var(--text-primary);
-  text-shadow:0 0 20px var(--cyan-glow);
+.bg-photo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,21,31,0.82),rgba(10,21,31,0.55) 45%,rgba(10,21,31,0.9));
 }
-.login-subtitle{
-  font-family:var(--font-mono);
-  font-size:11px;letter-spacing:4px;
-  color:var(--telemetry-cyan);
-  margin-top:6px;opacity:0.8;
+.login-wrap>*:not(.bg-photo){position:relative;z-index:1}
+.login-header{
+  margin-bottom:28px;text-align:center;color:var(--text-muted);
+  font-family:var(--font-en);letter-spacing:0.24em;font-size:11px;text-transform:uppercase;
 }
 .login-card{
-  width:380px;padding:36px 32px 28px;
-  border-radius:4px;
+  width:100%;max-width:420px;background:rgba(15,33,51,0.72);
+  border:1px solid var(--border-strong);border-radius:18px;padding:38px 36px;
+  box-shadow:var(--shadow-card);backdrop-filter:blur(16px);
+  position:relative;overflow:hidden;
+  animation:cardIn 0.7s cubic-bezier(0.22,1,0.36,1);
 }
-.login-avatar-row{
-  display:flex;align-items:center;gap:14px;
-  margin-bottom:24px;padding-bottom:20px;
-  border-bottom:1px solid var(--cyan-border);
+@keyframes cardIn{0%{opacity:0;transform:translateY(20px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.login-card::before{
+  content:'';position:absolute;top:0;left:10%;right:10%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
 }
-.login-avatar{
-  width:48px;height:48px;border-radius:50%;
-  border:2px solid var(--telemetry-cyan);
-  box-shadow:0 0 12px var(--cyan-glow);
+.login-head{text-align:center;margin-bottom:10px}
+.login-head .ueg-logo{height:110px;mix-blend-mode:screen;filter:brightness(1.08);display:block;margin:0 auto 6px}
+.login-head h1{
+  font-family:var(--font-zh);font-size:28px;font-weight:700;letter-spacing:0.12em;color:#fff;
+  margin-top:4px;
+}
+.login-head .sub{
+  font-family:var(--font-en);font-size:12px;letter-spacing:0.24em;text-transform:uppercase;
+  color:var(--gold);margin-top:8px;
+}
+.officer-row{
+  display:flex;flex-direction:column;align-items:center;margin-top:18px;
+}
+.officer-avatar{
+  width:68px;height:68px;border-radius:50%;border:2px solid rgba(212,186,138,0.55);
+  padding:3px;box-shadow:0 10px 30px -12px rgba(0,0,0,0.7);background:rgba(255,255,255,0.04);
   object-fit:cover;
 }
-.login-officer-info{flex:1}
-.login-officer-name{
-  font-family:var(--font-display);
-  font-size:16px;font-weight:600;letter-spacing:2px;
+.officer-name{margin-top:10px;font-size:15px;font-weight:600;color:var(--text)}
+.officer-tag{
+  font-family:var(--font-en);font-size:11px;letter-spacing:0.16em;color:var(--gold);
+  margin-top:3px;text-transform:uppercase;
 }
-.login-officer-tag{
-  font-family:var(--font-mono);font-size:10px;
-  color:var(--telemetry-cyan);letter-spacing:2px;margin-top:2px;
-}
-.form-group{margin-bottom:18px}
-.form-label{
-  display:block;font-family:var(--font-mono);
-  font-size:10px;letter-spacing:2px;
-  color:var(--text-secondary);margin-bottom:6px;
-  text-transform:uppercase;
-}
-.form-input{
-  width:100%;padding:11px 14px;
-  background:rgba(1,10,20,0.7);
-  border:1px solid var(--cyan-border);
-  border-radius:2px;
-  color:var(--text-primary);
-  font-family:var(--font-mono);font-size:14px;
-  outline:none;transition:all 0.3s;
-}
-.form-input:focus{
-  border-color:var(--telemetry-cyan);
-  box-shadow:0 0 12px var(--cyan-glow),inset 0 0 8px rgba(0,210,255,0.05);
-}
-.form-input::placeholder{color:var(--text-dim)}
-.password-row{display:flex;gap:8px;align-items:center}
-.password-row .form-input{flex:1}
-.toggle-pw{
-  padding:11px 12px;background:rgba(1,10,20,0.7);
-  border:1px solid var(--cyan-border);border-radius:2px;
-  color:var(--text-secondary);font-family:var(--font-mono);
-  font-size:11px;cursor:pointer;transition:all 0.2s;white-space:nowrap;
-}
-.toggle-pw:hover{color:var(--telemetry-cyan);border-color:var(--telemetry-cyan)}
-.login-btn{
-  width:100%;padding:13px;
-  background:linear-gradient(135deg,rgba(0,210,255,0.15),rgba(0,210,255,0.05));
-  border:1px solid var(--telemetry-cyan);
-  border-radius:2px;color:var(--telemetry-cyan);
-  font-family:var(--font-display);font-size:15px;font-weight:600;
-  letter-spacing:4px;cursor:pointer;
-  transition:all 0.3s;text-transform:uppercase;
-  position:relative;overflow:hidden;
-}
-.login-btn:hover{
-  background:linear-gradient(135deg,rgba(0,210,255,0.3),rgba(0,210,255,0.1));
-  box-shadow:0 0 25px var(--cyan-glow);
-  text-shadow:0 0 10px var(--telemetry-cyan);
-}
-.login-btn::after{
-  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(0,210,255,0.2),transparent);
-  transition:left 0.5s;
-}
-.login-btn:hover::after{left:100%}
-.login-footer{
-  text-align:center;margin-top:20px;
-  font-family:var(--font-mono);font-size:10px;
-  color:var(--text-dim);letter-spacing:1px;line-height:1.8;
-}
-.login-footer .demo-hint{
-  display:inline-block;margin-top:10px;padding:6px 14px;
-  border:1px dashed var(--cyan-border);border-radius:2px;
-  color:var(--text-secondary);
-}
-.login-footer .demo-hint code{color:var(--telemetry-cyan)}
+.login-sep{height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent);margin:4px 0 24px}
 .login-error{
-  color:var(--danger);font-family:var(--font-mono);
-  font-size:12px;text-align:center;margin-top:12px;
-  min-height:16px;letter-spacing:1px;
+  background:rgba(224,138,138,0.08);border:1px solid rgba(224,138,138,0.4);color:#f0b9b9;
+  font-size:12.5px;padding:11px 13px;border-radius:10px;margin-bottom:16px;
+  animation:shake 0.4s;
 }
-/* 底部 550W */
-.login-brand{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  text-align:center;z-index:10;
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:12.5px;color:var(--text-muted);margin-bottom:7px;font-weight:500}
+.field input,.field select,.field textarea{
+  width:100%;background:rgba(10,26,40,0.6);border:1px solid var(--border-strong);
+  color:var(--text);border-radius:10px;padding:11px 13px;font-size:14px;font-family:var(--font-zh);
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;
 }
-.login-brand img{height:42px;opacity:0.7;filter:drop-shadow(0 0 8px var(--cyan-glow))}
-.login-brand p{
-  font-family:var(--font-mono);font-size:9px;
-  color:var(--text-dim);letter-spacing:3px;margin-top:6px;
+.field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,186,138,0.14)}
+.field input::placeholder{color:var(--text-faint)}
+.row{display:flex;align-items:center;gap:10px}
+.row .grow{flex:1}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:rgba(212,186,138,0.1);border:1px solid rgba(212,186,138,0.4);
+  color:var(--gold-bright);font-size:13.5px;padding:9px 18px;border-radius:10px;
+  cursor:pointer;font-family:var(--font-zh);transition:all 0.2s;font-weight:500;
 }
+.btn:hover{background:rgba(212,186,138,0.18);border-color:rgba(212,186,138,0.6)}
+.btn.primary{
+  background:linear-gradient(135deg,var(--gold-bright),var(--gold-dark));color:#1a1205;
+  font-weight:700;border-color:transparent;box-shadow:0 8px 24px -10px rgba(212,186,138,0.5);
+}
+.btn.primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border-color:var(--border-strong);color:var(--text-muted)}
+.btn.ghost:hover{border-color:var(--gold);color:var(--gold-bright)}
+.btn.sm{padding:6px 13px;font-size:12.5px}
+.login-btn{width:100%;justify-content:center;padding:13px;font-size:15px;letter-spacing:0.14em;margin-top:6px}
+.login-foot{
+  text-align:center;font-family:var(--font-en);font-size:10px;letter-spacing:0.16em;
+  color:var(--text-faint);margin-top:26px;text-transform:uppercase;
+}
+.login-tip{
+  margin-top:22px;font-size:12px;color:var(--text-muted);text-align:center;line-height:1.9;
+  border:1px dashed var(--border-strong);border-radius:12px;padding:12px;background:rgba(255,255,255,0.015);
+}
+.login-tip b{color:var(--gold-bright);font-family:var(--font-en);font-weight:600}
+.u550-wrap{
+  margin-top:26px;background:linear-gradient(120deg,#09141d,#0d1c2a);
+  border:1px solid var(--border-strong);border-radius:14px;padding:18px 30px;
+  display:flex;align-items:center;justify-content:center;
+}
+.u550-wrap img{height:52px;mix-blend-mode:screen;filter:brightness(1.1)}
 
-/* ===== 顶部状态栏 ===== */
-.top-bar{
-  position:fixed;top:0;left:0;right:0;height:48px;z-index:20;
-  background:linear-gradient(180deg,rgba(2,16,26,0.98),rgba(2,16,26,0.85));
-  border-bottom:1px solid var(--cyan-border);
-  display:flex;align-items:center;padding:0 20px;
-  backdrop-filter:blur(10px);
-}
-.top-bar-left{display:flex;align-items:center;gap:14px;flex:1}
-.top-bar-logo{
-  width:30px;height:30px;border-radius:50%;
-  border:1px solid var(--telemetry-cyan);
-  box-shadow:0 0 10px var(--cyan-glow);
-}
-.top-bar-title{
-  font-family:var(--font-display);font-size:14px;font-weight:600;
-  letter-spacing:3px;color:var(--text-primary);
-}
-.top-bar-title span{color:var(--telemetry-cyan);font-size:11px;margin-left:8px;letter-spacing:2px}
-.top-bar-center{
-  font-family:var(--font-mono);font-size:12px;
-  color:var(--text-secondary);letter-spacing:1px;
-  display:flex;gap:24px;
-}
-.top-bar-center .status-dot{
-  display:inline-block;width:7px;height:7px;border-radius:50%;
-  background:var(--success);box-shadow:0 0 8px var(--success);
-  margin-right:5px;animation:blink 2s infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
-.top-bar-right{display:flex;align-items:center;gap:16px;flex:1;justify-content:flex-end}
-.top-bar-user{
-  display:flex;align-items:center;gap:8px;
-  font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);
-}
-.top-bar-user img{width:26px;height:26px;border-radius:50%;border:1px solid var(--telemetry-cyan)}
-.logout-btn{
-  padding:6px 14px;background:transparent;
-  border:1px solid var(--cyan-border);border-radius:2px;
-  color:var(--text-secondary);font-family:var(--font-mono);
-  font-size:11px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;
-}
-.logout-btn:hover{color:var(--danger);border-color:var(--danger)}
-
-/* ===== 侧边栏 ===== */
+/* ===== 应用布局 ===== */
+.app-shell{display:flex;min-height:100vh}
 .sidebar{
-  position:fixed;top:48px;left:0;bottom:0;width:200px;z-index:15;
-  background:linear-gradient(180deg,rgba(2,16,26,0.95),rgba(1,10,20,0.98));
-  border-right:1px solid var(--cyan-border);
-  padding:20px 0;
-  backdrop-filter:blur(8px);
+  width:256px;flex-shrink:0;background:linear-gradient(180deg,var(--bg-1),var(--bg-0));
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;z-index:20;
 }
-.sidebar-section{
-  font-family:var(--font-mono);font-size:9px;letter-spacing:3px;
-  color:var(--text-dim);padding:0 20px 8px;text-transform:uppercase;
+.brand{display:flex;align-items:center;gap:13px;padding:22px 22px 20px;border-bottom:1px solid var(--border)}
+.brand img{height:40px;max-width:190px;mix-blend-mode:screen;display:block}
+.nav{flex:1;padding:14px 14px;overflow-y:auto}
+.nav-group{
+  font-family:var(--font-en);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--text-faint);padding:14px 12px 6px;
 }
 .nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 20px;cursor:pointer;
-  font-family:var(--font-display);font-size:13px;
-  color:var(--text-secondary);letter-spacing:1px;
-  border-left:2px solid transparent;transition:all 0.2s;
-  position:relative;
+  display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;
+  color:var(--text-muted);text-decoration:none;font-size:14px;
+  transition:background 0.2s,color 0.2s;margin-bottom:2px;border:1px solid transparent;
+  cursor:pointer;
 }
-.nav-item:hover{background:rgba(0,210,255,0.05);color:var(--text-primary)}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,0.04)}
 .nav-item.active{
-  color:var(--telemetry-cyan);
-  border-left-color:var(--telemetry-cyan);
-  background:linear-gradient(90deg,rgba(0,210,255,0.1),transparent);
+  color:var(--gold-bright);background:linear-gradient(90deg,rgba(212,186,138,0.13),rgba(212,186,138,0.02));
+  border-color:rgba(212,186,138,0.22);
 }
-.nav-item .nav-icon{
-  width:16px;height:16px;display:flex;align-items:center;justify-content:center;
-  font-size:14px;
+.nav-item .nav-ico{width:18px;text-align:center;flex-shrink:0;font-size:15px;opacity:0.85}
+.sidebar-foot{
+  padding:16px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;
 }
-.nav-item .nav-badge{
-  margin-left:auto;font-family:var(--font-mono);font-size:9px;
-  padding:2px 6px;background:rgba(0,210,255,0.15);
-  border-radius:2px;color:var(--telemetry-cyan);
+.avatar-img{
+  width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;
+  border:2px solid rgba(212,186,138,0.5);
+}
+.sidebar-foot .who .org-en{font-family:var(--font-en);font-size:9px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase}
+.sidebar-foot .who .name{font-size:13px;font-weight:600;color:var(--text)}
+.sidebar-foot .who .role{font-size:11px;color:var(--text-muted);margin-top:1px}
+.logout-btn{
+  margin-left:auto;background:transparent;border:1px solid var(--border-strong);
+  color:var(--text-muted);padding:7px 10px;border-radius:9px;cursor:pointer;transition:all 0.15s;
+  font-size:13px;
+}
+.logout-btn:hover{color:var(--red);border-color:rgba(224,138,138,0.5);background:rgba(224,138,138,0.08)}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:18px 34px;border-bottom:1px solid var(--border);
+  background:rgba(14,32,49,0.6);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:10;
+}
+.topbar .page-crumb{font-family:var(--font-en);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-faint);margin-bottom:4px}
+.topbar .page-title{
+  font-family:var(--font-zh);font-size:24px;font-weight:700;letter-spacing:0.02em;
+  background:linear-gradient(180deg,#fff,#c9d6e2);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.topbar-right{display:flex;align-items:center;gap:20px}
+.clock{text-align:right}
+.clock .time{font-family:var(--font-en);font-size:22px;font-weight:600;color:var(--gold-bright);line-height:1.1}
+.clock .dt{font-family:var(--font-en);font-size:11px;letter-spacing:0.1em;color:var(--text-faint)}
+.content{padding:30px 34px;flex:1}
+.footer{
+  padding:18px 34px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;
+  font-family:var(--font-en);font-size:11px;letter-spacing:0.1em;color:var(--text-faint);
 }
 
-/* ===== 主内容区 ===== */
-.main-content{
-  position:fixed;top:48px;left:200px;right:0;bottom:0;
-  overflow-y:auto;overflow-x:hidden;
-  padding:24px;z-index:5;
+/* ===== 卡片与组件 ===== */
+.panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:24px;box-shadow:var(--shadow-card);position:relative;
+  backdrop-filter:blur(8px);
 }
-.main-content::-webkit-scrollbar{width:6px}
-.main-content::-webkit-scrollbar-track{background:var(--void-2)}
-.main-content::-webkit-scrollbar-thumb{background:var(--cyan-dim);border-radius:3px}
+.panel.hl{
+  border-color:rgba(212,186,138,0.3);
+  background:linear-gradient(160deg,rgba(24,50,72,0.8),var(--surface));
+}
+.panel-title{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.panel-title h3{font-family:var(--font-zh);font-size:16px;font-weight:700;color:var(--text)}
+.panel-title .bar{width:4px;height:18px;border-radius:3px;background:linear-gradient(180deg,var(--gold-bright),var(--gold-dark))}
+.panel-title .sub{font-family:var(--font-en);font-size:11px;letter-spacing:0.12em;color:var(--text-faint);text-transform:uppercase}
+.panel-title .act{margin-left:auto;display:flex;align-items:center;gap:10px}
 
-.page-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:24px;
-}
-.page-title{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
-  letter-spacing:3px;color:var(--text-primary);
-}
-.page-title::before{
-  content:'//';color:var(--telemetry-cyan);margin-right:10px;
-  font-family:var(--font-mono);
-}
-.page-breadcrumb{
-  font-family:var(--font-mono);font-size:11px;color:var(--text-dim);letter-spacing:1px;
-}
+.grid{display:grid;gap:20px}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.section-gap{height:20px}
 
-/* ===== 仪表盘组件 ===== */
-.dashboard-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;
-}
 .stat-card{
-  padding:18px 20px;border-radius:3px;position:relative;overflow:hidden;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px 22px 20px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden;
+  transition:transform 0.3s,border-color 0.3s;
 }
-.stat-card .stat-label{
-  font-family:var(--font-mono);font-size:10px;letter-spacing:2px;
-  color:var(--text-secondary);text-transform:uppercase;margin-bottom:8px;
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(212,186,138,0.25)}
+.stat-card::after{
+  content:'';position:absolute;top:0;left:24px;right:24px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.7;
 }
-.stat-card .stat-value{
-  font-family:var(--font-display);font-size:30px;font-weight:700;
-  color:var(--telemetry-cyan);text-shadow:0 0 15px var(--cyan-glow);
-  line-height:1;
+.stat-card .label{font-family:var(--font-en);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-faint)}
+.stat-card .value{
+  font-family:var(--font-en);font-weight:700;font-size:34px;line-height:1.1;
+  color:var(--gold-bright);margin:8px 0 4px;text-shadow:0 2px 20px rgba(212,186,138,0.18);
 }
-.stat-card .stat-change{
-  font-family:var(--font-mono);font-size:10px;margin-top:8px;
-}
-.stat-card .stat-change.up{color:var(--success)}
-.stat-card .stat-change.down{color:var(--danger)}
-.stat-card .stat-icon{
-  position:absolute;top:14px;right:16px;font-size:24px;opacity:0.15;
-}
-.stat-card .stat-bar{
-  position:absolute;bottom:0;left:0;height:2px;
-  background:linear-gradient(90deg,var(--telemetry-cyan),transparent);
-  animation:barGrow 1.5s ease-out;
-}
-@keyframes barGrow{0%{width:0}100%{width:var(--bar-w,60%)}}
+.stat-card .sub{font-size:12px;color:var(--text-muted)}
+.trend{font-family:var(--font-en);font-size:12px;margin-left:8px}
+.trend.up{color:var(--green)}.trend.down{color:var(--red)}
 
-.panel-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
-.panel-row.three{grid-template-columns:repeat(3,1fr)}
-.panel{padding:20px;border-radius:3px}
-.panel-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;padding-bottom:12px;
-  border-bottom:1px solid var(--cyan-border);
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-sm)}
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data thead th{
+  font-family:var(--font-en);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text-faint);text-align:left;padding:13px 16px;border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.02);white-space:nowrap;
 }
-.panel-title{
-  font-family:var(--font-display);font-size:14px;font-weight:600;
-  letter-spacing:2px;color:var(--text-primary);
-}
-.panel-title::before{
-  content:'▸';color:var(--telemetry-cyan);margin-right:8px;
-}
-.panel-action{
-  font-family:var(--font-mono);font-size:10px;color:var(--text-dim);
-  cursor:pointer;letter-spacing:1px;
-}
-.panel-action:hover{color:var(--telemetry-cyan)}
+table.data tbody td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:middle}
+table.data tbody tr:hover{background:rgba(255,255,255,0.02)}
+table.data tbody tr:last-child td{border-bottom:none}
 
-/* 进度条 */
-.progress-item{margin-bottom:14px}
-.progress-item:last-child{margin-bottom:0}
-.progress-label{
-  display:flex;justify-content:space-between;
-  font-family:var(--font-mono);font-size:11px;margin-bottom:5px;
+.badge{
+  font-family:var(--font-en);font-size:11px;padding:3px 11px;border-radius:999px;
+  border:1px solid;white-space:nowrap;letter-spacing:0.03em;
 }
-.progress-label .pl-name{color:var(--text-secondary)}
-.progress-label .pl-val{color:var(--telemetry-cyan)}
-.progress-track{
-  height:6px;background:rgba(0,210,255,0.08);border-radius:3px;overflow:hidden;
-}
-.progress-fill{
-  height:100%;border-radius:3px;
-  background:linear-gradient(90deg,var(--cyan-dim),var(--telemetry-cyan));
-  box-shadow:0 0 8px var(--cyan-glow);
-  transition:width 1s ease-out;
-}
-.progress-fill.warn{background:linear-gradient(90deg,var(--amber-dim),var(--amber))}
-.progress-fill.danger{background:linear-gradient(90deg,#aa2233,var(--danger))}
+.badge.gold{color:var(--gold-bright);border-color:rgba(212,186,138,0.45);background:rgba(212,186,138,0.08)}
+.badge.blue{color:var(--blue);border-color:rgba(143,195,224,0.4);background:rgba(143,195,224,0.08)}
+.badge.green{color:var(--green);border-color:rgba(142,211,166,0.4);background:rgba(142,211,166,0.08)}
+.badge.red{color:var(--red);border-color:rgba(224,138,138,0.45);background:rgba(224,138,138,0.08)}
+.badge.gray{color:var(--text-muted);border-color:var(--border-strong);background:rgba(255,255,255,0.03)}
 
-/* 终端日志 */
-.terminal{
-  background:rgba(0,0,0,0.4);border-radius:2px;
-  padding:14px;font-family:var(--font-mono);font-size:11px;
-  line-height:1.9;max-height:280px;overflow-y:auto;
-  border:1px solid rgba(0,210,255,0.1);
-}
-.terminal::-webkit-scrollbar{width:4px}
-.terminal::-webkit-scrollbar-thumb{background:var(--cyan-dim)}
-.terminal .log-line{color:var(--text-secondary)}
-.terminal .log-time{color:var(--text-dim);margin-right:8px}
-.terminal .log-info{color:var(--telemetry-cyan)}
-.terminal .log-warn{color:var(--amber)}
-.terminal .log-error{color:var(--danger)}
-.terminal .log-success{color:var(--success)}
-.terminal .cursor{
-  display:inline-block;width:7px;height:13px;
-  background:var(--telemetry-cyan);vertical-align:middle;
-  animation:cursorBlink 1s step-end infinite;
-}
-@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+.progress{height:7px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;min-width:80px}
+.progress>div{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold-dark),var(--gold-bright));transition:width .6s ease}
+.progress.red>div{background:linear-gradient(90deg,#a05f5f,var(--red))}
 
-/* 引擎状态 */
-.engine-list{display:flex;flex-direction:column;gap:10px}
-.engine-item{
-  display:flex;align-items:center;gap:12px;padding:10px 12px;
-  background:rgba(0,210,255,0.03);border-radius:2px;
-  border:1px solid rgba(0,210,255,0.08);
+.metric-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.metric-row:last-child{border-bottom:none}
+.metric-row .m-label{flex:1;font-size:13.5px;color:var(--text-muted)}
+.metric-row .m-val{font-family:var(--font-en);font-size:18px;font-weight:600;color:var(--gold-bright)}
+.metric-row .m-unit{font-family:var(--font-en);font-size:12px;color:var(--text-faint);margin-left:4px}
+.metric-row .m-note{font-size:11px;color:var(--text-faint);margin-left:8px}
+
+.countdown{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.countdown .cd-cell{flex:1;min-width:80px;text-align:center}
+.countdown .cd-num{font-family:var(--font-din);font-size:48px;font-weight:600;line-height:1;color:var(--gold-bright);text-shadow:0 3px 26px rgba(212,186,138,0.28)}
+.countdown .cd-label{font-family:var(--font-en);font-size:10px;letter-spacing:0.2em;color:var(--text-faint);text-transform:uppercase;margin-top:6px}
+.countdown .cd-sep{font-family:var(--font-din);font-size:36px;color:var(--text-faint);align-self:flex-start;margin-top:4px}
+
+.hero-panel{
+  border-radius:var(--radius-lg);padding:32px 34px;margin-bottom:22px;position:relative;overflow:hidden;
+  background:linear-gradient(110deg,rgba(9,18,28,0.96) 30%,rgba(9,18,28,0.82) 55%,rgba(9,18,28,0.7)),url('/img/bg-qq2.webp') center/cover no-repeat;
+  border:1px solid rgba(212,186,138,0.2);box-shadow:var(--shadow-card);
 }
-.engine-indicator{
-  width:10px;height:10px;border-radius:50%;flex-shrink:0;
-}
-.engine-indicator.online{background:var(--success);box-shadow:0 0 8px var(--success)}
-.engine-indicator.warn{background:var(--amber);box-shadow:0 0 8px var(--amber)}
-.engine-indicator.offline{background:var(--danger);box-shadow:0 0 8px var(--danger)}
-.engine-name{
-  font-family:var(--font-mono);font-size:12px;color:var(--text-primary);flex:1;
-}
-.engine-power{
-  font-family:var(--font-mono);font-size:11px;color:var(--telemetry-cyan);
-  width:50px;text-align:right;
+.hero-title{font-size:20px;font-weight:700;margin-bottom:6px}
+.hero-desc{font-size:13px;color:var(--text-muted);max-width:440px;line-height:1.8}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--font-en);font-size:11px;
+  letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;
 }
 
-/* 数据表格 */
-.data-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:11px}
-.data-table th{
-  text-align:left;padding:8px 10px;color:var(--text-dim);
-  font-weight:500;letter-spacing:1px;border-bottom:1px solid var(--cyan-border);
-  text-transform:uppercase;font-size:10px;
+.plan-section{
+  background:linear-gradient(150deg,#f7f5f0,#ecece6);border-radius:var(--radius);
+  padding:26px 26px 22px;color:#22303c;box-shadow:var(--shadow-card);
 }
-.data-table td{
-  padding:9px 10px;color:var(--text-secondary);
-  border-bottom:1px solid rgba(0,210,255,0.06);
-}
-.data-table tr:hover td{background:rgba(0,210,255,0.03);color:var(--text-primary)}
-.data-table .tag{
-  display:inline-block;padding:2px 8px;border-radius:2px;font-size:10px;
-}
-.tag-online{background:rgba(46,213,115,0.15);color:var(--success)}
-.tag-standby{background:rgba(201,169,110,0.15);color:var(--amber)}
-.tag-offline{background:rgba(255,71,87,0.15);color:var(--danger)}
+.plan-section .ps-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.plan-section .ps-head h3{font-family:var(--font-zh);font-size:17px;font-weight:700;color:#1b2733}
+.plan-section .ps-head .en{font-family:var(--font-en);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#94a4b0}
+.plan-section .bar{width:4px;height:18px;border-radius:3px;background:linear-gradient(180deg,#c9a24b,#8a6d1f)}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.plan-item{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e3e0d6;box-shadow:0 6px 20px -12px rgba(0,0,0,0.25);transition:transform 0.3s,box-shadow 0.3s}
+.plan-item:hover{transform:translateY(-3px);box-shadow:0 12px 30px -12px rgba(0,0,0,0.35)}
+.plan-item img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;background:#fff}
+.plan-item .ti{padding:12px 14px;font-family:var(--font-zh);font-size:14px;font-weight:600;color:#1b2733;border-top:1px solid #eee}
 
-/* 环形进度 */
-.ring-container{display:flex;justify-content:space-around;align-items:center;padding:10px 0}
-.ring-item{text-align:center}
-.ring-svg{width:80px;height:80px;transform:rotate(-90deg)}
-.ring-bg{fill:none;stroke:rgba(0,210,255,0.1);stroke-width:6}
-.ring-fill{fill:none;stroke:var(--telemetry-cyan);stroke-width:6;
-  stroke-linecap:round;stroke-dasharray:220;
-  filter:drop-shadow(0 0 4px var(--cyan-glow));
-  transition:stroke-dashoffset 1.5s ease-out;
-}
-.ring-label{
-  font-family:var(--font-mono);font-size:10px;color:var(--text-secondary);
-  margin-top:6px;letter-spacing:1px;
-}
-.ring-value{
-  font-family:var(--font-display);font-size:18px;font-weight:700;
-  fill:var(--telemetry-cyan);text-anchor:middle;dominant-baseline:central;
-}
+.notice-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:padding-left 0.2s}
+.notice-item:hover{padding-left:6px}
+.notice-item:last-child{border-bottom:none}
+.notice-item .n-time{font-family:var(--font-en);font-size:12px;color:var(--text-faint);width:48px;flex-shrink:0}
+.notice-item .n-text{flex:1;font-size:13px;color:var(--text-muted)}
 
-/* 页面切换 */
-.page{display:none}
-.page.active{display:block;animation:fadeIn 0.4s ease}
-@keyframes fadeIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
-
-/* 登录过渡 */
-#login-view.hide{
-  animation:loginOut 0.6s ease forwards;
+.terminal-box{
+  background:rgba(0,0,0,0.4);border-radius:var(--radius-sm);padding:16px;
+  font-family:var(--font-en);font-size:12px;line-height:1.9;max-height:400px;overflow-y:auto;
+  border:1px solid rgba(255,255,255,0.06);
 }
-@keyframes loginOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05);pointer-events:none}}
+.terminal-box .t-line{color:var(--text-muted)}
+.terminal-box .t-time{color:var(--text-faint);margin-right:8px}
+.terminal-box .t-info{color:var(--blue)}
+.terminal-box .t-warn{color:var(--gold)}
+.terminal-box .t-ok{color:var(--green)}
+.terminal-box .t-err{color:var(--red)}
 
-/* 响应式 */
+.page{display:none;animation:fadeIn 0.4s ease}
+.page.active{display:block}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+
+.menu-toggle{display:none;background:transparent;border:1px solid var(--border-strong);color:var(--text);border-radius:9px;padding:6px 10px;cursor:pointer;font-size:16px}
+.sidebar-backdrop{display:none}
+
+@media(max-width:1200px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:960px){.grid-2{grid-template-columns:1fr}.plan-grid{grid-template-columns:1fr}}
 @media(max-width:900px){
-  .dashboard-grid{grid-template-columns:repeat(2,1fr)}
-  .panel-row,.panel-row.three{grid-template-columns:1fr}
-  .sidebar{width:60px}
-  .sidebar .nav-item span:not(.nav-icon),.sidebar-section{display:none}
-  .main-content{left:60px}
-  .top-bar-center{display:none}
+  .menu-toggle{display:inline-flex}
+  .sidebar{position:fixed;left:0;top:0;z-index:100;transform:translateX(-100%);transition:transform .25s ease;height:100vh;box-shadow:0 0 60px rgba(0,0,0,.6)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(5,12,20,0.6);z-index:99}
+  .sidebar-backdrop.show{display:block}
 }
-@media(max-width:600px){
-  .dashboard-grid{grid-template-columns:1fr}
-  .login-card{width:92vw;padding:24px 20px}
+@media(max-width:680px){
+  body{font-size:13px}.content{padding:18px 15px}.topbar{padding:14px 15px}
+  .topbar .page-title{font-size:19px}.clock .time{font-size:18px}
+  .panel{padding:18px 16px}.stat-card{padding:17px 16px}.stat-card .value{font-size:28px}
+  .login-card{padding:30px 22px;border-radius:16px}.login-head h1{font-size:24px}
+  .countdown .cd-num{font-size:34px}.countdown .cd-cell{min-width:60px}
+  .grid{gap:14px}
 }
 </style>
 </head>
 <body>
-
-<!-- 背景层 -->
-<div class="bg-layer grid-bg"></div>
-<div class="bg-layer radial-glow"></div>
-<div class="bg-layer scanlines"></div>
-<canvas id="particles"></canvas>
-<div class="scanline-beam"></div>
-
-<!-- ===== 登录页 ===== -->
-<div id="login-view">
-  <div class="login-header">
-    <img src="/img/ueg-logo.png" alt="UEG" class="login-ueg-logo" onerror="this.style.display='none'">
-    <div class="login-title">行政管理中心</div>
-    <div class="login-subtitle">UEG ADMINISTRATION CONSOLE</div>
-  </div>
-  <div class="hud-panel login-card">
-    <span class="corner-bl"></span><span class="corner-br"></span>
-    <div class="login-avatar-row">
-      <img src="/img/avatar.jpg" alt="officer" class="login-avatar" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 48 48%22><rect fill=%22%23031b2c%22 width=%2248%22 height=%2248%22/><text x=%2224%22 y=%2230%22 text-anchor=%22middle%22 fill=%22%2300d2ff%22 font-size=%2220%22>X</text></svg>'">
-      <div class="login-officer-info">
-        <div class="login-officer-name">执政官 · xzd1314</div>
-        <div class="login-officer-tag">OFFICER IDENTITY VERIFIED</div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">识别码 / 用户名</label>
-      <input type="text" class="form-input" id="username" placeholder="请输入用户名" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <label class="form-label">身份密钥 / 密码</label>
-      <div class="password-row">
-        <input type="password" class="form-input" id="password" placeholder="请输入密码" autocomplete="off">
-        <button class="toggle-pw" id="togglePw">显示</button>
-      </div>
-    </div>
-    <div class="login-error" id="loginError"></div>
-    <button class="login-btn" id="loginBtn">进入管理指挥舱</button>
-    <div class="login-footer">
-      AUTHORIZED PERSONNEL ONLY · 仅供授权官员 · 全程加密回传
-      <div class="demo-hint">考核账号：用户名 <code>xzd1314</code> · 密码 <code>123456</code></div>
-    </div>
-  </div>
-  <div class="login-brand">
-    <img src="/img/logo-550w.png" alt="550W" onerror="this.outerHTML='<div style=&quot;font-family:var(--font-mono);font-size:24px;color:var(--text-dim);letter-spacing:4px&quot;>550W</div>'">
-    <p>流浪地球计划 · MOVE THE EARTH · 使地球成为人类永远的家园</p>
-  </div>
-</div>
-
-<!-- ===== 主应用 ===== -->
-<div id="app-view" style="display:none">
-  <!-- 顶部栏 -->
-  <div class="top-bar">
-    <div class="top-bar-left">
-      <img src="/img/ueg-logo.png" class="top-bar-logo" alt="UEG" onerror="this.style.display='none'">
-      <div class="top-bar-title">UEG 行政总署<span>CENTRAL COMMAND</span></div>
-    </div>
-    <div class="top-bar-center">
-      <span><span class="status-dot"></span>SYSTEM ONLINE</span>
-      <span id="clockDisplay">00:00:00</span>
-      <span id="dateDisplay">----/--/--</span>
-    </div>
-    <div class="top-bar-right">
-      <div class="top-bar-user">
-        <img src="/img/avatar.jpg" alt="user" onerror="this.style.display='none'">
-        <span>xzd1314</span>
-      </div>
-      <button class="logout-btn" id="logoutBtn">退出</button>
-    </div>
-  </div>
-
-  <!-- 侧边栏 -->
-  <div class="sidebar">
-    <div class="sidebar-section">导航</div>
-    <div class="nav-item active" data-page="dashboard">
-      <span class="nav-icon">◈</span><span>指挥仪表盘</span>
-    </div>
-    <div class="nav-item" data-page="engines">
-      <span class="nav-icon">⚙</span><span>行星发动机</span>
-    </div>
-    <div class="nav-item" data-page="personnel">
-      <span class="nav-icon">◉</span><span>人员管理</span>
-    </div>
-    <div class="nav-item" data-page="logs">
-      <span class="nav-icon">▤</span><span>系统日志</span><span class="nav-badge">LIVE</span>
-    </div>
-    <div class="sidebar-section" style="margin-top:24px">系统</div>
-    <div class="nav-item" data-page="settings">
-      <span class="nav-icon">⚒</span><span>系统设置</span>
-    </div>
-  </div>
-
-  <!-- 主内容 -->
-  <div class="main-content">
-    <!-- 仪表盘 -->
-    <div class="page active" id="page-dashboard">
-      <div class="page-header">
-        <div>
-          <div class="page-title">指挥仪表盘</div>
-          <div class="page-breadcrumb">HOME / DASHBOARD / OVERVIEW</div>
-        </div>
-      </div>
-      <div class="dashboard-grid">
-        <div class="hud-panel stat-card">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="stat-label">在役发动机</div>
-          <div class="stat-value" id="statEngines">10,048</div>
-          <div class="stat-change up">▲ 12 座本月新增</div>
-          <div class="stat-icon">⚙</div>
-          <div class="stat-bar" style="--bar-w:78%"></div>
-        </div>
-        <div class="hud-panel stat-card">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="stat-label">全球人口</div>
-          <div class="stat-value" id="statPop">35.2亿</div>
-          <div class="stat-change down">▼ 0.3% 环比</div>
-          <div class="stat-icon">◉</div>
-          <div class="stat-bar" style="--bar-w:52%"></div>
-        </div>
-        <div class="hud-panel stat-card">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="stat-label">地球航速</div>
-          <div class="stat-value" id="statSpeed">1,650</div>
-          <div class="stat-change up">▲ km/s 持续加速</div>
-          <div class="stat-icon">➤</div>
-          <div class="stat-bar" style="--bar-w:65%"></div>
-        </div>
-        <div class="hud-panel stat-card">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="stat-label">距半人马座</div>
-          <div class="stat-value" id="statDist">4.18</div>
-          <div class="stat-change up">▲ 光年 剩余航程</div>
-          <div class="stat-icon">✦</div>
-          <div class="stat-bar" style="--bar-w:35%"></div>
-        </div>
-      </div>
-      <div class="panel-row">
-        <div class="hud-panel panel">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="panel-header">
-            <div class="panel-title">系统资源</div>
-            <div class="panel-action">实时</div>
-          </div>
-          <div class="ring-container">
-            <div class="ring-item">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle class="ring-bg" cx="40" cy="40" r="35"/>
-                <circle class="ring-fill" cx="40" cy="40" r="35" id="ringCpu" stroke-dashoffset="55"/>
-                <text class="ring-value" x="40" y="44" transform="rotate(90 40 40)">75%</text>
-              </svg>
-              <div class="ring-label">CPU 负载</div>
-            </div>
-            <div class="ring-item">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle class="ring-bg" cx="40" cy="40" r="35"/>
-                <circle class="ring-fill" cx="40" cy="40" r="35" id="ringMem" stroke-dashoffset="88"/>
-                <text class="ring-value" x="40" y="44" transform="rotate(90 40 40)">60%</text>
-              </svg>
-              <div class="ring-label">内存使用</div>
-            </div>
-            <div class="ring-item">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle class="ring-bg" cx="40" cy="40" r="35"/>
-                <circle class="ring-fill" cx="40" cy="40" r="35" id="ringNet" stroke-dashoffset="33"/>
-                <text class="ring-value" x="40" y="44" transform="rotate(90 40 40)">85%</text>
-              </svg>
-              <div class="ring-label">网络吞吐</div>
-            </div>
-          </div>
-        </div>
-        <div class="hud-panel panel">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="panel-header">
-            <div class="panel-title">发动机功率分布</div>
-            <div class="panel-action">亚洲区</div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span class="pl-name">北京三号发动机</span><span class="pl-val">92%</span></div>
-            <div class="progress-track"><div class="progress-fill" style="width:92%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span class="pl-name">上海一号发动机</span><span class="pl-val">87%</span></div>
-            <div class="progress-track"><div class="progress-fill" style="width:87%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span class="pl-name">广州二号发动机</span><span class="pl-val">78%</span></div>
-            <div class="progress-track"><div class="progress-fill" style="width:78%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span class="pl-name">成都四号发动机</span><span class="pl-val">65%</span></div>
-            <div class="progress-track"><div class="progress-fill warn" style="width:65%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span class="pl-name">乌鲁木齐发动机</span><span class="pl-val">43%</span></div>
-            <div class="progress-track"><div class="progress-fill danger" style="width:43%"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-label"><span class="pl-name">哈尔滨发动机</span><span class="pl-val">81%</span></div>
-            <div class="progress-track"><div class="progress-fill" style="width:81%"></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel-row">
-        <div class="hud-panel panel">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="panel-header">
-            <div class="panel-title">系统终端</div>
-            <div class="panel-action" id="clearTerminal">清空</div>
-          </div>
-          <div class="terminal" id="terminalLog"></div>
-        </div>
-        <div class="hud-panel panel">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="panel-header">
-            <div class="panel-title">最近事件</div>
-            <div class="panel-action">全部</div>
-          </div>
-          <table class="data-table">
-            <thead><tr><th>时间</th><th>事件</th><th>状态</th></tr></thead>
-            <tbody>
-              <tr><td>14:32:05</td><td>北京三号 功率上调</td><td><span class="tag tag-online">完成</span></td></tr>
-              <tr><td>14:28:11</td><td>苏拉威西 维护请求</td><td><span class="tag tag-standby">处理中</span></td></tr>
-              <tr><td>14:15:42</td><td>全球通信链路检测</td><td><span class="tag tag-online">正常</span></td></tr>
-              <tr><td>13:58:20</td><td>乌鲁木齐 异常告警</td><td><span class="tag tag-offline">待处理</span></td></tr>
-              <tr><td>13:40:08</td><td>550W 量子核心同步</td><td><span class="tag tag-online">完成</span></td></tr>
-              <tr><td>13:22:55</td><td>地下城 三号 氧气检测</td><td><span class="tag tag-online">正常</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- 行星发动机 -->
-    <div class="page" id="page-engines">
-      <div class="page-header">
-        <div>
-          <div class="page-title">行星发动机</div>
-          <div class="page-breadcrumb">HOME / ENGINES / STATUS</div>
-        </div>
-      </div>
-      <div class="hud-panel panel" style="margin-bottom:20px">
-        <span class="corner-bl"></span><span class="corner-br"></span>
-        <div class="panel-header"><div class="panel-title">全球发动机状态</div><div class="panel-action">共 10,048 座</div></div>
-        <div class="engine-list" id="engineList"></div>
-      </div>
-    </div>
-
-    <!-- 人员管理 -->
-    <div class="page" id="page-personnel">
-      <div class="page-header">
-        <div>
-          <div class="page-title">人员管理</div>
-          <div class="page-breadcrumb">HOME / PERSONNEL / ROSTER</div>
-        </div>
-      </div>
-      <div class="hud-panel panel">
-        <span class="corner-bl"></span><span class="corner-br"></span>
-        <div class="panel-header"><div class="panel-title">在编人员</div><div class="panel-action">导出</div></div>
-        <table class="data-table">
-          <thead><tr><th>编号</th><th>姓名</th><th>职务</th><th>所属</th><th>状态</th></tr></thead>
-          <tbody>
-            <tr><td>UEG-0001</td><td>xzd1314</td><td>执政官</td><td>行政总署</td><td><span class="tag tag-online">在岗</span></td></tr>
-            <tr><td>UEG-0247</td><td>刘培强</td><td>航天员</td><td>领航员号</td><td><span class="tag tag-online">在岗</span></td></tr>
-            <tr><td>UEG-1024</td><td>王磊</td><td>救援队长</td><td>CN171-11</td><td><span class="tag tag-standby">待命</span></td></tr>
-            <tr><td>UEG-2048</td><td>韩子昂</td><td>运输车司机</td><td>北京分部</td><td><span class="tag tag-online">在岗</span></td></tr>
-            <tr><td>UEG-3301</td><td>李一一</td><td>工程师</td><td>技术总局</td><td><span class="tag tag-online">在岗</span></td></tr>
-            <tr><td>UEG-4096</td><td>何连科</td><td>电气工程师</td><td>苏拉威西</td><td><span class="tag tag-offline">失联</span></td></tr>
-            <tr><td>UEG-5120</td><td>周喆直</td><td>大使</td><td>联合政府</td><td><span class="tag tag-online">在岗</span></td></tr>
-            <tr><td>UEG-6144</td><td>郝晓晞</td><td>联络员</td><td>联合政府</td><td><span class="tag tag-online">在岗</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 系统日志 -->
-    <div class="page" id="page-logs">
-      <div class="page-header">
-        <div>
-          <div class="page-title">系统日志</div>
-          <div class="page-breadcrumb">HOME / LOGS / SYSTEM</div>
-        </div>
-      </div>
-      <div class="hud-panel panel">
-        <span class="corner-bl"></span><span class="corner-br"></span>
-        <div class="panel-header"><div class="panel-title">实时日志流</div><div class="panel-action" id="clearTerminal2">清空</div></div>
-        <div class="terminal" id="terminalLog2" style="max-height:60vh"></div>
-      </div>
-    </div>
-
-    <!-- 系统设置 -->
-    <div class="page" id="page-settings">
-      <div class="page-header">
-        <div>
-          <div class="page-title">系统设置</div>
-          <div class="page-breadcrumb">HOME / SETTINGS / CONFIG</div>
-        </div>
-      </div>
-      <div class="panel-row">
-        <div class="hud-panel panel">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="panel-header"><div class="panel-title">显示设置</div></div>
-          <div class="form-group"><label class="form-label">主题</label>
-            <select class="form-input" disabled><option>深空蓝 / Deep Void</option></select>
-          </div>
-          <div class="form-group"><label class="form-label">强调色</label>
-            <select class="form-input" disabled><option>遥测青 / Telemetry Cyan</option></select>
-          </div>
-          <div class="form-group"><label class="form-label">粒子密度</label>
-            <input type="range" class="form-input" id="particleDensity" min="20" max="120" value="60">
-          </div>
-        </div>
-        <div class="hud-panel panel">
-          <span class="corner-bl"></span><span class="corner-br"></span>
-          <div class="panel-header"><div class="panel-title">关于系统</div></div>
-          <div style="font-family:var(--font-mono);font-size:12px;line-height:2.2;color:var(--text-secondary)">
-            <div>系统版本：<span style="color:var(--telemetry-cyan)">UEG-OS v3.14.159</span></div>
-            <div>核心架构：<span style="color:var(--telemetry-cyan)">550W Quantum Core</span></div>
-            <div>部署时间：<span style="color:var(--telemetry-cyan)">2044.07.01</span></div>
-            <div>最后同步：<span style="color:var(--telemetry-cyan)" id="lastSync">刚刚</span></div>
-            <div>运行时长：<span style="color:var(--telemetry-cyan)" id="uptime">0天 0时 0分</span></div>
-            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--cyan-border)">
-              授权官员：<span style="color:var(--telemetry-cyan)">xzd1314</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div id="root"></div>
 
 <script>
-// ===== 粒子背景 =====
-(function(){
-  const canvas=document.getElementById('particles');
-  const ctx=canvas.getContext('2d');
-  let particles=[];
-  function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-  resize();addEventListener('resize',resize);
-  function initParticles(n){
-    particles=[];
-    for(let i=0;i<n;i++){
-      particles.push({
-        x:Math.random()*canvas.width,y:Math.random()*canvas.height,
-        vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,
-        r:Math.random()*1.5+0.5,a:Math.random()*0.5+0.2
-      });
-    }
-  }
-  initParticles(60);
-  window._setParticleDensity=function(n){initParticles(n)};
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    particles.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
-      if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(0,210,255,${p.a})`;ctx.fill();
-    });
-    // 连线
-    for(let i=0;i<particles.length;i++){
-      for(let j=i+1;j<particles.length;j++){
-        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
-          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
-          ctx.lineTo(particles[j].x,particles[j].y);
-          ctx.strokeStyle=`rgba(0,210,255,${0.08*(1-d/120)})`;ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
+// ===== 数据 =====
+const DB = {
+  population:{total:155,earthPopMillions:8650,cityPopMillions:6930,ratioUnderground:69.4,birthMonthly:1284000,growthRatePct:0.31,avgAge:31.2,
+    distribution:[
+      {name:'北京京西地下城',region:'东亚-京畿圈',pop:1280,status:'满负荷'},
+      {name:'深圳港地下城',region:'东亚-粤港澳',pop:1010,status:'满负荷'},
+      {name:'上海临港地下城',region:'东亚-长三角',pop:1205,status:'满负荷'},
+      {name:'莫斯科地下城',region:'欧罗巴联邦',pop:980,status:'运行中'},
+      {name:'巴黎地下城',region:'欧罗巴联邦',pop:860,status:'运行中'},
+      {name:'纽约地下城',region:'美利坚联盟',pop:1240,status:'满负荷'},
+      {name:'开罗地下城',region:'非洲联盟',pop:720,status:'运行中'},
+      {name:'新德里地下城',region:'南亚联盟',pop:890,status:'运行中'},
+      {name:'布宜诺斯艾利斯地下城',region:'南美联邦',pop:610,status:'运行中'},
+    ]},
+  engineMonitor:[
+    {id:'PT15',site:'亚洲东枢纽',type:'行星发动机',power:92,status:'稳定'},
+    {id:'PT22',site:'非洲近地台',type:'转向发动机',power:78,status:'稳定'},
+    {id:'PT31',site:'欧罗巴西岸',type:'行星发动机',power:64,status:'例行检修'},
+    {id:'PT47',site:'美洲大裂谷',type:'转向发动机',power:95,status:'稳定'},
+    {id:'PT58',site:'南极永昼区',type:'行星发动机',power:41,status:'负载偏低'},
+  ],
+  status:{totalEngines:12000,active:9892,maintenance:2108,fusionCoreTemp:'1570K'},
+  personnel:[
+    {id:'UEG-0001',name:'xzd1314',role:'执政官',dept:'行政总署',status:'在岗'},
+    {id:'UEG-0247',name:'刘培强',role:'航天员',dept:'领航员号',status:'在岗'},
+    {id:'UEG-1024',name:'王磊',role:'救援队长',dept:'CN171-11',status:'待命'},
+    {id:'UEG-2048',name:'韩子昂',role:'运输车司机',dept:'北京分部',status:'在岗'},
+    {id:'UEG-3301',name:'李一一',role:'工程师',dept:'技术总局',status:'在岗'},
+    {id:'UEG-4096',name:'何连科',role:'电气工程师',dept:'苏拉威西',status:'失联'},
+    {id:'UEG-5120',name:'周喆直',role:'大使',dept:'联合政府',status:'在岗'},
+    {id:'UEG-6144',name:'郝晓晞',role:'联络员',dept:'联合政府',status:'在岗'},
+  ],
+  notices:[
+    {time:'09:42',tag:'紧急',text:'月球危机告警进入第 284 天，全球疏散计划有序进行'},
+    {time:'08:15',tag:'通告',text:'行星发动机维护公告：亚太 31 号机进入例行检修'},
+    {time:'07:00',tag:'会议',text:'联合政府大会：第十六届特别会议将于明日召开'},
+    {time:'06:20',tag:'城务',text:'地下城管委会：北美区域剩余配额下周开放补录'},
+    {time:'昨日',tag:'人事',text:'行政总署任免公告：第三批轮岗官员名单已发布'},
+    {time:'昨日',tag:'安全',text:'全球安防等级维持黄色，各署请加强门禁核验'},
+  ],
+  services:[
+    {name:'官员身份核验',desc:'联合政府官员身份注册与权限开通',status:'在线'},
+    {name:'地下城入住申请',desc:'地表居民地下城配额申请与审批',status:'在线'},
+    {name:'发动机运维申报',desc:'行星发动机例行维护与故障申报',status:'在线'},
+    {name:'物资调配申请',desc:'跨区域生活物资与能源调配',status:'繁忙'},
+    {name:'公文流转',desc:'行政公文起草、审批与归档',status:'在线'},
+    {name:'紧急通讯',desc:'联合政府加密通讯频道接入',status:'在线'},
+  ],
+  laws:[
+    {code:'UEG-C-001',name:'地球联合政府宪章',date:'2044.03.12',status:'生效中'},
+    {code:'UEG-L-012',name:'行星发动机运营管理条例',date:'2044.06.01',status:'生效中'},
+    {code:'UEG-L-028',name:'地下城居住与分配法',date:'2045.01.15',status:'生效中'},
+    {code:'UEG-L-035',name:'全球人口疏散与安置法案',date:'2045.09.20',status:'修订中'},
+    {code:'UEG-L-041',name:'联合政府官员行为准则',date:'2046.02.08',status:'生效中'},
+    {code:'UEG-L-050',name:'月球危机应急处置法',date:'2046.11.30',status:'生效中'},
+  ],
+  shelters:[
+    {name:'北京京西地下城',capacity:'350万',occupancy:98,depth:'5.2km',status:'满负荷'},
+    {name:'上海临港地下城',capacity:'300万',occupancy:95,depth:'4.8km',status:'运行中'},
+    {name:'纽约地下城',capacity:'400万',occupancy:99,depth:'5.5km',status:'满负荷'},
+    {name:'莫斯科地下城',capacity:'220万',occupancy:82,depth:'4.5km',status:'运行中'},
+    {name:'领航员国际空间站',capacity:'2,400人',occupancy:87,depth:'近地轨道',status:'运行中'},
+  ],
+};
 
-// ===== 登录逻辑 =====
-const loginView=document.getElementById('login-view');
-const appView=document.getElementById('app-view');
-const loginBtn=document.getElementById('loginBtn');
-const loginError=document.getElementById('loginError');
-const usernameInput=document.getElementById('username');
-const passwordInput=document.getElementById('password');
-const togglePw=document.getElementById('togglePw');
-
-togglePw.addEventListener('click',()=>{
-  if(passwordInput.type==='password'){passwordInput.type='text';togglePw.textContent='隐藏'}
-  else{passwordInput.type='password';togglePw.textContent='显示'}
-});
-
-function doLogin(){
-  const u=usernameInput.value.trim();
-  const p=passwordInput.value;
-  if(u==='xzd1314'&&p==='123456'){
-    loginError.textContent='';
-    loginBtn.textContent='验证中...';
-    loginBtn.style.opacity='0.7';
-    setTimeout(()=>{
-      loginView.classList.add('hide');
-      setTimeout(()=>{
-        loginView.style.display='none';
-        appView.style.display='block';
-        startApp();
-      },500);
-    },600);
-  }else{
-    loginError.textContent='⚠ 识别码或身份密钥错误';
-    loginBtn.style.animation='none';
-    setTimeout(()=>{loginBtn.style.animation=''},10);
-  }
-}
-loginBtn.addEventListener('click',doLogin);
-passwordInput.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
-usernameInput.addEventListener('keydown',e=>{if(e.key==='Enter')passwordInput.focus()});
-
-// ===== 应用启动 =====
-let startTime=Date.now();
-function startApp(){
-  startTime=Date.now();
-  updateClock();
-  setInterval(updateClock,1000);
-  startTerminal();
-  renderEngines();
-  animateRings();
-}
-
-function updateClock(){
-  const now=new Date();
-  document.getElementById('clockDisplay').textContent=
-    now.toTimeString().slice(0,8);
-  document.getElementById('dateDisplay').textContent=
-    now.getFullYear()+'.'+String(now.getMonth()+1).padStart(2,'0')+'.'+String(now.getDate()).padStart(2,'0');
-  const diff=Math.floor((Date.now()-startTime)/1000);
-  const d=Math.floor(diff/86400),h=Math.floor((diff%86400)/3600),m=Math.floor((diff%3600)/60);
-  document.getElementById('uptime').textContent=`${d}天 ${h}时 ${m}分`;
-}
-
-// ===== 环形进度动画 =====
-function animateRings(){
-  setTimeout(()=>{
-    document.getElementById('ringCpu').style.strokeDashoffset='55';
-    document.getElementById('ringMem').style.strokeDashoffset='88';
-    document.getElementById('ringNet').style.strokeDashoffset='33';
-  },300);
-}
-
-// ===== 终端日志 =====
-const logMessages=[
-  {type:'info',text:'550W 量子核心自检完成'},
-  {type:'success',text:'全球发动机网络同步成功'},
-  {type:'info',text:'北京三号发动机功率上调至 92%'},
-  {type:'warn',text:'乌鲁木齐发动机温度偏高，建议检修'},
-  {type:'info',text:'领航员号空间站通信链路正常'},
-  {type:'success',text:'地下城三号氧气循环系统检测通过'},
-  {type:'info',text:'地球航向校准完成，偏差 0.003°'},
-  {type:'warn',text:'苏拉威西发动机维护请求已受理'},
-  {type:'info',text:'人口统计数据更新：35.2亿'},
-  {type:'success',text:'行政总署加密通道建立'},
-  {type:'info',text:'月球残骸监测系统在线'},
-  {type:'info',text:'小行星带穿越规划 v2.1 已加载'},
-  {type:'warn',text:'成都四号发动机效率下降至 65%'},
-  {type:'success',text:'全球联合政府例会纪要已归档'},
-  {type:'info',text:'MOSS 辅助决策模块运行正常'},
+// ===== 导航配置 =====
+const NAV = [
+  {group:'综合指挥',items:[
+    {label:'全局总览',en:'Overview',icon:'◈',page:'overview'},
+    {label:'人口与城市',en:'Population',icon:'◉',page:'population'},
+    {label:'行星发动机',en:'Engines',icon:'⚙',page:'engines'},
+    {label:'地下城与空间站',en:'Shelters',icon:'▣',page:'shelters'},
+  ]},
+  {group:'行政事务',items:[
+    {label:'政务办理',en:'Services',icon:'▤',page:'services'},
+    {label:'官员与人事',en:'Cadres',icon:'◐',page:'personnel'},
+    {label:'公文与通告',en:'Notices',icon:'◈',page:'notices'},
+  ]},
+  {group:'制度与数据',items:[
+    {label:'法律与宪章',en:'Laws',icon:'§',page:'laws'},
+    {label:'决策分析',en:'Analytics',icon:'▦',page:'analytics'},
+    {label:'系统终端',en:'Terminal',icon:'▸',page:'terminal'},
+    {label:'系统设置',en:'Settings',icon:'⚒',page:'settings'},
+  ]},
 ];
-let logIndex=0;
-function addTerminalLine(term,type,text){
-  const now=new Date();
-  const t=now.toTimeString().slice(0,8);
-  const line=document.createElement('div');
-  line.className='log-line';
-  const cls=type==='info'?'log-info':type==='warn'?'log-warn':type==='error'?'log-error':'log-success';
-  line.innerHTML=`<span class="log-time">[${t}]</span><span class="${cls}">${text}</span>`;
-  term.appendChild(line);
-  term.scrollTop=term.scrollHeight;
-  while(term.children.length>50)term.removeChild(term.firstChild);
-}
-function startTerminal(){
-  const t1=document.getElementById('terminalLog');
-  const t2=document.getElementById('terminalLog2');
-  function tick(){
-    const msg=logMessages[logIndex%logMessages.length];
-    addTerminalLine(t1,msg.type,msg.text);
-    addTerminalLine(t2,msg.type,msg.text);
-    logIndex++;
-  }
-  for(let i=0;i<6;i++)tick();
-  setInterval(tick,2500);
-  document.getElementById('clearTerminal').addEventListener('click',()=>{t1.innerHTML=''});
-  document.getElementById('clearTerminal2').addEventListener('click',()=>{t2.innerHTML=''});
+const PAGE_TITLES={overview:'全局总览',population:'人口与城市',engines:'行星发动机管控',shelters:'地下城与空间站',services:'政务办理',personnel:'官员与人事',notices:'公文与通告',laws:'法律与宪章',analytics:'决策分析',terminal:'系统终端',settings:'系统设置'};
+
+// ===== 倒计时 =====
+const CD_KEY='ueg_cd_target';
+function getTarget(){try{const v=localStorage.getItem(CD_KEY);if(v)return Number(v)}catch(e){}const t=Date.now()+(12*24+6)*3600*1000;try{localStorage.setItem(CD_KEY,String(t))}catch(e){}return t}
+let cdTarget=getTarget();
+
+// ===== 渲染登录页 =====
+function renderLogin(){
+  return `
+  <div class="login-wrap">
+    <div class="bg-photo"></div>
+    <div class="login-header">UNITED EARTH GOVERNMENT · 地球联合政府 · 行政总署登录网关</div>
+    <form class="login-card" id="loginForm">
+      <div class="login-head">
+        <img src="/img/ueg-logo.png" alt="地球联合政府徽标" class="ueg-logo" onerror="this.style.display='none'">
+        <h1>行政管理中心</h1>
+        <div class="sub">UEG ADMINISTRATION CONSOLE</div>
+        <div class="officer-row">
+          <img src="/img/avatar.jpg" alt="官员头像" class="officer-avatar" onerror="this.style.display='none'">
+          <div class="officer-name">执政官 · xzd1314</div>
+          <div class="officer-tag">Officer Identity Verified</div>
+        </div>
+      </div>
+      <div class="login-sep"></div>
+      <div class="login-error" id="loginError" style="display:none"></div>
+      <div class="field">
+        <label>识别码 / 用户名</label>
+        <input type="text" id="username" placeholder="请输入用户名" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>身份密钥 / 密码</label>
+        <div class="row">
+          <input type="password" id="password" placeholder="请输入密码" autocomplete="current-password" style="flex:1">
+          <button type="button" class="btn ghost sm" id="togglePw" style="white-space:nowrap">显示</button>
+        </div>
+      </div>
+      <button type="submit" class="btn primary login-btn">进入管理指挥舱</button>
+      <div class="login-foot">Authorized Personnel Only · 仅供授权官员 · 全程加密留痕</div>
+      <div class="login-tip">考核账号：用户名 <b>xzd1314</b> · 密码 <b>123456</b></div>
+    </form>
+    <div class="u550-wrap"><img src="/img/logo-550w.png" alt="550W" onerror="this.outerHTML='<span style=font-family:var(--font-din);font-size:28px;color:var(--text-faint);letter-spacing:4px>550W</span>'"></div>
+    <div class="login-header" style="margin-top:16px;margin-bottom:0">流浪地球计划 · MOVE THE EARTH · 使地球成为人类永远的家园</div>
+  </div>`;
 }
 
-// ===== 发动机列表 =====
-const engineData=[
-  {name:'北京三号发动机',power:'92%',status:'online'},
-  {name:'上海一号发动机',power:'87%',status:'online'},
-  {name:'广州二号发动机',power:'78%',status:'online'},
-  {name:'成都四号发动机',power:'65%',status:'warn'},
-  {name:'乌鲁木齐发动机',power:'43%',status:'offline'},
-  {name:'哈尔滨发动机',power:'81%',status:'online'},
-  {name:'苏拉威西发动机',power:'0%',status:'offline'},
-  {name:'东京发动机',power:'89%',status:'online'},
-  {name:'首尔发动机',power:'76%',status:'online'},
-  {name:'新加坡发动机',power:'90%',status:'online'},
-];
-function renderEngines(){
-  const list=document.getElementById('engineList');
-  list.innerHTML=engineData.map(e=>`
-    <div class="engine-item">
-      <span class="engine-indicator ${e.status}"></span>
-      <span class="engine-name">${e.name}</span>
-      <span class="engine-power">${e.power}</span>
-    </div>
+// ===== 渲染应用框架 =====
+function renderApp(activePage){
+  const navHtml=NAV.map(g=>`
+    <div class="nav-group">${g.group}</div>
+    ${g.items.map(it=>`<div class="nav-item ${activePage===it.page?'active':''}" data-page="${it.page}"><span class="nav-ico">${it.icon}</span><span>${it.label}</span></div>`).join('')}
   `).join('');
+  return `
+  <div class="app-shell">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><img src="/img/ueg-logo-full.png" alt="UEG" onerror="this.style.display='none'"></div>
+      <nav class="nav">${navHtml}</nav>
+      <div class="sidebar-foot">
+        <img class="avatar-img" src="/img/avatar.jpg" alt="官员头像" onerror="this.style.display='none'">
+        <div class="who">
+          <div class="org-en">UEG Administration</div>
+          <div class="name">xzd1314</div>
+          <div class="role">联合政府 · 行政总署</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn" title="退出登录">⏻</button>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <div class="row">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <div>
+            <div class="page-crumb">UEG / ${activePage}</div>
+            <div class="page-title">${PAGE_TITLES[activePage]||activePage}</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="clock"><div class="time" id="clockTime">00:00:00</div><div class="dt" id="clockDate">----/--/--</div></div></div>
+      </header>
+      <div class="content" id="pageContent">${renderPage(activePage)}</div>
+      <div class="footer">
+        <span>地球联合政府 · 行政管理中心 · 内部系统 v2.0</span>
+        <span>联合政府宪章 · 官员权限 · 仅供授权使用</span>
+      </div>
+    </div>
+  </div>`;
 }
 
-// ===== 导航切换 =====
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    item.classList.add('active');
-    const page=item.dataset.page;
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.getElementById('page-'+page).classList.add('active');
+// ===== 各页面渲染 =====
+function renderPage(page){
+  switch(page){
+    case 'overview':return renderOverview();
+    case 'population':return renderPopulation();
+    case 'engines':return renderEngines();
+    case 'shelters':return renderShelters();
+    case 'services':return renderServices();
+    case 'personnel':return renderPersonnel();
+    case 'notices':return renderNotices();
+    case 'laws':return renderLaws();
+    case 'analytics':return renderAnalytics();
+    case 'terminal':return renderTerminal();
+    case 'settings':return renderSettings();
+    default:return '<div class="panel">页面建设中</div>';
+  }
+}
+
+function renderOverview(){
+  const p=DB.population,s=DB.status;
+  return `
+  <div class="hero-panel">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <div class="hero-tag">◷ Next Milestone · 下一关键行动节点</div>
+        <div class="hero-title">行星发动机例行推力调整 · 北半球低温保护会商</div>
+        <div class="hero-desc">本次会商将评估低温期推力输出相位，关乎全球居民区供暖负荷与地下城能源调配，请各署提前提交预案。</div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="small muted">演示：</span>
+          <button class="btn ghost sm" onclick="setCd(3,5)">3天5小时</button>
+          <button class="btn ghost sm" onclick="setCd(12,6)">12天6小时</button>
+          <button class="btn ghost sm" onclick="setCd(45,0)">45天</button>
+        </div>
+      </div>
+      <div style="flex-shrink:0"><div class="countdown" id="countdown"></div></div>
+    </div>
+  </div>
+  <div class="grid grid-4">
+    <div class="stat-card"><div class="label">现役总人口</div><div class="value">${p.total}亿</div><div class="sub">地下城＋直辖区 <span class="trend up">+0.31%</span></div></div>
+    <div class="stat-card"><div class="label">运行发动机</div><div class="value">${s.active.toLocaleString()}</div><div class="sub">共 ${s.totalEngines.toLocaleString()} 台</div></div>
+    <div class="stat-card"><div class="label">维护作业</div><div class="value">${s.maintenance.toLocaleString()}</div><div class="sub">例行检修与负载调整</div></div>
+    <div class="stat-card"><div class="label">聚变核心温度</div><div class="value">${s.fusionCoreTemp}</div><div class="sub">符合运行曲线 <span class="trend up">稳定</span></div></div>
+  </div>
+  <div class="section-gap"></div>
+  <div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title"><span class="bar"></span><h3>关键运行指标</h3></div>
+      <div class="metric-row"><span class="m-label">地下城入住率</span><span class="m-val">${p.ratioUnderground}</span><span class="m-unit">%</span></div>
+      <div class="metric-row"><span class="m-label">疏散计划完成度</span><span class="m-val">72</span><span class="m-unit">%</span></div>
+      <div class="metric-row"><span class="m-label">转向发动机平均出力</span><span class="m-val">${DB.engineMonitor[1].power}</span><span class="m-unit">%</span></div>
+      <div class="metric-row"><span class="m-label">行星推力加速度</span><span class="m-val">2.1×10⁻⁷</span><span class="m-unit">m/s²</span><span class="m-note">目标 3.4×10⁻⁶</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="bar"></span><h3>全局通联广播</h3></div>
+      ${DB.engineMonitor.map(e=>`
+        <div class="row" style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span class="mono" style="width:50px;color:var(--text-muted);font-size:12px">${e.id}</span>
+          <span class="grow" style="font-size:13px">${e.site}</span>
+          <div class="progress" style="width:80px"><div style="width:${e.power}%"></div></div>
+          <span class="badge ${e.status==='稳定'?'green':e.status==='例行检修'?'gold':'red'}" style="margin-left:10px">${e.status}</span>
+        </div>`).join('')}
+      <div class="section-gap"></div>
+      <div class="panel-title"><span class="bar"></span><h3>最新通告</h3></div>
+      ${DB.notices.slice(0,4).map(n=>`
+        <div class="notice-item">
+          <span class="n-time">${n.time}</span>
+          <span class="badge ${n.tag==='紧急'?'red':n.tag==='通告'?'blue':n.tag==='会议'?'gold':'gray'}">${n.tag}</span>
+          <span class="n-text">${n.text}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+  <div class="section-gap"></div>
+  <div class="plan-section">
+    <div class="ps-head"><span class="bar"></span><h3>联合政府 · 关键发展规划</h3><span class="en">Key Development Programs</span></div>
+    <div class="plan-grid">
+      <div class="plan-item"><img src="/img/art-space-elevator.png" alt="太空电梯" onerror="this.style.background='#ddd'"><div class="ti">太空电梯 · 天地往返通道</div></div>
+      <div class="plan-item"><img src="/img/art-moon-plan.png" alt="逐月计划" onerror="this.style.background='#ddd'"><div class="ti">逐月计划 · 远景能源战略</div></div>
+      <div class="plan-item"><img src="/img/art-scc.png" alt="飞控中心" onerror="this.style.background='#ddd'"><div class="ti">UEG-SCC · 飞控中心</div></div>
+    </div>
+  </div>`;
+}
+
+function renderPopulation(){
+  const p=DB.population;
+  return `
+  <div class="grid grid-4" style="margin-bottom:20px">
+    <div class="stat-card"><div class="label">地球总人口</div><div class="value">${p.total}亿</div><div class="sub">年增长 ${p.growthRatePct}%</div></div>
+    <div class="stat-card"><div class="label">地下城人口</div><div class="value">${(p.cityPopMillions/100).toFixed(1)}亿</div><div class="sub">占比 ${p.ratioUnderground}%</div></div>
+    <div class="stat-card"><div class="label">地表人口</div><div class="value">${(p.earthPopMillions/100).toFixed(1)}亿</div><div class="sub">各直辖市运作</div></div>
+    <div class="stat-card"><div class="label">平均年龄</div><div class="value">${p.avgAge}</div><div class="sub">本月新生儿 ${(p.birthMonthly/10000).toFixed(0)}万</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="bar"></span><h3>全球地下城人口分布</h3><span class="sub">Population Distribution</span></div>
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>地下城名称</th><th>所属区域</th><th>人口(万)</th><th>状态</th></tr></thead>
+      <tbody>${p.distribution.map(d=>`<tr><td>${d.name}</td><td>${d.region}</td><td class="mono">${d.pop}</td><td><span class="badge ${d.status==='满负荷'?'gold':'green'}">${d.status}</span></td></tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function renderEngines(){
+  return `
+  <div class="grid grid-4" style="margin-bottom:20px">
+    <div class="stat-card"><div class="label">发动机总数</div><div class="value">${DB.status.totalEngines.toLocaleString()}</div><div class="sub">行星+转向</div></div>
+    <div class="stat-card"><div class="label">在线运行</div><div class="value">${DB.status.active.toLocaleString()}</div><div class="sub"><span class="trend up">${(DB.status.active/DB.status.totalEngines*100).toFixed(1)}%</span></div></div>
+    <div class="stat-card"><div class="label">维护中</div><div class="value">${DB.status.maintenance.toLocaleString()}</div><div class="sub">例行检修</div></div>
+    <div class="stat-card"><div class="label">聚变核心</div><div class="value">${DB.status.fusionCoreTemp}</div><div class="sub">温度正常</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="bar"></span><h3>发动机实时监控</h3><span class="sub">Engine Monitor</span></div>
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>编号</th><th>站点</th><th>类型</th><th>出力</th><th>状态</th></tr></thead>
+      <tbody>${DB.engineMonitor.map(e=>`<tr>
+        <td class="mono">${e.id}</td><td>${e.site}</td><td>${e.type}</td>
+        <td><div class="row"><div class="progress" style="flex:1;max-width:120px"><div style="width:${e.power}%"></div></div><span class="mono" style="margin-left:8px;font-size:12px;color:var(--gold-bright)">${e.power}%</span></div></td>
+        <td><span class="badge ${e.status==='稳定'?'green':e.status==='例行检修'?'gold':'red'}">${e.status}</span></td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function renderShelters(){
+  return `
+  <div class="grid grid-3" style="margin-bottom:20px">
+    ${DB.shelters.map(s=>`<div class="panel" style="padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div style="font-size:15px;font-weight:700">${s.name}</div>
+        <span class="badge ${s.status==='满负荷'?'gold':'green'}">${s.status}</span>
+      </div>
+      <div style="font-family:var(--font-en);font-size:11px;color:var(--text-faint);letter-spacing:0.1em;margin-bottom:10px">深度 ${s.depth}</div>
+      <div style="margin-bottom:6px;font-size:12px;color:var(--text-muted)">设计容量：${s.capacity}</div>
+      <div class="row" style="margin-bottom:4px"><div class="progress" style="flex:1"><div style="width:${s.occupancy}%"></div></div><span class="mono" style="font-size:12px;color:var(--gold-bright);margin-left:8px">${s.occupancy}%</span></div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderServices(){
+  return `<div class="grid grid-2">${DB.services.map(s=>`<div class="panel" style="padding:22px;cursor:pointer;transition:transform .3s,border-color .3s" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='rgba(212,186,138,0.25)'" onmouseout="this.style.transform='';this.style.borderColor='var(--border)'">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:16px;font-weight:700">${s.name}</div>
+      <span class="badge ${s.status==='在线'?'green':'gold'}">${s.status}</span>
+    </div>
+    <div style="font-size:13px;color:var(--text-muted);line-height:1.7">${s.desc}</div>
+    <div style="margin-top:14px"><button class="btn ghost sm">进入办理 →</button></div>
+  </div>`).join('')}</div>`;
+}
+
+function renderPersonnel(){
+  return `<div class="panel">
+    <div class="panel-title"><span class="bar"></span><h3>在编官员名册</h3><span class="sub">Personnel Roster</span></div>
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>编号</th><th>姓名</th><th>职务</th><th>所属</th><th>状态</th></tr></thead>
+      <tbody>${DB.personnel.map(p=>`<tr><td class="mono">${p.id}</td><td>${p.name}</td><td>${p.role}</td><td>${p.dept}</td><td><span class="badge ${p.status==='在岗'?'green':p.status==='待命'?'gold':'red'}">${p.status}</span></td></tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function renderNotices(){
+  return `<div class="panel" style="max-width:800px">
+    <div class="panel-title"><span class="bar"></span><h3>公文与通告</h3><span class="sub">Notices & Announcements</span></div>
+    ${DB.notices.map(n=>`<div class="notice-item" style="padding:14px 0">
+      <span class="n-time" style="width:60px">${n.time}</span>
+      <span class="badge ${n.tag==='紧急'?'red':n.tag==='通告'?'blue':n.tag==='会议'?'gold':n.tag==='人事'?'blue':'gray'}" style="flex-shrink:0">${n.tag}</span>
+      <span class="n-text" style="font-size:14px;color:var(--text)">${n.text}</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderLaws(){
+  return `<div class="panel">
+    <div class="panel-title"><span class="bar"></span><h3>法律与宪章</h3><span class="sub">Laws & Charter</span></div>
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>编号</th><th>名称</th><th>颁布日期</th><th>状态</th></tr></thead>
+      <tbody>${DB.laws.map(l=>`<tr><td class="mono" style="color:var(--gold)">${l.code}</td><td style="font-weight:600">${l.name}</td><td class="mono">${l.date}</td><td><span class="badge ${l.status==='生效中'?'green':'gold'}">${l.status}</span></td></tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function renderAnalytics(){
+  return `
+  <div class="grid grid-3" style="margin-bottom:20px">
+    <div class="panel"><div class="panel-title"><span class="bar"></span><h3>人口趋势</h3></div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:140px;padding:10px 0">
+        ${[45,58,52,67,72,78,85,92,88,95,100,108].map((v,i)=>`<div style="flex:1;height:${v}%;background:linear-gradient(180deg,var(--gold-bright),rgba(212,186,138,0.2));border-radius:3px 3px 0 0;transition:height .6s"></div>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-en);font-size:10px;color:var(--text-faint)"><span>1月</span><span>6月</span><span>12月</span></div>
+    </div>
+    <div class="panel"><div class="panel-title"><span class="bar"></span><h3>发动机出力</h3></div>
+      <div style="display:flex;flex-direction:column;gap:14px;padding:6px 0">
+        ${DB.engineMonitor.map(e=>`<div><div class="row" style="margin-bottom:4px"><span style="font-size:12px;flex:1">${e.site}</span><span class="mono" style="font-size:11px;color:var(--gold-bright)">${e.power}%</span></div><div class="progress"><div style="width:${e.power}%"></div></div></div>`).join('')}
+      </div>
+    </div>
+    <div class="panel"><div class="panel-title"><span class="bar"></span><h3>区域人口占比</h3></div>
+      <div style="padding:10px 0">
+        ${[{name:'东亚',v:38},{name:'欧洲',v:22},{name:'北美',v:18},{name:'南亚',v:12},{name:'其他',v:10}].map(r=>`<div class="metric-row"><span class="m-label">${r.name}</span><span class="m-val" style="font-size:16px">${r.v}%</span></div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="bar"></span><h3>决策分析摘要</h3><span class="sub">Analytics Summary</span></div>
+    <div style="font-size:13.5px;color:var(--text-muted);line-height:2">
+      <p>• 全球人口增长率维持在 0.31%，地下城入住率已达 69.4%，预计 18 个月内突破 75%。</p>
+      <p>• 行星发动机平均出力 74%，南极永昼区负载偏低，建议增派运维团队。</p>
+      <p>• 月球危机告警持续第 284 天，疏散计划完成度 72%，需加速北美与南亚区域安置。</p>
+      <p>• 聚变核心温度稳定在 1570K，符合运行曲线，下一推力调整窗口建议在低温会商后启动。</p>
+    </div>
+  </div>`;
+}
+
+function renderTerminal(){
+  return `<div class="panel">
+    <div class="panel-title"><span class="bar"></span><h3>系统终端</h3><span class="sub">System Terminal · LIVE</span></div>
+    <div class="terminal-box" id="terminalBox"></div>
+  </div>`;
+}
+
+function renderSettings(){
+  return `<div class="grid grid-2">
+    <div class="panel">
+      <div class="panel-title"><span class="bar"></span><h3>显示设置</h3></div>
+      <div class="field"><label>主题方案</label><select disabled><option>沉稳蓝金 · Deep Navy & Gold</option></select></div>
+      <div class="field"><label>字体渲染</label><select disabled><option>中黑 + DIN + Rajdhani</option></select></div>
+      <div class="field"><label>背景模糊</label><select><option>标准 (16px)</option><option>强 (24px)</option><option>关闭</option></select></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="bar"></span><h3>关于系统</h3></div>
+      <div style="font-size:13px;line-height:2.2;color:var(--text-muted)">
+        <div>系统版本：<span style="color:var(--gold-bright);font-family:var(--font-en)">UEG-OS v2.0</span></div>
+        <div>核心架构：<span style="color:var(--gold-bright)">550W Quantum Core</span></div>
+        <div>部署时间：<span style="color:var(--gold-bright)">2044.07.01</span></div>
+        <div>运行时长：<span style="color:var(--gold-bright)" id="uptime">0天 0时 0分</span></div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">授权官员：<span style="color:var(--gold-bright)">xzd1314</span></div>
+      </div>
+      <div style="margin-top:16px"><button class="btn ghost sm" onclick="if(confirm('确认重置所有数据？')){localStorage.clear();location.reload()}">重置系统数据</button></div>
+    </div>
+  </div>`;
+}
+
+// ===== 应用逻辑 =====
+let currentPage='overview';
+let startTime=Date.now();
+let terminalInterval=null;
+
+function mount(html){
+  document.getElementById('root').innerHTML=html;
+}
+
+function showLogin(){
+  mount(renderLogin());
+  const form=document.getElementById('loginForm');
+  const err=document.getElementById('loginError');
+  document.getElementById('togglePw').addEventListener('click',function(){
+    const pw=document.getElementById('password');
+    if(pw.type==='password'){pw.type='text';this.textContent='隐藏'}else{pw.type='password';this.textContent='显示'}
   });
-});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    const u=document.getElementById('username').value.trim();
+    const p=document.getElementById('password').value;
+    if(u==='xzd1314'&&p==='123456'){
+      err.style.display='none';
+      showApp();
+    }else{
+      err.textContent='⚠ 识别码或身份密钥错误';
+      err.style.display='block';
+    }
+  });
+}
 
-// ===== 退出登录 =====
-document.getElementById('logoutBtn').addEventListener('click',()=>{
-  appView.style.display='none';
-  loginView.style.display='flex';
-  loginView.classList.remove('hide');
-  loginBtn.textContent='进入管理指挥舱';
-  loginBtn.style.opacity='1';
-  usernameInput.value='';passwordInput.value='';
-});
+function showApp(){
+  currentPage='overview';
+  mount(renderApp(currentPage));
+  bindAppEvents();
+  startClock();
+  startCountdown();
+  if(currentPage==='terminal')startTerminal();
+}
 
-// ===== 粒子密度滑块 =====
-document.getElementById('particleDensity')?.addEventListener('input',e=>{
-  if(window._setParticleDensity)window._setParticleDensity(parseInt(e.target.value));
-});
+function bindAppEvents(){
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    item.addEventListener('click',function(){
+      const page=this.dataset.page;
+      if(page===currentPage)return;
+      currentPage=page;
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelector('.page-crumb').textContent='UEG / '+page;
+      document.querySelector('.page-title').textContent=PAGE_TITLES[page]||page;
+      document.getElementById('pageContent').innerHTML=renderPage(page);
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarBackdrop').classList.remove('show');
+      if(page==='terminal')startTerminal();else if(terminalInterval){clearInterval(terminalInterval);terminalInterval=null}
+    });
+  });
+  document.getElementById('logoutBtn').addEventListener('click',()=>{
+    if(terminalInterval){clearInterval(terminalInterval);terminalInterval=null}
+    showLogin();
+  });
+  const mt=document.getElementById('menuToggle');
+  if(mt)mt.addEventListener('click',()=>{
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarBackdrop').classList.toggle('show');
+  });
+  document.getElementById('sidebarBackdrop').addEventListener('click',function(){
+    document.getElementById('sidebar').classList.remove('open');
+    this.classList.remove('show');
+  });
+}
+
+function startClock(){
+  function tick(){
+    const now=new Date();
+    const t=document.getElementById('clockTime');
+    const d=document.getElementById('clockDate');
+    if(t)t.textContent=now.toTimeString().slice(0,8);
+    if(d)d.textContent=now.getFullYear()+'.'+String(now.getMonth()+1).padStart(2,'0')+'.'+String(now.getDate()).padStart(2,'0');
+    const up=document.getElementById('uptime');
+    if(up){const diff=Math.floor((Date.now()-startTime)/1000);up.textContent=Math.floor(diff/86400)+'天 '+Math.floor((diff%86400)/3600)+'时 '+Math.floor((diff%3600)/60)+'分'}
+  }
+  tick();setInterval(tick,1000);
+}
+
+function startCountdown(){
+  function tick(){
+    const el=document.getElementById('countdown');
+    if(!el)return;
+    let diff=Math.max(0,cdTarget-Date.now());
+    const d=Math.floor(diff/86400000);diff%=86400000;
+    const h=Math.floor(diff/3600000);diff%=3600000;
+    const m=Math.floor(diff/60000);diff%=60000;
+    const s=Math.floor(diff/1000);
+    el.innerHTML=`
+      <div class="cd-cell"><div class="cd-num">${String(d).padStart(2,'0')}</div><div class="cd-label">Days</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-cell"><div class="cd-num">${String(h).padStart(2,'0')}</div><div class="cd-label">Hours</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-cell"><div class="cd-num">${String(m).padStart(2,'0')}</div><div class="cd-label">Min</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-cell"><div class="cd-num">${String(s).padStart(2,'0')}</div><div class="cd-label">Sec</div></div>`;
+  }
+  tick();setInterval(tick,1000);
+}
+
+window.setCd=function(days,hrs){
+  cdTarget=Date.now()+((days*24+hrs)*3600+120)*1000;
+  try{localStorage.setItem(CD_KEY,String(cdTarget))}catch(e){}
+};
+
+const TERMINAL_LINES=[
+  {t:'info',m:'550W 量子核心自检完成'},
+  {t:'ok',m:'全球发动机网络同步成功'},
+  {t:'info',m:'北京三号发动机功率上调至 92%'},
+  {t:'warn',m:'乌鲁木齐发动机温度偏高，建议检修'},
+  {t:'info',m:'领航员号空间站通信链路正常'},
+  {t:'ok',m:'地下城三号氧气循环系统检测通过'},
+  {t:'info',m:'地球航向校准完成，偏差 0.003°'},
+  {t:'warn',m:'苏拉威西发动机维护请求已受理'},
+  {t:'info',m:'人口统计数据更新：155亿'},
+  {t:'ok',m:'行政总署加密通道建立'},
+  {t:'info',m:'月球残骸监测系统在线'},
+  {t:'info',m:'小行星带穿越规划 v2.1 已加载'},
+];
+let termIdx=0;
+function startTerminal(){
+  const box=document.getElementById('terminalBox');
+  if(!box)return;
+  if(terminalInterval)clearInterval(terminalInterval);
+  box.innerHTML='';
+  function add(){
+    const line=TERMINAL_LINES[termIdx%TERMINAL_LINES.length];
+    const now=new Date();
+    const cls=line.t==='info'?'t-info':line.t==='warn'?'t-warn':line.t==='err'?'t-err':'t-ok';
+    const div=document.createElement('div');
+    div.className='t-line';
+    div.innerHTML=`<span class="t-time">[${now.toTimeString().slice(0,8)}]</span><span class="${cls}">${line.m}</span>`;
+    box.appendChild(div);
+    box.scrollTop=box.scrollHeight;
+    while(box.children.length>40)box.removeChild(box.firstChild);
+    termIdx++;
+  }
+  for(let i=0;i<5;i++)add();
+  terminalInterval=setInterval(add,2200);
+}
+
+// ===== 启动 =====
+showLogin();
 </script>
 </body>
 </html>
