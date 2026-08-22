@@ -328,7 +328,7 @@
     .visitor-count .count-num{font-weight:600;color:var(--text-secondary)}
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body data-theme="dark" data-lang="zh">
   <!-- Turnstile Overlay -->
@@ -680,11 +680,13 @@
     // Ensure callback is globally accessible for Turnstile (string callback name)
     window.onLinkVerifySuccess=onLinkVerifySuccess;
 
-    // ========== Feedback System (GitHub Issues as backend) ==========
-    var GH_OWNER='xzd1314';
-    var GH_REPO='xzd1314.github.io';
-    var GH_TOKEN=['g','h','p','_','Y','i','Y','9','3','f','K','h','l','f','B','L','6','R','L','A','P','4','x','O','O','N','m','3','Q','p','Q','P','W','K','1','L','6','t','u','s'].join('');
-    var GH_LABEL='feedback';
+    // ========== Feedback System (Supabase backend) ==========
+    var SUPABASE_URL='https://bvtcdknpvpyeyqvotmrk.supabase.co';
+    var SUPABASE_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
+    var supabaseClient=null;
+    if(window.supabase){
+      supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    }
 
     // Get or create user ID (stored in localStorage)
     function getUserId(){
@@ -696,7 +698,7 @@
       return uid;
     }
 
-    // Submit feedback as GitHub Issue
+    // Submit feedback to Supabase
     function submitFeedback(){
       var input=document.getElementById('feedbackInput');
       var status=document.getElementById('feedbackStatus');
@@ -706,89 +708,66 @@
         if(status){status.textContent='请输入内容';status.className='feedback-status error';}
         return;
       }
+      if(!supabaseClient){
+        if(status){status.textContent='服务未就绪，请稍后重试';status.className='feedback-status error';}
+        return;
+      }
       if(btn){btn.disabled=true;}
       if(status){status.textContent='提交中...';status.className='feedback-status';}
       var uid=getUserId();
-      var title='[反馈] '+uid+': '+text.substring(0,50);
-      var body='**用户ID:** '+uid+'\n\n**时间:** '+new Date().toLocaleString('zh-CN')+'\n\n**反馈内容:**\n'+text;
-      fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues',{
-        method:'POST',
-        headers:{
-          'Authorization':'token '+GH_TOKEN,
-          'Content-Type':'application/json',
-          'Accept':'application/vnd.github.v3+json'
-        },
-        body:JSON.stringify({title:title,body:body,labels:[GH_LABEL]})
-      }).then(function(r){
-        if(r.ok){
+      supabaseClient.from('feedback').insert({user_id:uid,content:text}).then(function(result){
+        if(result.error){
+          console.error('[Feedback] insert error:',result.error);
+          if(status){status.textContent='提交失败，请稍后重试';status.className='feedback-status error';}
+        }else{
           if(status){status.textContent='提交成功！我会尽快回复';status.className='feedback-status success';}
           if(input){input.value='';}
-        }else{
-          return r.text().then(function(t){throw new Error(t);});
         }
       }).catch(function(e){
+        console.error('[Feedback] catch error:',e);
         if(status){status.textContent='提交失败，请稍后重试';status.className='feedback-status error';}
       }).finally(function(){
         if(btn){btn.disabled=false;}
       });
     }
 
-    // Check for replies from GitHub Issues comments
+    // Check for replies from Supabase
     function checkReplies(){
+      if(!supabaseClient){console.log('[Feedback] supabase not ready');return;}
       var uid=getUserId();
-      var lastRead=parseInt(localStorage.getItem('feedback_last_read_comment')||'0',10);
-      console.log('[Feedback] checkReplies start, uid='+uid+', lastRead='+lastRead);
-      // List issues with feedback label (state=all to include closed issues)
-      fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues?labels='+GH_LABEL+'&state=all&per_page=100&sort=updated&direction=desc',{
-        headers:{'Accept':'application/vnd.github.v3+json'}
-      }).then(function(r){
-        console.log('[Feedback] issues API status='+r.status);
-        return r.json();
-      }).then(function(issues){
-        console.log('[Feedback] issues count='+(Array.isArray(issues)?issues.length:'not array'));
-        if(!Array.isArray(issues))return;
-        // Find issue for this user (title contains uid)
-        var userIssue=null;
-        for(var i=0;i<issues.length;i++){
-          console.log('[Feedback] issue #'+issues[i].number+' title='+issues[i].title);
-          if(issues[i].title && issues[i].title.indexOf(uid)!==-1){
-            userIssue=issues[i];
-            break;
+      var lastRead=parseInt(localStorage.getItem('feedback_last_read_id')||'0',10);
+      console.log('[Feedback] checkReplies, uid='+uid+', lastRead='+lastRead);
+      supabaseClient.from('feedback')
+        .select('id,reply,content,created_at')
+        .eq('user_id',uid)
+        .not('reply','is',null)
+        .order('created_at',{ascending:false})
+        .limit(1)
+        .then(function(result){
+          if(result.error){
+            console.error('[Feedback] query error:',result.error);
+            return;
           }
-        }
-        if(!userIssue){console.log('[Feedback] no issue found for uid='+uid);return;}
-        console.log('[Feedback] found issue #'+userIssue.number);
-        // Get comments
-        return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues/'+userIssue.number+'/comments',{
-          headers:{'Accept':'application/vnd.github.v3+json'}
-        }).then(function(r){
-          console.log('[Feedback] comments API status='+r.status);
-          return r.json();
-        }).then(function(comments){
-          console.log('[Feedback] comments count='+(Array.isArray(comments)?comments.length:'not array'));
-          if(!Array.isArray(comments)||comments.length===0)return;
-          var latestComment=comments[comments.length-1];
-          console.log('[Feedback] latest comment id='+latestComment.id+' body='+latestComment.body);
-          if(latestComment.id>lastRead){
-            console.log('[Feedback] showing reply popup');
-            showReplyPopup(latestComment.body,latestComment.id);
-          }else{
-            console.log('[Feedback] comment already read, skip');
+          console.log('[Feedback] query result count='+(result.data?result.data.length:0));
+          if(result.data&&result.data.length>0){
+            var latest=result.data[0];
+            console.log('[Feedback] latest reply id='+latest.id+' reply='+latest.reply);
+            if(latest.id>lastRead){
+              showReplyPopup(latest.reply,latest.id);
+            }
           }
-        });
-      }).catch(function(e){console.error('[Feedback] error:',e);});
+        }).catch(function(e){console.error('[Feedback] catch error:',e);});
     }
 
     // Show reply popup
-    function showReplyPopup(content,commentId){
+    function showReplyPopup(content,recordId){
       var overlay=document.getElementById('replyOverlay');
       var popup=document.getElementById('replyPopup');
       var contentEl=document.getElementById('replyContent');
       if(contentEl){contentEl.textContent=content;}
       if(overlay){overlay.classList.add('show');}
       if(popup){popup.classList.add('show');}
-      // Mark as read when shown
-      if(commentId){localStorage.setItem('feedback_last_read_comment',String(commentId));}
+      if(recordId){localStorage.setItem('feedback_last_read_id',String(recordId));}
     }
 
     // Close reply popup
