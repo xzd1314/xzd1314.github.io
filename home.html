@@ -737,33 +737,46 @@
     function checkReplies(){
       var uid=getUserId();
       var lastRead=parseInt(localStorage.getItem('feedback_last_read_comment')||'0',10);
-      // List issues with feedback label
-      fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues?labels='+GH_LABEL+'&per_page=100&sort=updated&direction=desc',{
+      console.log('[Feedback] checkReplies start, uid='+uid+', lastRead='+lastRead);
+      // List issues with feedback label (state=all to include closed issues)
+      fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues?labels='+GH_LABEL+'&state=all&per_page=100&sort=updated&direction=desc',{
         headers:{'Accept':'application/vnd.github.v3+json'}
-      }).then(function(r){return r.json();}).then(function(issues){
+      }).then(function(r){
+        console.log('[Feedback] issues API status='+r.status);
+        return r.json();
+      }).then(function(issues){
+        console.log('[Feedback] issues count='+(Array.isArray(issues)?issues.length:'not array'));
         if(!Array.isArray(issues))return;
         // Find issue for this user (title contains uid)
         var userIssue=null;
         for(var i=0;i<issues.length;i++){
+          console.log('[Feedback] issue #'+issues[i].number+' title='+issues[i].title);
           if(issues[i].title && issues[i].title.indexOf(uid)!==-1){
             userIssue=issues[i];
             break;
           }
         }
-        if(!userIssue)return;
+        if(!userIssue){console.log('[Feedback] no issue found for uid='+uid);return;}
+        console.log('[Feedback] found issue #'+userIssue.number);
         // Get comments
         return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues/'+userIssue.number+'/comments',{
           headers:{'Accept':'application/vnd.github.v3+json'}
-        }).then(function(r){return r.json();}).then(function(comments){
+        }).then(function(r){
+          console.log('[Feedback] comments API status='+r.status);
+          return r.json();
+        }).then(function(comments){
+          console.log('[Feedback] comments count='+(Array.isArray(comments)?comments.length:'not array'));
           if(!Array.isArray(comments)||comments.length===0)return;
-          // Find the latest comment (my reply) - skip if it's the user's own (but all issues are created by me via token, so comments are my replies)
           var latestComment=comments[comments.length-1];
+          console.log('[Feedback] latest comment id='+latestComment.id+' body='+latestComment.body);
           if(latestComment.id>lastRead){
-            // Show reply popup
+            console.log('[Feedback] showing reply popup');
             showReplyPopup(latestComment.body,latestComment.id);
+          }else{
+            console.log('[Feedback] comment already read, skip');
           }
         });
-      }).catch(function(e){/* silent fail */});
+      }).catch(function(e){console.error('[Feedback] error:',e);});
     }
 
     // Show reply popup
