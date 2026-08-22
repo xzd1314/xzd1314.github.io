@@ -221,7 +221,56 @@
       .cookie-btn{padding:9px 22px;font-size:13px}
     }
     @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:8px 14px;font-size:13px}}
+    /* ---------- Back to Top ---------- */
+    .back-to-top{
+      position:fixed;bottom:28px;right:28px;z-index:90;
+      width:44px;height:44px;border-radius:50%;
+      background:var(--card-bg);border:1px solid var(--border);
+      color:var(--text);cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;visibility:hidden;transform:translateY(10px);
+      transition:all .3s ease;
+      box-shadow:0 4px 20px rgba(0,0,0,0.15);
+    }
+    .back-to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+    .back-to-top:hover{background:var(--text);color:var(--bg);border-color:var(--text);transform:translateY(-2px)}
+    .back-to-top svg{width:18px;height:18px}
+    @media(max-width:480px){.back-to-top{bottom:20px;right:20px;width:40px;height:40px}}
+    /* ---------- Link Verification Modal ---------- */
+    .verify-modal{
+      position:fixed;inset:0;z-index:9998;
+      background:rgba(0,0,0,0.75);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;visibility:hidden;transition:all .3s ease;
+      padding:20px;
+    }
+    .verify-modal.show{opacity:1;visibility:visible}
+    .verify-modal-box{
+      background:var(--card-bg);border:1px solid var(--border);
+      border-radius:16px;padding:36px 28px;text-align:center;
+      max-width:380px;width:100%;
+      transform:scale(0.95);transition:transform .3s ease;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    }
+    .verify-modal.show .verify-modal-box{transform:scale(1)}
+    .verify-modal-icon{width:48px;height:48px;margin:0 auto 16px;color:var(--accent,#f97316)}
+    .verify-modal-icon svg{width:100%;height:100%}
+    .verify-modal-title{font-size:18px;font-weight:700;margin-bottom:6px}
+    .verify-modal-desc{font-size:13px;color:var(--text-secondary,#888);margin-bottom:24px;line-height:1.6}
+    .verify-modal .cf-turnstile{display:flex;justify-content:center;margin-bottom:16px}
+    .verify-modal-cancel{
+      background:none;border:none;color:var(--text-secondary,#888);
+      font-size:13px;cursor:pointer;font-family:inherit;
+      padding:6px 16px;border-radius:100px;transition:all .2s ease;
+    }
+    .verify-modal-cancel:hover{color:var(--text);background:var(--card-hover)}
+    /* ---------- Visitor Counter ---------- */
+    .visitor-count{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted)}
+    .visitor-count svg{width:12px;height:12px;opacity:.6}
+    .visitor-count .count-num{font-weight:600;color:var(--text-secondary)}
   </style>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body data-theme="dark" data-lang="zh">
@@ -392,8 +441,30 @@
 
   <footer class="footer">
     <span>&copy; 2026 xzd1314. <span class="zh">版权所有</span><span class="en">All rights reserved</span>.</span>
+    <span class="visitor-count">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span class="zh">访问量</span><span class="en">Visits</span>: <span class="count-num" id="visitorCount">--</span>
+    </span>
     <span><span class="zh">用代码精心打造</span><span class="en">Crafted with code</span>.</span>
   </footer>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- Link Verification Modal -->
+  <div class="verify-modal" id="linkVerifyModal">
+    <div class="verify-modal-box">
+      <div class="verify-modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3 class="verify-modal-title"><span class="zh">需要验证</span><span class="en">Verification Required</span></h3>
+      <p class="verify-modal-desc"><span class="zh">请完成人机验证以继续</span><span class="en">Please complete human verification to continue</span></p>
+      <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
+      <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
+    </div>
+  </div>
 
   <!-- Cookie Banner -->
   <div class="cookie-banner" id="cookieBanner">
@@ -426,6 +497,90 @@
       var overlay=document.getElementById('turnstileOverlay');
       if(overlay){overlay.classList.add('hidden');setTimeout(function(){overlay.style.display='none';},500);}
     }
+    // ---------- Bot Detection (allow search engines) ----------
+    function isBot(){
+      var ua=navigator.userAgent.toLowerCase();
+      var bots=['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
+      for(var i=0;i<bots.length;i++){if(ua.indexOf(bots[i])!==-1)return true;}
+      return false;
+    }
+
+    // ---------- Back to Top Button ----------
+    (function(){
+      var btn=document.getElementById('backToTop');
+      if(!btn)return;
+      window.addEventListener('scroll',function(){
+        if(window.scrollY>400){btn.classList.add('show');}else{btn.classList.remove('show');}
+      });
+      btn.addEventListener('click',function(){
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    })();
+
+    // ---------- Visitor Counter ----------
+    (function(){
+      var el=document.getElementById('visitorCount');
+      if(!el)return;
+      try{
+        fetch('https://api.counterapi.dev/v1/xzd1314/github.io/')
+          .then(function(r){return r.json();})
+          .then(function(d){if(d&&d.count!==undefined){el.textContent=d.count.toLocaleString();}})
+          .catch(function(){el.textContent='---';});
+      }catch(e){el.textContent='---';}
+    })();
+
+    // ---------- Link Verification Modal ----------
+    var pendingLinkUrl=null;
+    var pendingLinkIsDownload=false;
+    function openLinkVerifyModal(url,isDownload){
+      if(isBot()){return true;}
+      pendingLinkUrl=url;
+      pendingLinkIsDownload=isDownload;
+      var modal=document.getElementById('linkVerifyModal');
+      if(modal){modal.classList.add('show');}
+      try{if(window.turnstile){window.turnstile.reset();}}catch(e){}
+      return false;
+    }
+    function closeLinkVerifyModal(){
+      var modal=document.getElementById('linkVerifyModal');
+      if(modal){modal.classList.remove('show');}
+      pendingLinkUrl=null;
+    }
+    function onLinkVerifySuccess(token){
+      if(pendingLinkUrl){
+        if(pendingLinkIsDownload){
+          var a=document.createElement('a');
+          a.href=pendingLinkUrl;a.download='';a.style.display='none';
+          document.body.appendChild(a);a.click();document.body.removeChild(a);
+        }else{
+          window.open(pendingLinkUrl,'_blank','noopener');
+        }
+      }
+      setTimeout(closeLinkVerifyModal,300);
+    }
+    document.addEventListener('DOMContentLoaded',function(){
+      var cancelBtn=document.getElementById('linkVerifyCancel');
+      if(cancelBtn){cancelBtn.addEventListener('click',closeLinkVerifyModal);}
+      var modal=document.getElementById('linkVerifyModal');
+      if(modal){modal.addEventListener('click',function(e){if(e.target===modal)closeLinkVerifyModal();});}
+      // Intercept external links
+      var links=document.querySelectorAll('a[target="_blank"]');
+      links.forEach(function(link){
+        link.addEventListener('click',function(e){
+          e.preventDefault();
+          openLinkVerifyModal(link.href,false);
+        });
+      });
+      // Intercept download links
+      var dlLinks=document.querySelectorAll('a[download]');
+      dlLinks.forEach(function(link){
+        link.addEventListener('click',function(e){
+          e.preventDefault();
+          openLinkVerifyModal(link.href,true);
+        });
+      });
+    });
+
     // ---------- Load preferences from localStorage (always works, regardless of cookie choice) ----------
     (function(){
       try{

@@ -132,6 +132,12 @@
   </div>
 
   <script>
+    // Allow search engine crawlers to bypass verification
+    (function(){
+      var ua=navigator.userAgent.toLowerCase();
+      var bots=['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
+      for(var i=0;i<bots.length;i++){if(ua.indexOf(bots[i])!==-1){window.location.replace('home.html');return;}}
+    })();
     function onVerifySuccess(token){
       document.getElementById('verifyState').classList.add('hide');
       document.getElementById('successState').classList.add('show');
