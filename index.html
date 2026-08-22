@@ -133,6 +133,25 @@
       <p class="redirect-text">正在进入网站<strong id="countdown">2</strong>秒...</p>
     </div>
   </div>
+  <script>
+    // Fallback: poll for Turnstile response in case callback doesn't fire
+    (function() {
+      var fired = false;
+      var check = setInterval(function() {
+        if(fired) return;
+        var input = document.querySelector('input[name="cf-turnstile-response"]');
+        if(input && input.value) {
+          fired = true;
+          clearInterval(check);
+          if(typeof window.onVerifySuccess === 'function') {
+            window.onVerifySuccess(input.value);
+          }
+        }
+      }, 300);
+      // Stop polling after 5 minutes
+      setTimeout(function() { clearInterval(check); }, 300000);
+    })();
+  </script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>
