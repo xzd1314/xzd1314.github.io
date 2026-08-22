@@ -462,7 +462,7 @@
       </div>
       <h3 class="verify-modal-title"><span class="zh">需要验证</span><span class="en">Verification Required</span></h3>
       <p class="verify-modal-desc"><span class="zh">请完成人机验证以继续</span><span class="en">Please complete human verification to continue</span></p>
-      <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
+      <div id="linkTurnstile"></div>
       <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
     </div>
   </div>
@@ -533,13 +533,27 @@
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
+    function renderLinkTurnstile(){
+      var container=document.getElementById('linkTurnstile');
+      if(!container||!window.turnstile)return;
+      container.innerHTML='';
+      var theme=document.body.getAttribute('data-theme')==='light'?'light':'dark';
+      try{
+        window.turnstile.render('#linkTurnstile',{
+          sitekey:'0x4AAAAAAEYslAufS7xZQ-Jn',
+          callback:'onLinkVerifySuccess',
+          theme:theme
+        });
+      }catch(e){}
+    }
     function openLinkVerifyModal(url,isDownload){
       if(isBot()){return true;}
       pendingLinkUrl=url;
       pendingLinkIsDownload=isDownload;
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
-      try{if(window.turnstile){window.turnstile.reset();}}catch(e){}
+      if(window.turnstile){renderLinkTurnstile();}
+      else{var tries=0;var check=setInterval(function(){tries++;if(window.turnstile){clearInterval(check);renderLinkTurnstile();}if(tries>50)clearInterval(check);},100);}
       return false;
     }
     function closeLinkVerifyModal(){
@@ -649,6 +663,8 @@
         themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
       }
       try{localStorage.setItem('site_theme',document.body.getAttribute('data-theme'))}catch(e){}
+      var modal=document.getElementById('linkVerifyModal');
+      if(modal&&modal.classList.contains('show')){setTimeout(renderLinkTurnstile,50);}
     });
 
     // ---------- Language toggle (saved to localStorage always) ----------
