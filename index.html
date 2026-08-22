@@ -3,30 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xzd1314 — 个人网站</title>
+  <title>xzd1314 — 个人网站 / Personal Website</title>
   <link rel="icon" type="image/jpeg" href="assets/avatar.jpg" />
   <link rel="apple-touch-icon" href="assets/avatar.jpg" />
   <style>
+    /* ---------- Theme Variables ---------- */
+    :root {
+      --bg: #ffffff;
+      --text: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-muted: #86868b;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.18);
+      --card-bg: rgba(0, 0, 0, 0.02);
+      --card-hover: rgba(0, 0, 0, 0.04);
+      --nav-bg: rgba(255, 255, 255, 0.85);
+      --accent-glow: rgba(138, 100, 255, 0.15);
+      --scrollbar-track: #f5f5f7;
+      --scrollbar-thumb: #c7c7cc;
+      --scrollbar-thumb-hover: #a1a1a6;
+      --hero-bg: #ffffff;
+      --about-bg: linear-gradient(180deg, #ffffff 0%, #f0f2f5 100%);
+      --skills-bg: linear-gradient(180deg, #f0f2f5 0%, #ebe8f0 100%);
+      --projects-bg: linear-gradient(180deg, #ebe8f0 0%, #e8efee 100%);
+      --contact-bg: linear-gradient(180deg, #e8efee 0%, #ffffff 100%);
+      --footer-bg: #ffffff;
+    }
+
+    [data-theme="dark"] {
+      --bg: #000000;
+      --text: #ffffff;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      --card-bg: rgba(255, 255, 255, 0.01);
+      --card-hover: rgba(255, 255, 255, 0.03);
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --accent-glow: rgba(138, 100, 255, 0.25);
+      --scrollbar-track: #000000;
+      --scrollbar-thumb: #333333;
+      --scrollbar-thumb-hover: #444444;
+      --hero-bg: #000000;
+      --about-bg: linear-gradient(180deg, #000000 0%, #060612 100%);
+      --skills-bg: linear-gradient(180deg, #060612 0%, #0c0612 100%);
+      --projects-bg: linear-gradient(180deg, #0c0612 0%, #060c0c 100%);
+      --contact-bg: linear-gradient(180deg, #060c0c 0%, #000000 100%);
+      --footer-bg: #000000;
+    }
+
     /* ---------- Reset & Base ---------- */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-      background: #000;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      transition: background 0.4s ease, color 0.4s ease;
     }
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; display: block; }
 
+    /* ---------- Bilingual ---------- */
+    .lang-sep { opacity: 0.4; margin: 0 0.4em; font-weight: 400; }
+    [data-lang="en"] .zh { display: none; }
+    [data-lang="en"] .lang-sep { display: none; }
+    [data-lang="zh"] .en { display: none; }
+    [data-lang="zh"] .lang-sep { display: none; }
+
     /* ---------- Scrollbar ---------- */
     ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #000; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #444; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+    ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
     /* ---------- Navigation ---------- */
     .nav {
@@ -38,37 +91,41 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 28px 48px;
-      mix-blend-mode: difference;
-      transition: padding 0.3s ease, background 0.3s ease;
+      padding: 20px 48px;
+      transition: padding 0.3s ease, background 0.3s ease, border-color 0.3s ease;
     }
     .nav.scrolled {
-      padding: 18px 48px;
-      background: rgba(0, 0, 0, 0.85);
+      padding: 14px 48px;
+      background: var(--nav-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      mix-blend-mode: normal;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .nav-logo {
       font-weight: 900;
       font-size: 20px;
       letter-spacing: -0.02em;
-      color: #fff;
+      color: var(--text);
     }
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 36px;
+      gap: 32px;
       list-style: none;
     }
     .nav-links a {
       font-size: 14px;
       font-weight: 500;
-      color: #fff;
+      color: var(--text-secondary);
       position: relative;
-      transition: opacity 0.2s ease;
+      transition: color 0.2s ease;
     }
+    .nav-links a:hover { color: var(--text); }
     .nav-links a::after {
       content: '';
       position: absolute;
@@ -76,16 +133,43 @@
       bottom: -4px;
       width: 0;
       height: 1px;
-      background: #fff;
+      background: var(--text);
       transition: width 0.3s ease;
     }
     .nav-links a:hover::after { width: 100%; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover {
+      background: var(--card-hover);
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+    .nav-btn svg { width: 15px; height: 15px; }
 
     .nav-mobile-toggle {
       display: none;
       background: none;
       border: none;
-      color: #fff;
+      color: var(--text);
       cursor: pointer;
       padding: 8px;
     }
@@ -93,7 +177,7 @@
       display: block;
       width: 22px;
       height: 1.5px;
-      background: #fff;
+      background: var(--text);
       margin: 5px 0;
       transition: all 0.3s ease;
     }
@@ -105,6 +189,7 @@
       align-items: center;
       padding: 120px 48px;
       position: relative;
+      transition: background 0.4s ease;
     }
     .section-inner {
       width: 100%;
@@ -114,7 +199,7 @@
     .section-label {
       font-size: 13px;
       font-weight: 500;
-      color: #666;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.15em;
       margin-bottom: 28px;
@@ -125,30 +210,21 @@
       line-height: 1.05;
       letter-spacing: -0.03em;
       margin-bottom: 32px;
+      color: var(--text);
     }
     .section-desc {
       font-size: 17px;
       line-height: 1.7;
-      color: #888;
+      color: var(--text-secondary);
       max-width: 620px;
     }
 
-    /* ---------- Section gradient backgrounds ---------- */
-    #hero {
-      background: #000000;
-    }
-    #about {
-      background: linear-gradient(180deg, #000000 0%, #060612 100%);
-    }
-    #skills {
-      background: linear-gradient(180deg, #060612 0%, #0c0612 100%);
-    }
-    #projects {
-      background: linear-gradient(180deg, #0c0612 0%, #060c0c 100%);
-    }
-    #contact {
-      background: linear-gradient(180deg, #060c0c 0%, #000000 100%);
-    }
+    /* ---------- Section backgrounds ---------- */
+    #hero { background: var(--hero-bg); }
+    #about { background: var(--about-bg); }
+    #skills { background: var(--skills-bg); }
+    #projects { background: var(--projects-bg); }
+    #contact { background: var(--contact-bg); }
 
     /* ---------- Hero Section ---------- */
     #hero {
@@ -161,17 +237,22 @@
       align-items: center;
       gap: 40px;
     }
+    .avatar-link {
+      display: inline-block;
+      border-radius: 50%;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
     .avatar-wrap {
       width: 160px;
       height: 160px;
       border-radius: 50%;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
       transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
     }
-    .avatar-wrap:hover {
+    .avatar-link:hover .avatar-wrap {
       transform: scale(1.05);
-      box-shadow: 0 20px 60px rgba(138, 100, 255, 0.25);
+      box-shadow: 0 20px 60px var(--accent-glow);
     }
     .avatar-wrap img {
       width: 100%;
@@ -183,10 +264,11 @@
       font-size: clamp(64px, 12vw, 180px);
       line-height: 1;
       letter-spacing: -0.04em;
+      color: var(--text);
     }
     .hero-slogan {
       font-size: 18px;
-      color: #666;
+      color: var(--text-secondary);
       letter-spacing: 0.02em;
     }
     .scroll-indicator {
@@ -198,7 +280,7 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
-      color: #555;
+      color: var(--text-muted);
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
@@ -207,7 +289,7 @@
     .scroll-indicator .line {
       width: 1px;
       height: 40px;
-      background: linear-gradient(to bottom, #555, transparent);
+      background: linear-gradient(to bottom, var(--text-muted), transparent);
     }
     @keyframes float {
       0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -215,9 +297,7 @@
     }
 
     /* ---------- About Section ---------- */
-    #about .section-inner {
-      max-width: 900px;
-    }
+    #about .section-inner { max-width: 900px; }
 
     /* ---------- Skills Section ---------- */
     #skills .section-inner {
@@ -237,9 +317,9 @@
     }
     .skill-card {
       padding: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.01);
+      background: var(--card-bg);
       transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
       position: relative;
       overflow: hidden;
@@ -251,33 +331,33 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
       transform: translateX(-100%);
       transition: transform 0.6s ease;
     }
     .skill-card:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--border-hover);
+      background: var(--card-hover);
       transform: translateY(-2px);
     }
-    .skill-card:hover::before {
-      transform: translateX(100%);
-    }
+    .skill-card:hover::before { transform: translateX(100%); }
     .skill-icon {
       width: 36px;
       height: 36px;
       margin-bottom: 16px;
-      opacity: 0.8;
+      opacity: 0.7;
+      color: var(--text);
     }
     .skill-name {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
       margin-bottom: 8px;
       letter-spacing: -0.01em;
+      color: var(--text);
     }
     .skill-desc {
       font-size: 14px;
-      color: #777;
+      color: var(--text-secondary);
       line-height: 1.6;
     }
 
@@ -297,11 +377,12 @@
       gap: 40px;
       align-items: center;
       padding: 36px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid var(--border);
       transition: all 0.3s ease;
-      cursor: pointer;
       position: relative;
+    }
+    .project-item:last-child {
+      border-bottom: 1px solid var(--border);
     }
     .project-item::before {
       content: '';
@@ -310,7 +391,7 @@
       top: 0;
       bottom: 0;
       width: 0;
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--card-hover);
       transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: -1;
     }
@@ -319,42 +400,69 @@
     .project-num {
       font-size: 14px;
       font-weight: 800;
-      color: #555;
+      color: var(--text-muted);
     }
     .project-info h3 {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: -0.02em;
       margin-bottom: 8px;
+      color: var(--text);
     }
     .project-info p {
       font-size: 15px;
-      color: #777;
+      color: var(--text-secondary);
+    }
+    .project-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
     .project-tag {
       font-size: 12px;
-      color: #888;
+      color: var(--text-secondary);
       padding: 6px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--border);
       border-radius: 100px;
       letter-spacing: 0.05em;
       white-space: nowrap;
     }
+    .project-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .project-btn:hover {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+      transform: translateY(-1px);
+    }
+    .project-btn svg { width: 15px; height: 15px; }
 
     /* ---------- Contact Section ---------- */
     #contact {
       justify-content: center;
       text-align: center;
     }
-    #contact .section-inner {
-      max-width: 700px;
-    }
+    #contact .section-inner { max-width: 700px; }
     .contact-cta {
       font-size: clamp(40px, 6vw, 72px);
       font-weight: 900;
       line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 48px;
+      color: var(--text);
     }
     .contact-links {
       display: flex;
@@ -365,17 +473,17 @@
     .contact-link {
       font-size: 18px;
       font-weight: 500;
-      color: #999;
+      color: var(--text-secondary);
       display: inline-flex;
       align-items: center;
       gap: 12px;
       padding: 8px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--border);
       transition: all 0.3s ease;
     }
     .contact-link:hover {
-      color: #fff;
-      border-color: #fff;
+      color: var(--text);
+      border-color: var(--text);
       transform: translateY(-1px);
     }
     .contact-link svg {
@@ -389,13 +497,14 @@
     /* ---------- Footer ---------- */
     .footer {
       padding: 40px 48px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #444;
+      color: var(--text-muted);
       font-size: 13px;
-      background: #000;
+      background: var(--footer-bg);
+      transition: background 0.4s ease;
     }
 
     /* ---------- Reveal Animations ---------- */
@@ -419,8 +528,8 @@
     }
 
     @media (max-width: 1024px) {
-      .nav { padding: 24px 32px; }
-      .nav.scrolled { padding: 16px 32px; }
+      .nav { padding: 18px 32px; }
+      .nav.scrolled { padding: 12px 32px; }
       .section { padding: 100px 32px; }
       #skills .section-inner { grid-template-columns: 1fr; gap: 40px; }
       #skills .section-left { position: static; }
@@ -428,8 +537,8 @@
     }
 
     @media (max-width: 768px) {
-      .nav { padding: 20px 24px; }
-      .nav.scrolled { padding: 14px 24px; }
+      .nav { padding: 16px 24px; }
+      .nav.scrolled { padding: 10px 24px; }
       .nav-links {
         position: fixed;
         top: 0;
@@ -438,7 +547,7 @@
         height: 100vh;
         flex-direction: column;
         justify-content: center;
-        background: rgba(0, 0, 0, 0.98);
+        background: var(--nav-bg);
         backdrop-filter: blur(20px);
         transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         gap: 32px;
@@ -453,6 +562,8 @@
       .nav-mobile-toggle.active span:nth-child(3) {
         transform: translateY(-6.5px) rotate(-45deg);
       }
+      .nav-btn { padding: 6px 10px; font-size: 12px; }
+      .nav-btn .btn-text { display: none; }
 
       .section { padding: 80px 24px; min-height: auto; }
       #hero { min-height: 100vh; }
@@ -462,7 +573,11 @@
         grid-template-columns: 40px 1fr;
         gap: 20px;
       }
-      .project-tag { display: none; }
+      .project-actions {
+        grid-column: 2;
+        justify-content: flex-start;
+        margin-top: 8px;
+      }
       .project-info h3 { font-size: 22px; }
 
       .footer {
@@ -474,8 +589,8 @@
     }
 
     @media (max-width: 480px) {
-      .nav { padding: 16px 20px; }
-      .nav.scrolled { padding: 12px 20px; }
+      .nav { padding: 14px 20px; }
+      .nav.scrolled { padding: 10px 20px; }
       .section { padding: 60px 20px; }
       .hero-title { font-size: clamp(48px, 14vw, 80px); }
       .section-title { font-size: clamp(36px, 10vw, 64px); }
@@ -484,36 +599,62 @@
       .skill-card { padding: 20px; }
       .project-info h3 { font-size: 18px; }
       .contact-link { font-size: 16px; }
+      .project-btn { padding: 8px 14px; font-size: 13px; }
     }
   </style>
 </head>
-<body>
+<body data-theme="light" data-lang="bilingual">
 
   <!-- Navigation -->
   <nav class="nav" id="nav">
-    <a href="#hero" class="nav-logo">xzd1314.</a>
+    <div class="nav-left">
+      <a href="#hero" class="nav-logo">xzd1314.</a>
+    </div>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#hero">首页</a></li>
-      <li><a href="#about">关于</a></li>
-      <li><a href="#skills">技能</a></li>
-      <li><a href="#projects">项目</a></li>
-      <li><a href="#contact">联系</a></li>
+      <li><a href="#hero"><span class="zh">家页面</span><span class="lang-sep">/</span><span class="en">Home</span></a></li>
+      <li><a href="#about"><span class="zh">关于</span><span class="lang-sep">/</span><span class="en">About</span></a></li>
+      <li><a href="#skills"><span class="zh">技巧</span><span class="lang-sep">/</span><span class="en">Skills</span></a></li>
+      <li><a href="#projects"><span class="zh">项目</span><span class="lang-sep">/</span><span class="en">Projects</span></a></li>
+      <li><a href="#contact"><span class="zh">接触</span><span class="lang-sep">/</span><span class="en">Contact</span></a></li>
     </ul>
-    <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <div class="nav-right">
+      <button class="nav-btn" id="langBtn" aria-label="切换语言">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M2 12h20" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+        <span class="btn-text" id="langBtnText">双语</span>
+      </button>
+      <button class="nav-btn" id="themeBtn" aria-label="切换主题">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+        <span class="btn-text" id="themeBtnText">浅色</span>
+      </button>
+      <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="section" id="hero">
     <div class="section-inner">
-      <div class="avatar-wrap reveal">
-        <img src="assets/avatar.jpg" alt="xzd1314 头像" />
-      </div>
+      <a href="https://github.com/xzd1314" target="_blank" rel="noopener" class="avatar-link reveal">
+        <div class="avatar-wrap">
+          <img src="assets/avatar.jpg" alt="xzd1314 avatar" />
+        </div>
+      </a>
       <h1 class="hero-title reveal reveal-delay-1">xzd1314.</h1>
-      <p class="hero-slogan reveal reveal-delay-2">用代码构建数字世界。</p>
+      <p class="hero-slogan reveal reveal-delay-2">
+        <span class="zh">使用代码去建造数字的世界</span>
+        <span class="lang-sep">/</span>
+        <span class="en">Use code to build the digital world</span>
+      </p>
     </div>
     <div class="scroll-indicator">
       <span>SCROLL</span>
@@ -524,9 +665,13 @@
   <!-- About Section -->
   <section class="section" id="about">
     <div class="section-inner">
-      <p class="section-label reveal">关于</p>
+      <p class="section-label reveal">
+        <span class="zh">关于</span><span class="lang-sep">/</span><span class="en">About</span>
+      </p>
       <h2 class="section-title reveal reveal-delay-1">
-        这里什么都没有。
+        <span class="zh">这里是没有任何东西</span>
+        <span class="lang-sep">/</span>
+        <span class="en">There is nothing here</span>
       </h2>
     </div>
   </section>
@@ -535,13 +680,18 @@
   <section class="section" id="skills">
     <div class="section-inner">
       <div class="section-left">
-        <p class="section-label reveal">技能</p>
+        <p class="section-label reveal">
+          <span class="zh">技巧</span><span class="lang-sep">/</span><span class="en">Skills</span>
+        </p>
         <h2 class="section-title reveal reveal-delay-1">
-          我会的<br />一些事。
+          <span class="zh">一些事情我是能够做的</span>
+          <span class="lang-sep">/</span>
+          <span class="en">Some things I can do</span>
         </h2>
         <p class="section-desc reveal reveal-delay-2">
-          从游戏开发到网页设计，从脚本自动化到工具制作。
-          工具在变，但创造的乐趣从未改变。
+          <span class="zh">从游戏的开发到网页的设计，从脚本的自动化到工具的制作。工具是正在改变的，但是创造的乐趣是从未有过改变的。</span>
+          <span class="lang-sep">/</span>
+          <span class="en">From game development to web design, from script automation to tool making. Tools are changing, but the joy of creation has never changed.</span>
         </p>
       </div>
       <div class="skill-cards">
@@ -550,16 +700,28 @@
             <path d="M16 18l6-6-6-6" />
             <path d="M8 6l-6 6 6 6" />
           </svg>
-          <div class="skill-name">前端开发</div>
-          <p class="skill-desc">HTML / CSS / JavaScript，用代码把想法变成看得见的界面。</p>
+          <div class="skill-name">
+            <span class="zh">前面的末端开发</span><span class="lang-sep">/</span><span class="en">Frontend Dev</span>
+          </div>
+          <p class="skill-desc">
+            <span class="zh">HTML / CSS / JavaScript，使用代码去把想法变成可以被看见的界面。</span>
+            <span class="lang-sep">/</span>
+            <span class="en">HTML / CSS / JavaScript, use code to turn ideas into visible interfaces.</span>
+          </p>
         </div>
         <div class="skill-card reveal reveal-delay-2">
           <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="2" y="2" width="20" height="20" rx="2" />
             <path d="M7 14l3-3 4 4 3-5" />
           </svg>
-          <div class="skill-name">Roblox 开发</div>
-          <p class="skill-desc">Lua 脚本、游戏机制设计，在 Roblox 宇宙里建造属于自己的世界。</p>
+          <div class="skill-name">
+            <span class="zh">Roblox 的开发</span><span class="lang-sep">/</span><span class="en">Roblox Dev</span>
+          </div>
+          <p class="skill-desc">
+            <span class="zh">Lua 的脚本、游戏的机制设计，在 Roblox 的宇宙里面去建造属于自己的世界。</span>
+            <span class="lang-sep">/</span>
+            <span class="en">Lua scripts, game mechanics design, build your own world in the Roblox universe.</span>
+          </p>
         </div>
         <div class="skill-card reveal reveal-delay-3">
           <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -568,7 +730,11 @@
             <path d="M2 12l10 5 10-5" />
           </svg>
           <div class="skill-name">Python</div>
-          <p class="skill-desc">自动化脚本、数据处理、爬虫，让重复的事情交给程序。</p>
+          <p class="skill-desc">
+            <span class="zh">自动化的脚本、数据的处理、爬虫，去让重复的事情交给程序。</span>
+            <span class="lang-sep">/</span>
+            <span class="en">Automation scripts, data processing, web crawlers, let repetitive tasks be handed over to programs.</span>
+          </p>
         </div>
       </div>
     </div>
@@ -578,20 +744,66 @@
   <section class="section" id="projects">
     <div class="section-inner">
       <div>
-        <p class="section-label reveal">项目</p>
+        <p class="section-label reveal">
+          <span class="zh">项目</span><span class="lang-sep">/</span><span class="en">Projects</span>
+        </p>
         <h2 class="section-title reveal reveal-delay-1">
-          做过的<br />一些东西。
+          <span class="zh">一些东西我已经做了</span>
+          <span class="lang-sep">/</span>
+          <span class="en">Some things I have done</span>
         </h2>
       </div>
       <div class="project-list">
-        <a href="https://github.com/xzd1314/mishanguc-forge" target="_blank" rel="noopener" class="project-item reveal">
+        <div class="project-item reveal">
           <span class="project-num">01</span>
           <div class="project-info">
-            <h3>迷上城建 Forge 移植</h3>
-            <p>Mishanguc mod for Forge 1.19.4 — 迷上城建模组 Forge 版本移植</p>
+            <h3>
+              <span class="zh">迷上城建造的 Forge 移植</span>
+              <span class="lang-sep">/</span>
+              <span class="en">Mishanguc Forge Port</span>
+            </h3>
+            <p>
+              <span class="zh">Mishanguc mod for Forge 1.19.4 — 迷上城的建模组的 Forge 版本的移植</span>
+              <span class="lang-sep">/</span>
+              <span class="en">Mishanguc mod for Forge 1.19.4 — Mishanguc modeling team Forge version port</span>
+            </p>
           </div>
-          <span class="project-tag">Java / Forge</span>
-        </a>
+          <div class="project-actions">
+            <span class="project-tag">Java / Forge</span>
+            <a href="https://github.com/xzd1314/mishanguc-forge" target="_blank" rel="noopener" class="project-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
+              <span class="zh">去查看</span><span class="lang-sep">/</span><span class="en">View</span>
+            </a>
+          </div>
+        </div>
+        <div class="project-item reveal reveal-delay-1">
+          <span class="project-num">02</span>
+          <div class="project-info">
+            <h3>
+              <span class="zh">猪来了 nextbotV3</span>
+              <span class="lang-sep">/</span>
+              <span class="en">Zhulaile nextbotV3</span>
+            </h3>
+            <p>
+              <span class="zh">何意味游戏</span>
+              <span class="lang-sep">/</span>
+              <span class="en">What does it mean game</span>
+            </p>
+          </div>
+          <div class="project-actions">
+            <span class="project-tag">Android</span>
+            <a href="https://xzd1314.github.io/downloads/zhulaile-nextbot-v3.apk" download class="project-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span class="zh">去下载</span><span class="lang-sep">/</span><span class="en">Download</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -599,9 +811,13 @@
   <!-- Contact Section -->
   <section class="section" id="contact">
     <div class="section-inner">
-      <p class="section-label reveal">联系</p>
+      <p class="section-label reveal">
+        <span class="zh">接触</span><span class="lang-sep">/</span><span class="en">Contact</span>
+      </p>
       <h2 class="contact-cta reveal reveal-delay-1">
-        想聊聊的话，<br />随时找我。
+        <span class="zh">如果你想要去聊天，任何时间找到我</span>
+        <span class="lang-sep">/</span>
+        <span class="en">If you want to chat, find me anytime</span>
       </h2>
       <div class="contact-links">
         <a href="mailto:robloxxzd1314@163.com" class="contact-link reveal reveal-delay-2">
@@ -629,11 +845,17 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <span>&copy; 2026 xzd1314. All rights reserved.</span>
-    <span>Crafted with code.</span>
+    <span>&copy; 2026 xzd1314. <span class="zh">所有权利是被保留的</span><span class="lang-sep">/</span><span class="en">All rights reserved</span>.</span>
+    <span><span class="zh">使用代码去精心制作的</span><span class="lang-sep">/</span><span class="en">Crafted with code</span>.</span>
   </footer>
 
   <script>
+    // ---------- Auto scroll to top on refresh ----------
+    window.addEventListener('load', () => {
+      window.location.hash = '#hero';
+      setTimeout(() => window.scrollTo(0, 0), 10);
+    });
+
     // ---------- Nav scroll effect ----------
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
@@ -656,6 +878,40 @@
         navToggle.classList.remove('active');
         navLinks.classList.remove('open');
       });
+    });
+
+    // ---------- Theme toggle (default light) ----------
+    const themeBtn = document.getElementById('themeBtn');
+    const themeBtnText = document.getElementById('themeBtnText');
+    const themeIcon = document.getElementById('themeIcon');
+    const sunIcon = '<circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />';
+    const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />';
+
+    themeBtn.addEventListener('click', () => {
+      const current = document.body.getAttribute('data-theme');
+      if (current === 'light') {
+        document.body.setAttribute('data-theme', 'dark');
+        themeBtnText.textContent = '深色';
+        themeIcon.innerHTML = moonIcon;
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+        themeBtnText.textContent = '浅色';
+        themeIcon.innerHTML = sunIcon;
+      }
+    });
+
+    // ---------- Language toggle (bilingual -> en -> zh -> bilingual) ----------
+    const langBtn = document.getElementById('langBtn');
+    const langBtnText = document.getElementById('langBtnText');
+    const langModes = ['bilingual', 'en', 'zh'];
+    const langLabels = { bilingual: '双语', en: 'EN', zh: '中文' };
+    let langIndex = 0;
+
+    langBtn.addEventListener('click', () => {
+      langIndex = (langIndex + 1) % langModes.length;
+      const mode = langModes[langIndex];
+      document.body.setAttribute('data-lang', mode);
+      langBtnText.textContent = langLabels[mode];
     });
 
     // ---------- Scroll reveal ----------
