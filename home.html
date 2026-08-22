@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="xzd1314 的个人网站 - 前端开发、Roblox 开发、Python 项目作品集。迷上城建 Forge 移植、猪来了 nextbot 等项目展示。" />
+  <meta name="keywords" content="xzd1314, 个人网站, 前端开发, Roblox, Python, Forge, 迷上城建, 猪来了 nextbot, 个人作品集" />
+  <meta name="author" content="xzd1314" />
+  <meta name="msvalidate.01" content="9E9AA763B8260BEEB37FCE6BC3711396" />
+  <meta property="og:title" content="xzd1314 — 个人网站" />
+  <meta property="og:description" content="xzd1314 的个人网站与项目作品集" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://xzd1314.github.io/" />
+  <title>xzd1314 — 个人网站</title>
+  <link rel="icon" type="image/jpeg" href="assets/avatar.jpg" />
+  <link rel="apple-touch-icon" href="assets/avatar.jpg" />
+  <style>
+    :root {
+      --bg: #ffffff; --text: #1d1d1f; --text-secondary: #6e6e73; --text-muted: #86868b;
+      --border: rgba(0,0,0,0.08); --border-hover: rgba(0,0,0,0.18);
+      --card-bg: rgba(0,0,0,0.02); --card-hover: rgba(0,0,0,0.04);
+      --nav-bg: rgba(255,255,255,0.85); --accent-glow: rgba(138,100,255,0.15);
+      --scrollbar-track: #f5f5f7; --scrollbar-thumb: #c7c7cc; --scrollbar-thumb-hover: #a1a1a6;
+      --hero-bg: #ffffff;
+      --about-bg: linear-gradient(180deg,#ffffff 0%,#f0f2f5 100%);
+      --skills-bg: linear-gradient(180deg,#f0f2f5 0%,#ebe8f0 100%);
+      --projects-bg: linear-gradient(180deg,#ebe8f0 0%,#e8efee 100%);
+      --contact-bg: linear-gradient(180deg,#e8efee 0%,#ffffff 100%);
+      --footer-bg: #ffffff;
+      --memorial-bg: linear-gradient(180deg,#f5f0e6 0%,#ebe3d4 40%,#e5dccb 100%);
+      --memorial-text: #3a2e1f;
+      --memorial-accent: #8b6914;
+      --memorial-border: rgba(139,105,20,0.25);
+      --cookie-bg: rgba(255,255,255,0.95);
+      --cookie-border: rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg: #000; --text: #fff; --text-secondary: #999; --text-muted: #666;
+      --border: rgba(255,255,255,0.08); --border-hover: rgba(255,255,255,0.2);
+      --card-bg: rgba(255,255,255,0.01); --card-hover: rgba(255,255,255,0.03);
+      --nav-bg: rgba(0,0,0,0.85); --accent-glow: rgba(138,100,255,0.25);
+      --scrollbar-track: #000; --scrollbar-thumb: #333; --scrollbar-thumb-hover: #444;
+      --hero-bg: #000;
+      --about-bg: linear-gradient(180deg,#000 0%,#060612 100%);
+      --skills-bg: linear-gradient(180deg,#060612 0%,#0c0612 100%);
+      --projects-bg: linear-gradient(180deg,#0c0612 0%,#060c0c 100%);
+      --contact-bg: linear-gradient(180deg,#060c0c 0%,#000 100%);
+      --footer-bg: #000;
+      --memorial-bg: linear-gradient(180deg,#1a0a0a 0%,#0d0606 40%,#050202 100%);
+      --memorial-text: #e8d8c8;
+      --memorial-accent: #c8a878;
+      --memorial-border: rgba(200,168,120,0.25);
+      --cookie-bg: rgba(20,20,20,0.97);
+      --cookie-border: rgba(255,255,255,0.1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:background .4s ease,color .4s ease}
+    a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+    .en{display:none}[data-lang="en"] .zh{display:none}[data-lang="en"] .en{display:inline}
+    ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
+    .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
+    .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text)}
+    .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+    .nav-links a{font-size:14px;font-weight:500;color:var(--text-secondary);position:relative;transition:color .2s ease}
+    .nav-links a:hover{color:var(--text)}
+    .nav-links a::after{content:'';position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--text);transition:width .3s ease}
+    .nav-links a:hover::after{width:100%}
+    .nav-right{display:flex;align-items:center;gap:10px}
+    .nav-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;padding:8px 14px;border-radius:100px;font-size:13px;font-weight:600;font-family:inherit;transition:all .25s ease;display:inline-flex;align-items:center;gap:6px}
+    .nav-btn:hover{background:var(--card-hover);border-color:var(--border-hover);color:var(--text)}
+    .nav-btn svg{width:15px;height:15px}
+    .lang-btn{padding:8px 14px}
+    .lang-zh,.lang-en{transition:color .2s ease,font-weight .2s ease;color:var(--text-muted)}
+    .lang-divider{color:var(--text-muted);margin:0 2px}
+    .lang-btn[data-active="zh"] .lang-zh{color:var(--text);font-weight:700}
+    .lang-btn[data-active="en"] .lang-en{color:var(--text);font-weight:700}
+    .nav-mobile-toggle{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:8px}
+    .nav-mobile-toggle span{display:block;width:22px;height:1.5px;background:var(--text);margin:5px 0;transition:all .3s ease}
+    .section{min-height:100vh;display:flex;align-items:center;padding:120px 48px;position:relative;transition:background .4s ease}
+    .section-inner{width:100%;max-width:1280px;margin:0 auto}
+    .section-label{font-size:13px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.15em;margin-bottom:28px}
+    .section-title{font-weight:900;font-size:72px;font-size:clamp(48px,8vw,112px);line-height:1.05;letter-spacing:-.03em;margin-bottom:32px;color:var(--text)}
+    .section-desc{font-size:17px;line-height:1.7;color:var(--text-secondary);max-width:620px}
+    #hero{background:var(--hero-bg)}#about{background:var(--about-bg)}#skills{background:var(--skills-bg)}#projects{background:var(--projects-bg)}#contact{background:var(--contact-bg)}#memorial{background:var(--memorial-bg)}
+    #hero{justify-content:center;text-align:center}
+    #hero .section-inner{display:flex;flex-direction:column;align-items:center;gap:40px}
+    .avatar-link{display:inline-block;border-radius:50%;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+    .avatar-wrap{width:160px;height:160px;border-radius:50%;overflow:hidden;border:1px solid var(--border);transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease}
+    .avatar-link:hover .avatar-wrap{transform:scale(1.05);box-shadow:0 20px 60px var(--accent-glow)}
+    .avatar-wrap img{width:100%;height:100%;object-fit:cover}
+    .hero-title{font-weight:900;font-size:96px;font-size:clamp(64px,12vw,180px);line-height:1;letter-spacing:-.04em;color:var(--text)}
+    .hero-slogan{font-size:18px;color:var(--text-secondary);letter-spacing:.02em}
+    .scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase;animation:float 2s ease-in-out infinite}
+    .scroll-indicator .line{width:1px;height:40px;background:linear-gradient(to bottom,var(--text-muted),transparent)}
+    @keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+    #about .section-inner{max-width:900px}
+    #skills .section-inner{display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:start}
+    #skills .section-left{position:sticky;top:140px}
+    .skill-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .skill-card{padding:28px;border:1px solid var(--border);border-radius:4px;background:var(--card-bg);transition:all .3s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden}
+    .skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border-hover),transparent);transform:translateX(-100%);transition:transform .6s ease}
+    .skill-card:hover{border-color:var(--border-hover);background:var(--card-hover);transform:translateY(-2px)}
+    .skill-card:hover::before{transform:translateX(100%)}
+    .skill-icon{width:36px;height:36px;margin-bottom:16px;opacity:.7;color:var(--text)}
+    .skill-name{font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em;color:var(--text)}
+    .skill-desc{font-size:14px;color:var(--text-secondary);line-height:1.6}
+    #projects .section-inner{display:grid;grid-template-columns:1fr;gap:60px}
+    .project-list{display:flex;flex-direction:column}
+    .project-item{display:grid;grid-template-columns:80px 1fr auto;gap:40px;align-items:center;padding:36px 0;border-top:1px solid var(--border);transition:all .3s ease;position:relative}
+    .project-item:last-child{border-bottom:1px solid var(--border)}
+    .project-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--card-hover);transition:width .4s cubic-bezier(.22,1,.36,1);z-index:-1}
+    .project-item:hover::before{width:100%}.project-item:hover{padding-left:20px}
+    .project-num{font-size:14px;font-weight:800;color:var(--text-muted)}
+    .project-info h3{font-size:28px;font-weight:900;letter-spacing:-.02em;margin-bottom:8px;color:var(--text)}
+    .project-info p{font-size:15px;color:var(--text-secondary)}
+    .project-actions{display:flex;align-items:center;gap:14px}
+    .project-tag{font-size:12px;color:var(--text-secondary);padding:6px 14px;border:1px solid var(--border);border-radius:100px;letter-spacing:.05em;white-space:nowrap}
+    .project-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);cursor:pointer;transition:all .25s ease;white-space:nowrap}
+    .project-btn:hover{background:var(--text);color:var(--bg);border-color:var(--text);transform:translateY(-1px)}
+    .project-btn svg{width:15px;height:15px}
+    #contact{justify-content:center;text-align:center}
+    #contact .section-inner{max-width:700px}
+    .contact-cta{font-size:56px;font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:48px;color:var(--text)}
+    .contact-links{display:flex;flex-direction:column;align-items:center;gap:20px}
+    .contact-link{font-size:18px;font-weight:500;color:var(--text-secondary);display:inline-flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);transition:all .3s ease}
+    .contact-link:hover{color:var(--text);border-color:var(--text);transform:translateY(-1px)}
+    .contact-link svg{width:18px;height:18px;opacity:.6;transition:opacity .2s ease}
+    .contact-link:hover svg{opacity:1}
+    .footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--text-muted);font-size:13px;background:var(--footer-bg);transition:background .4s ease}
+    #memorial{min-height:100vh;display:flex;align-items:center;padding:120px 48px;position:relative;color:var(--memorial-text)}
+    #memorial .section-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:center;width:100%}
+    .memorial-photo{position:relative}
+    .memorial-photo img{width:100%;border-radius:4px;border:1px solid var(--memorial-border);box-shadow:0 20px 60px rgba(0,0,0,0.5);filter:sepia(0.12) contrast(1.05)}
+    .memorial-photo::after{content:'';position:absolute;inset:-10px;border:1px solid var(--memorial-border);border-radius:6px;pointer-events:none}
+    .memorial-label{font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--memorial-accent);margin-bottom:16px;font-weight:600}
+    .memorial-title{font-size:clamp(26px,3.5vw,42px);font-weight:900;line-height:1.25;margin-bottom:12px;color:var(--memorial-text);letter-spacing:-0.01em}
+    .memorial-date{font-size:15px;color:var(--memorial-accent);letter-spacing:0.12em;margin-bottom:36px;font-weight:600}
+    .memorial-quote{font-size:clamp(15px,1.8vw,19px);line-height:2.1;color:var(--memorial-text);margin-bottom:40px;border-left:2px solid var(--memorial-accent);padding-left:24px}
+    .memorial-sign{font-size:clamp(22px,2.8vw,34px);font-weight:900;color:var(--memorial-accent);text-align:right;letter-spacing:0.2em}
+    .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+    .reveal.is-visible{opacity:1;transform:translateY(0)}
+    .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}
+
+    /* ---------- Turnstile Overlay ---------- */
+    .turnstile-overlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(0,0,0,0.85);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      display:flex;align-items:center;justify-content:center;
+      transition:opacity .5s ease,visibility .5s ease;
+    }
+    .turnstile-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    .turnstile-box{
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:40px 36px;
+      text-align:center;
+      max-width:400px;
+      width:90%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"] .turnstile-box{background:#fff;color:#111}
+    [data-theme="dark"] .turnstile-box{background:#111;color:#eee}
+    .turnstile-icon{width:48px;height:48px;margin:0 auto 16px;color:var(--accent,#f97316)}
+    .turnstile-icon svg{width:100%;height:100%}
+    .turnstile-title{font-size:22px;font-weight:800;margin-bottom:8px}
+    .turnstile-desc{font-size:14px;color:var(--text-secondary,#888);margin-bottom:24px;line-height:1.6}
+    .turnstile-box .cf-turnstile{display:flex;justify-content:center}
+    @media(max-width:480px){.turnstile-box{padding:32px 20px}.turnstile-title{font-size:18px}.turnstile-desc{font-size:13px}}
+    /* ---------- Cookie Banner ---------- */
+    .cookie-banner{
+      position:fixed;left:0;right:0;bottom:0;z-index:200;
+      background:var(--cookie-bg);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      border-top:1px solid var(--cookie-border);
+      padding:32px 48px 28px;
+      transform:translateY(100%);
+      transition:transform .5s cubic-bezier(.22,1,.36,1);
+      max-height:50vh;overflow-y:auto;
+    }
+    .cookie-banner.show{transform:translateY(0)}
+    .cookie-inner{max-width:900px;margin:0 auto}
+    .cookie-title{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:10px}
+    .cookie-title svg{width:22px;height:22px;opacity:.8}
+    .cookie-text{font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:20px}
+    .cookie-buttons{display:flex;gap:12px;flex-wrap:wrap}
+    .cookie-btn{
+      padding:10px 28px;border-radius:100px;font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;transition:all .25s ease;border:1px solid var(--border);
+    }
+    .cookie-btn-accept{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .cookie-btn-accept:hover{opacity:.85;transform:translateY(-1px)}
+    .cookie-btn-reject{background:transparent;color:var(--text-secondary)}
+    .cookie-btn-reject:hover{background:var(--card-hover);color:var(--text);border-color:var(--border-hover)}
+
+    @media(max-width:1200px){.skill-cards{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:1024px){.nav{padding:18px 32px}.nav.scrolled{padding:12px 32px}.section{padding:100px 32px}#skills .section-inner{grid-template-columns:1fr;gap:40px}#skills .section-left{position:static}.skill-cards{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:768px){
+      .nav{padding:16px 24px}.nav.scrolled{padding:10px 24px}
+      .nav-links{position:fixed;top:0;right:-100%;width:100%;height:100vh;flex-direction:column;justify-content:center;background:var(--nav-bg);backdrop-filter:blur(20px);transition:right .4s cubic-bezier(.22,1,.36,1);gap:32px}
+      .nav-links.open{right:0}.nav-links a{font-size:24px}
+      .nav-mobile-toggle{display:block;z-index:101}
+      .nav-mobile-toggle.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+      .nav-mobile-toggle.active span:nth-child(2){opacity:0}
+      .nav-mobile-toggle.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+      .nav-btn{padding:6px 10px;font-size:12px}.nav-btn .btn-text{display:none}.lang-btn .btn-text{display:inline}
+      .section{padding:80px 24px;min-height:auto}#hero{min-height:100vh}.avatar-wrap{width:120px;height:120px}
+      .skill-cards{grid-template-columns:1fr}
+      .project-item{grid-template-columns:40px 1fr;gap:20px}
+      .project-actions{grid-column:2;justify-content:flex-start;margin-top:8px}
+      .project-info h3{font-size:22px}
+      .footer{flex-direction:column;gap:12px;padding:32px 24px;text-align:center}
+      #memorial{padding:80px 24px}
+      #memorial .section-inner{grid-template-columns:1fr;gap:40px}
+      .memorial-quote{font-size:15px;line-height:1.9}
+      .memorial-sign{text-align:center}
+      .cookie-banner{padding:24px 20px 20px;max-height:60vh}
+      .cookie-btn{padding:9px 22px;font-size:13px}
+    }
+    @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:8px 14px;font-size:13px}}
+  </style>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body data-theme="dark" data-lang="zh">
+  <!-- Turnstile Overlay -->
+  <div class="turnstile-overlay" id="turnstileOverlay">
+    <div class="turnstile-box">
+      <div class="turnstile-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h2 class="turnstile-title"><span class="zh">人机验证</span><span class="en">Human Verification</span></h2>
+      <p class="turnstile-desc"><span class="zh">请完成下方验证以继续访问网站</span><span class="en">Please complete the verification below to continue</span></p>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onTurnstileSuccess" data-theme="dark"></div>
+    </div>
+  </div>
+  <nav class="nav" id="nav">
+    <a href="#hero" class="nav-logo">xzd1314.</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+      <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
+      <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
+      <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
+      <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+      <li><a href="#memorial"><span class="zh">纪念</span><span class="en">Memorial</span></a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
+        <span class="lang-zh">中文</span><span class="lang-divider">|</span><span class="lang-en">EN</span>
+      </button>
+      <button class="nav-btn" id="themeBtn" aria-label="切换主题">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span class="btn-text" id="themeBtnText"><span class="zh">深色</span><span class="en">Dark</span></span>
+      </button>
+      <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="section" id="hero">
+    <div class="section-inner">
+      <a href="https://github.com/xzd1314" target="_blank" rel="noopener" class="avatar-link reveal">
+        <div class="avatar-wrap"><img src="assets/avatar.jpg" alt="xzd1314 avatar"/></div>
+      </a>
+      <h1 class="hero-title reveal reveal-delay-1">xzd1314.</h1>
+      <p class="hero-slogan reveal reveal-delay-2"><span class="zh">用代码构建数字世界</span><span class="en">Use code to build the digital world</span></p>
+    </div>
+    <div class="scroll-indicator"><span>SCROLL</span><div class="line"></div></div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="section-inner">
+      <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">这里什么都没有</span><span class="en">There is nothing here</span></h2>
+    </div>
+  </section>
+
+  <section class="section" id="skills">
+    <div class="section-inner">
+      <div class="section-left">
+        <p class="section-label reveal"><span class="zh">技能</span><span class="en">Skills</span></p>
+        <h2 class="section-title reveal reveal-delay-1"><span class="zh">我会的一些事</span><span class="en">Some things I can do</span></h2>
+        <p class="section-desc reveal reveal-delay-2"><span class="zh">从游戏开发到网页设计，从脚本自动化到工具制作。工具在变，但创造的乐趣从未改变。</span><span class="en">From game development to web design, from script automation to tool making. Tools are changing, but the joy of creation has never changed.</span></p>
+      </div>
+      <div class="skill-cards">
+        <div class="skill-card reveal reveal-delay-1">
+          <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+          <div class="skill-name"><span class="zh">前端开发</span><span class="en">Frontend Dev</span></div>
+          <p class="skill-desc"><span class="zh">HTML / CSS / JavaScript，用代码把想法变成看得见的界面。</span><span class="en">HTML / CSS / JavaScript, use code to turn ideas into visible interfaces.</span></p>
+        </div>
+        <div class="skill-card reveal reveal-delay-2">
+          <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 14l3-3 4 4 3-5"/></svg>
+          <div class="skill-name"><span class="zh">Roblox 开发</span><span class="en">Roblox Dev</span></div>
+          <p class="skill-desc"><span class="zh">Lua 脚本、游戏机制设计，在 Roblox 宇宙里建造属于自己的世界。</span><span class="en">Lua scripts, game mechanics design, build your own world in the Roblox universe.</span></p>
+        </div>
+        <div class="skill-card reveal reveal-delay-3">
+          <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <div class="skill-name">Python</div>
+          <p class="skill-desc"><span class="zh">自动化脚本、数据处理、爬虫，让重复的事情交给程序。</span><span class="en">Automation scripts, data processing, web crawlers, let repetitive tasks be handed over to programs.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="section-inner">
+      <div>
+        <p class="section-label reveal"><span class="zh">项目</span><span class="en">Projects</span></p>
+        <h2 class="section-title reveal reveal-delay-1"><span class="zh">做过的一些东西</span><span class="en">Some things I have done</span></h2>
+      </div>
+      <div class="project-list">
+        <div class="project-item reveal">
+          <span class="project-num">01</span>
+          <div class="project-info">
+            <h3><span class="zh">迷上城建 Forge 移植</span><span class="en">Mishanguc Forge Port</span></h3>
+            <p><span class="zh">Mishanguc mod for Forge 1.19.4 — 迷上城建模组 Forge 版本移植</span><span class="en">Mishanguc mod for Forge 1.19.4 — Mishanguc modeling team Forge version port</span></p>
+          </div>
+          <div class="project-actions">
+            <span class="project-tag">Java / Forge</span>
+            <a href="https://github.com/xzd1314/mishanguc-forge" target="_blank" rel="noopener" class="project-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              <span class="zh">查看</span><span class="en">View</span>
+            </a>
+          </div>
+        </div>
+        <div class="project-item reveal reveal-delay-1">
+          <span class="project-num">02</span>
+          <div class="project-info">
+            <h3><span class="zh">猪来了 nextbotV4</span><span class="en">Zhulaile nextbotV4</span></h3>
+            <p><span class="zh">何意味游戏</span><span class="en">What does it mean game</span></p>
+          </div>
+          <div class="project-actions">
+            <span class="project-tag">Android</span>
+            <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/downloads/zhulaile-nextbot-v4.apk" download class="project-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span class="zh">下载</span><span class="en">Download</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="section-inner">
+      <p class="section-label reveal"><span class="zh">联系</span><span class="en">Contact</span></p>
+      <h2 class="contact-cta reveal reveal-delay-1"><span class="zh">想聊聊的话，随时找我</span><span class="en">If you want to chat, find me anytime</span></h2>
+      <div class="contact-links">
+        <a href="mailto:robloxxzd1314@163.com" class="contact-link reveal reveal-delay-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          robloxxzd1314@163.com
+        </a>
+        <a href="https://github.com/xzd1314" target="_blank" rel="noopener" class="contact-link reveal reveal-delay-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub / xzd1314
+        </a>
+        <a href="https://www.roblox.com/users/4112496357" target="_blank" rel="noopener" class="contact-link reveal reveal-delay-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="14" height="14" rx="2" transform="rotate(12 12 12)"/></svg>
+          Roblox / xzd1314
+        </a>
+        <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=EraEfGIT6W3R5suBRrytCAaSqw2VMn7%2FzvW2Ugl0GzrTAIoDeGn%2BQJlK7jB3eNHA&busi_data=eyJncm91cENvZGUiOiIxMDQyMzA3MTY3IiwidG9rZW4iOiJTaUZWcG5GZ2NsNDEyVTFpdURqc3cxMnlCQm55RVRockN4SXFaYXBodmJaMnE1RWJyT0lMc0UwTFZxNUMxeDhyIiwidWluIjoiMzg1NDI1MjI5NiJ9&data=8mZrCqkm23VtTo3zJSUtQ_PbJXPZU-Cd_20_ToLzLCNZxrbsfBKzVYIVrtdnRIdbdTJ7sKSQAf2nTw-anceqZw&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener" class="contact-link reveal reveal-delay-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span class="zh">QQ群 / SCR Hub</span><span class="en">QQ Group / SCR Hub</span>
+        </a>
+        <a href="https://space.bilibili.com/3546384332491100" target="_blank" rel="noopener" class="contact-link reveal reveal-delay-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M7 7l2.5-3.5M17 7l-2.5-3.5"/><circle cx="9" cy="13.5" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.5" r="1" fill="currentColor" stroke="none"/></svg>
+          <span class="zh">哔哩哔哩 / xzd1314_</span><span class="en">Bilibili / xzd1314_</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="memorial">
+    <div class="section-inner">
+      <div class="memorial-photo reveal">
+        <img src="assets/mao-memorial.jpg" alt="毛泽东同志"/>
+      </div>
+      <div class="memorial-content">
+        <p class="memorial-label reveal">特别纪念 / Memorial</p>
+        <h2 class="memorial-title reveal reveal-delay-1">纪念毛泽东同志逝世50周年</h2>
+        <p class="memorial-date reveal reveal-delay-1">1976.09.09 — 2026.09.09</p>
+        <blockquote class="memorial-quote reveal reveal-delay-2">
+          "世界是你们的，也是我们的，但是归根结底是你们的。你们青年人朝气蓬勃，正在兴旺时期，好像早晨八、九点钟的太阳。希望寄托在你们身上。"
+        </blockquote>
+        <p class="memorial-sign reveal reveal-delay-3">教员千古</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>&copy; 2026 xzd1314. <span class="zh">版权所有</span><span class="en">All rights reserved</span>.</span>
+    <span><span class="zh">用代码精心打造</span><span class="en">Crafted with code</span>.</span>
+  </footer>
+
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-inner">
+      <div class="cookie-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21.59 11.13a1 1 0 0 0-.84-.14 8.49 8.49 0 0 1-7.74-7.74 1 1 0 0 0-.14-.84A10 10 0 1 0 21.59 11.13z"/>
+          <circle cx="8.5" cy="8.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/><circle cx="9" cy="15" r="1"/>
+        </svg>
+        <span class="zh">Cookie 偏好设置</span><span class="en">Cookie Preferences</span>
+      </div>
+      <p class="cookie-text">
+        <span class="zh">本网站仅使用 Cookie 记录您的深色浅色、语言等界面使用偏好，不会进行追踪统计。</span>
+        <span class="en">This website only uses cookies to remember your interface preferences such as theme and language. No tracking or analytics.</span>
+      </p>
+      <div class="cookie-buttons">
+        <button class="cookie-btn cookie-btn-accept" id="cookieAccept">
+          <span class="zh">接受</span><span class="en">Accept</span>
+        </button>
+        <button class="cookie-btn cookie-btn-reject" id="cookieReject">
+          <span class="zh">拒绝</span><span class="en">Reject</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Turnstile callback ----------
+    function onTurnstileSuccess(token){
+      var overlay=document.getElementById('turnstileOverlay');
+      if(overlay){overlay.classList.add('hidden');setTimeout(function(){overlay.style.display='none';},500);}
+    }
+    // ---------- Load preferences from localStorage (always works, regardless of cookie choice) ----------
+    (function(){
+      try{
+        var savedTheme=localStorage.getItem('site_theme');
+        if(savedTheme==='light'||savedTheme==='dark'){
+          document.body.setAttribute('data-theme',savedTheme);
+        }
+        var savedLang=localStorage.getItem('site_lang');
+        if(savedLang==='zh'||savedLang==='en'){
+          document.body.setAttribute('data-lang',savedLang);
+        }
+      }catch(e){}
+    })();
+
+    window.addEventListener('load',function(){
+      window.location.hash='#hero';
+      setTimeout(function(){window.scrollTo(0,0)},10);
+
+      // Sync theme button state after loading preference
+      var currentTheme=document.body.getAttribute('data-theme');
+      var themeIcon=document.getElementById('themeIcon');
+      var themeBtnText=document.getElementById('themeBtnText');
+      var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+      var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      if(currentTheme==='light'){
+        themeIcon.innerHTML=sunIcon;
+        themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';
+      }else{
+        themeIcon.innerHTML=moonIcon;
+        themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
+      }
+
+      // Sync lang button state
+      var currentLang=document.body.getAttribute('data-lang');
+      var langBtn=document.getElementById('langBtn');
+      langBtn.setAttribute('data-active',currentLang);
+    });
+
+    // ---------- Nav scroll effect ----------
+    var nav=document.getElementById('nav');
+    window.addEventListener('scroll',function(){
+      if(window.scrollY>50){nav.classList.add('scrolled')}else{nav.classList.remove('scrolled')}
+    });
+
+    // ---------- Mobile nav toggle ----------
+    var navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
+    navToggle.addEventListener('click',function(){navToggle.classList.toggle('active');navLinks.classList.toggle('open')});
+    navLinks.querySelectorAll('a').forEach(function(link){link.addEventListener('click',function(){navToggle.classList.remove('active');navLinks.classList.remove('open')})});
+
+    // ---------- Theme toggle (saved to localStorage always) ----------
+    var themeBtn=document.getElementById('themeBtn');
+    var themeIcon=document.getElementById('themeIcon');
+    var themeBtnText=document.getElementById('themeBtnText');
+    var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    themeBtn.addEventListener('click',function(){
+      var c=document.body.getAttribute('data-theme');
+      if(c==='dark'){
+        document.body.setAttribute('data-theme','light');
+        themeIcon.innerHTML=sunIcon;
+        themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';
+      }else{
+        document.body.setAttribute('data-theme','dark');
+        themeIcon.innerHTML=moonIcon;
+        themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
+      }
+      try{localStorage.setItem('site_theme',document.body.getAttribute('data-theme'))}catch(e){}
+    });
+
+    // ---------- Language toggle (saved to localStorage always) ----------
+    var langBtn=document.getElementById('langBtn');
+    langBtn.addEventListener('click',function(){
+      var c=document.body.getAttribute('data-lang');
+      if(c==='zh'){
+        document.body.setAttribute('data-lang','en');
+        langBtn.setAttribute('data-active','en');
+      }else{
+        document.body.setAttribute('data-lang','zh');
+        langBtn.setAttribute('data-active','zh');
+      }
+      try{localStorage.setItem('site_lang',document.body.getAttribute('data-lang'))}catch(e){}
+    });
+
+    // ---------- Cookie banner (UI only, does not block preference storage) ----------
+    var cookieBanner=document.getElementById('cookieBanner');
+    var cookieAccept=document.getElementById('cookieAccept');
+    var cookieReject=document.getElementById('cookieReject');
+
+    function hideCookieBanner(){
+      cookieBanner.classList.remove('show');
+    }
+
+    function setCookieChoice(choice){
+      try{localStorage.setItem('cookie_choice',choice)}catch(e){}
+      hideCookieBanner();
+    }
+
+    cookieAccept.addEventListener('click',function(){setCookieChoice('accepted')});
+    cookieReject.addEventListener('click',function(){setCookieChoice('rejected')});
+
+    // Show banner only on first visit (no previous choice recorded)
+    try{
+      var cookieChoice=localStorage.getItem('cookie_choice');
+      if(!cookieChoice){
+        setTimeout(function(){cookieBanner.classList.add('show')},600);
+      }
+    }catch(e){
+      // If localStorage is unavailable, still show banner
+      setTimeout(function(){cookieBanner.classList.add('show')},600);
+    }
+
+    // ---------- Scroll reveal with fallback ----------
+    var revealEls=document.querySelectorAll('.reveal');
+    if('IntersectionObserver' in window){
+      var observer=new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){entry.target.classList.add('is-visible')}
+          else{entry.target.classList.remove('is-visible')}
+        });
+      },{threshold:.15,rootMargin:'0px 0px -50px 0px'});
+      revealEls.forEach(function(el){observer.observe(el)});
+    }else{
+      revealEls.forEach(function(el){el.classList.add('is-visible')});
+    }
+  </script>
+</body>
+</html>
