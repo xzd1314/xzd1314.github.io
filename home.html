@@ -266,6 +266,14 @@
       padding:6px 16px;border-radius:100px;transition:all .2s ease;
     }
     .verify-modal-cancel:hover{color:var(--text);background:var(--card-hover)}
+    .verify-modal-continue{
+      background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;
+      border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+      padding:10px 28px;border-radius:100px;transition:all .25s ease;
+      box-shadow:0 4px 16px rgba(249,115,22,0.3);margin-left:8px;
+    }
+    .verify-modal-continue:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(249,115,22,0.45)}
+    .verify-modal-continue:active{transform:translateY(0)}
     /* ---------- Visitor Counter ---------- */
     .visitor-count{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted)}
     .visitor-count svg{width:12px;height:12px;opacity:.6}
@@ -464,6 +472,7 @@
       <p class="verify-modal-desc"><span class="zh">请完成人机验证以继续</span><span class="en">Please complete human verification to continue</span></p>
       <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
       <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
+      <button class="verify-modal-continue" id="linkVerifyContinue" style="display:none"><span class="zh">点击继续</span><span class="en">Click to continue</span></button>
     </div>
   </div>
 
@@ -575,25 +584,36 @@
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
       linkWidgetId=null;
+      // Reset button states
+      var turnstileEl=document.getElementById('linkTurnstile');
+      var cancelBtn=document.getElementById('linkVerifyCancel');
+      var continueBtn=document.getElementById('linkVerifyContinue');
+      if(turnstileEl)turnstileEl.style.display='';
+      if(cancelBtn)cancelBtn.style.display='';
+      if(continueBtn)continueBtn.style.display='none';
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
     }
     function onLinkVerifySuccess(token){
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
       if(pendingLinkUrl){
-        var a=document.createElement('a');
-        a.href=pendingLinkUrl;
-        a.style.display='none';
         if(pendingLinkIsDownload){
-          a.download='';
+          // Download: auto-trigger (no popup blocker issue)
+          var a=document.createElement('a');
+          a.href=pendingLinkUrl;a.download='';a.style.display='none';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
+          setTimeout(closeLinkVerifyModal,500);
         }else{
-          a.target='_blank';
-          a.rel='noopener noreferrer';
+          // External link: show "click to continue" button (user click in sync stack = no popup blocker)
+          var turnstileEl=document.getElementById('linkTurnstile');
+          var cancelBtn=document.getElementById('linkVerifyCancel');
+          var continueBtn=document.getElementById('linkVerifyContinue');
+          if(turnstileEl)turnstileEl.style.display='none';
+          if(cancelBtn)cancelBtn.style.display='none';
+          if(continueBtn)continueBtn.style.display='inline-block';
         }
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
       }
-      setTimeout(closeLinkVerifyModal,300);
     }
     // Ensure callback is globally accessible for Turnstile (string callback name)
     window.onLinkVerifySuccess=onLinkVerifySuccess;
@@ -601,6 +621,19 @@
     (function(){
       var cancelBtn=document.getElementById('linkVerifyCancel');
       if(cancelBtn){cancelBtn.addEventListener('click',closeLinkVerifyModal);}
+      var continueBtn=document.getElementById('linkVerifyContinue');
+      if(continueBtn){
+        continueBtn.addEventListener('click',function(){
+          if(pendingLinkUrl){
+            // Open in user click sync stack - no popup blocker
+            var a=document.createElement('a');
+            a.href=pendingLinkUrl;a.target='_blank';a.rel='noopener noreferrer';a.style.display='none';
+            document.body.appendChild(a);a.click();
+            setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
+          }
+          closeLinkVerifyModal();
+        });
+      }
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.addEventListener('click',function(e){if(e.target===modal)closeLinkVerifyModal();});}
       // Intercept external links
