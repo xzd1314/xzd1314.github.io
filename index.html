@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="creative-medium" content="interactive-prototype" />
   <title>xzd1314 — 个人网站</title>
-  <link rel="preconnect" href="https://miaoda.feishu.cn" />
-  <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" />
   <style>
     /* ---------- Reset & Base ---------- */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
       background: #000;
       color: #fff;
       line-height: 1.6;
@@ -26,8 +23,8 @@
     /* ---------- Scrollbar ---------- */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #000; }
-    ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #333; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444; }
 
     /* ---------- Navigation ---------- */
     .nav {
@@ -52,8 +49,7 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
     .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 20px;
       letter-spacing: -0.02em;
       color: #fff;
@@ -122,8 +118,7 @@
       margin-bottom: 28px;
     }
     .section-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: clamp(48px, 8vw, 112px);
       line-height: 1.05;
       letter-spacing: -0.03em;
@@ -134,6 +129,23 @@
       line-height: 1.7;
       color: #888;
       max-width: 620px;
+    }
+
+    /* ---------- Section gradient backgrounds ---------- */
+    #hero {
+      background: #000000;
+    }
+    #about {
+      background: linear-gradient(180deg, #000000 0%, #060612 100%);
+    }
+    #skills {
+      background: linear-gradient(180deg, #060612 0%, #0c0612 100%);
+    }
+    #projects {
+      background: linear-gradient(180deg, #0c0612 0%, #060c0c 100%);
+    }
+    #contact {
+      background: linear-gradient(180deg, #060c0c 0%, #000000 100%);
     }
 
     /* ---------- Hero Section ---------- */
@@ -163,12 +175,9 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
     }
     .hero-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: clamp(64px, 12vw, 180px);
       line-height: 1;
       letter-spacing: -0.04em;
@@ -207,20 +216,6 @@
     #about .section-inner {
       max-width: 900px;
     }
-    .about-text {
-      font-size: clamp(24px, 3vw, 36px);
-      font-weight: 600;
-      line-height: 1.5;
-      color: #fff;
-      margin-bottom: 32px;
-      letter-spacing: -0.01em;
-    }
-    .about-sub {
-      font-size: 16px;
-      color: #666;
-      line-height: 1.8;
-      max-width: 580px;
-    }
 
     /* ---------- Skills Section ---------- */
     #skills .section-inner {
@@ -235,7 +230,7 @@
     }
     .skill-cards {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
     .skill-card {
@@ -273,9 +268,8 @@
       opacity: 0.8;
     }
     .skill-name {
-      font-family: 'Syne', sans-serif;
       font-size: 22px;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 8px;
       letter-spacing: -0.01em;
     }
@@ -300,14 +294,12 @@
       grid-template-columns: 80px 1fr auto;
       gap: 40px;
       align-items: center;
-      padding: 32px 0;
+      padding: 36px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       transition: all 0.3s ease;
       cursor: pointer;
       position: relative;
-    }
-    .project-item:last-child {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     .project-item::before {
       content: '';
@@ -323,29 +315,28 @@
     .project-item:hover::before { width: 100%; }
     .project-item:hover { padding-left: 20px; }
     .project-num {
-      font-family: 'Syne', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       color: #555;
     }
     .project-info h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 700;
+      font-size: 32px;
+      font-weight: 900;
       letter-spacing: -0.02em;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .project-info p {
-      font-size: 14px;
-      color: #666;
+      font-size: 15px;
+      color: #777;
     }
     .project-tag {
       font-size: 12px;
-      color: #555;
-      padding: 6px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #888;
+      padding: 6px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 100px;
       letter-spacing: 0.05em;
+      white-space: nowrap;
     }
 
     /* ---------- Contact Section ---------- */
@@ -357,9 +348,8 @@
       max-width: 700px;
     }
     .contact-cta {
-      font-family: 'Syne', sans-serif;
       font-size: clamp(40px, 6vw, 72px);
-      font-weight: 800;
+      font-weight: 900;
       line-height: 1.1;
       letter-spacing: -0.03em;
       margin-bottom: 48px;
@@ -374,7 +364,6 @@
       font-size: 18px;
       font-weight: 500;
       color: #999;
-      transition: color 0.2s ease;
       display: inline-flex;
       align-items: center;
       gap: 12px;
@@ -404,6 +393,7 @@
       align-items: center;
       color: #444;
       font-size: 13px;
+      background: #000;
     }
 
     /* ---------- Reveal Animations ---------- */
@@ -420,15 +410,19 @@
     .reveal-delay-1 { transition-delay: 0.1s; }
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
 
     /* ---------- Responsive ---------- */
+    @media (max-width: 1200px) {
+      .skill-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
     @media (max-width: 1024px) {
       .nav { padding: 24px 32px; }
       .nav.scrolled { padding: 16px 32px; }
       .section { padding: 100px 32px; }
       #skills .section-inner { grid-template-columns: 1fr; gap: 40px; }
       #skills .section-left { position: static; }
+      .skill-cards { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 768px) {
@@ -476,6 +470,19 @@
         text-align: center;
       }
     }
+
+    @media (max-width: 480px) {
+      .nav { padding: 16px 20px; }
+      .nav.scrolled { padding: 12px 20px; }
+      .section { padding: 60px 20px; }
+      .hero-title { font-size: clamp(48px, 14vw, 80px); }
+      .section-title { font-size: clamp(36px, 10vw, 64px); }
+      .contact-cta { font-size: clamp(32px, 8vw, 48px); }
+      .avatar-wrap { width: 100px; height: 100px; }
+      .skill-card { padding: 20px; }
+      .project-info h3 { font-size: 18px; }
+      .contact-link { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -504,7 +511,7 @@
         <img src="assets/avatar.jpg" alt="xzd1314 头像" />
       </div>
       <h1 class="hero-title reveal reveal-delay-1">xzd1314.</h1>
-      <p class="hero-slogan reveal reveal-delay-2">构建数字世界的像素与代码。</p>
+      <p class="hero-slogan reveal reveal-delay-2">用代码构建数字世界。</p>
     </div>
     <div class="scroll-indicator">
       <span>SCROLL</span>
@@ -519,14 +526,6 @@
       <h2 class="section-title reveal reveal-delay-1">
         这里什么都没有。
       </h2>
-      <p class="about-text reveal reveal-delay-2">
-        但空白也是一种开始。
-      </p>
-      <p class="about-sub reveal reveal-delay-3">
-        我是 xzd1314，一个热爱创造的独立开发者。用代码搭积木，在虚拟世界里造房子。
-        白天写 Python，晚上搞 Roblox，偶尔在前端的像素海里游泳。相信简单的东西最有力量，
-        也相信每一行代码背后都藏着一个小小的宇宙。
-      </p>
     </div>
   </section>
 
@@ -539,7 +538,7 @@
           我会的<br />一些事。
         </h2>
         <p class="section-desc reveal reveal-delay-2">
-          从游戏开发到网页设计，从脚本自动化到像素艺术创作。
+          从游戏开发到网页设计，从脚本自动化到工具制作。
           工具在变，但创造的乐趣从未改变。
         </p>
       </div>
@@ -569,16 +568,6 @@
           <div class="skill-name">Python</div>
           <p class="skill-desc">自动化脚本、数据处理、爬虫，让重复的事情交给程序。</p>
         </div>
-        <div class="skill-card reveal reveal-delay-4">
-          <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 19l7-7 3 3-7 7-3-3z" />
-            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-            <path d="M2 2l7.586 7.586" />
-            <circle cx="11" cy="11" r="2" />
-          </svg>
-          <div class="skill-name">像素艺术</div>
-          <p class="skill-desc">用一个个像素点拼出角色、场景和故事，是我的另一种语言。</p>
-        </div>
       </div>
     </div>
   </section>
@@ -593,38 +582,14 @@
         </h2>
       </div>
       <div class="project-list">
-        <div class="project-item reveal">
+        <a href="https://github.com/xzd1314/mishanguc-forge" target="_blank" rel="noopener" class="project-item reveal">
           <span class="project-num">01</span>
           <div class="project-info">
-            <h3>Pixel Adventure</h3>
-            <p>一款像素风格的横版冒险游戏，自制角色与关卡设计。</p>
+            <h3>迷上城建 Forge 移植</h3>
+            <p>Mishanguc mod for Forge 1.19.4 — 迷上城建模组 Forge 版本移植</p>
           </div>
-          <span class="project-tag">Roblox</span>
-        </div>
-        <div class="project-item reveal reveal-delay-1">
-          <span class="project-num">02</span>
-          <div class="project-info">
-            <h3>Automation Toolkit</h3>
-            <p>Python 自动化工具集，覆盖日常重复工作流的脚本库。</p>
-          </div>
-          <span class="project-tag">Python</span>
-        </div>
-        <div class="project-item reveal reveal-delay-2">
-          <span class="project-num">03</span>
-          <div class="project-info">
-            <h3>个人博客系统</h3>
-            <p>从设计到开发全流程独立完成的极简个人博客。</p>
-          </div>
-          <span class="project-tag">Web</span>
-        </div>
-        <div class="project-item reveal reveal-delay-3">
-          <span class="project-num">04</span>
-          <div class="project-info">
-            <h3>Obby Challenge</h3>
-            <p>Roblox 平台上的障碍跑酷游戏，拥有 100+ 关卡。</p>
-          </div>
-          <span class="project-tag">Roblox</span>
-        </div>
+          <span class="project-tag">Java / Forge</span>
+        </a>
       </div>
     </div>
   </section>
@@ -650,6 +615,14 @@
           </svg>
           GitHub / xzd1314
         </a>
+        <a href="https://www.roblox.com/users/4112496357" target="_blank" rel="noopener" class="contact-link reveal reveal-delay-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <circle cx="8" cy="12" r="2" />
+            <circle cx="16" cy="12" r="2" />
+          </svg>
+          Roblox / xzd1314
+        </a>
       </div>
     </div>
   </section>
@@ -657,7 +630,7 @@
   <!-- Footer -->
   <footer class="footer">
     <span>&copy; 2026 xzd1314. All rights reserved.</span>
-    <span>Crafted with code &amp; pixels.</span>
+    <span>Crafted with code.</span>
   </footer>
 
   <script>
