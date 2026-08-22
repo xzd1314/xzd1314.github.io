@@ -10,33 +10,21 @@
     *{margin:0;padding:0;box-sizing:border-box}
     html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif}
     body{
-      background:#000;
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:100vh;
-      overflow:hidden;
-      position:relative;
+      background:#000;color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;overflow:hidden;position:relative;
+      transition:background .3s ease,color .3s ease;
     }
+    body[data-theme="light"]{background:#f5f5f7;color:#111}
     body::before{
-      content:'';
-      position:absolute;
-      inset:0;
+      content:'';position:absolute;inset:0;
       background:radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.08) 0%,transparent 60%);
       pointer-events:none;
     }
-    .verify-container{
-      text-align:center;
-      z-index:1;
-      padding:20px;
-      max-width:420px;
-      width:100%;
-    }
+    body[data-theme="light"]::before{background:radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.06) 0%,transparent 60%)}
+    .verify-container{text-align:center;z-index:1;padding:20px;max-width:420px;width:100%}
     .logo-wrap{
-      width:72px;height:72px;
-      margin:0 auto 28px;
-      border-radius:50%;
+      width:72px;height:72px;margin:0 auto 28px;border-radius:50%;
       background:linear-gradient(135deg,#f97316,#ea580c);
       display:flex;align-items:center;justify-content:center;
       box-shadow:0 8px 32px rgba(249,115,22,0.3);
@@ -47,61 +35,44 @@
       0%,100%{box-shadow:0 8px 32px rgba(249,115,22,0.3)}
       50%{box-shadow:0 8px 48px rgba(249,115,22,0.5)}
     }
-    h1{
-      font-size:24px;font-weight:700;
-      margin-bottom:10px;
-      letter-spacing:-0.01em;
-    }
-    .subtitle{
-      font-size:14px;color:#888;
-      margin-bottom:32px;
-      line-height:1.6;
-    }
-    .turnstile-wrap{
-      display:flex;justify-content:center;
-      margin-bottom:28px;
-      min-height:65px;
-    }
-    .divider{
-      width:40px;height:1px;
-      background:#333;
-      margin:0 auto 20px;
-    }
-    .footer-text{
-      font-size:11px;color:#555;
-      display:flex;align-items:center;justify-content:center;gap:6px;
-    }
+    h1{font-size:24px;font-weight:700;margin-bottom:10px;letter-spacing:-0.01em}
+    .subtitle{font-size:14px;color:#888;margin-bottom:32px;line-height:1.6}
+    body[data-theme="light"] .subtitle{color:#666}
+    .turnstile-wrap{display:flex;justify-content:center;margin-bottom:28px;min-height:65px}
+    .divider{width:40px;height:1px;background:#333;margin:0 auto 20px}
+    body[data-theme="light"] .divider{background:#ddd}
+    .footer-text{font-size:11px;color:#555;display:flex;align-items:center;justify-content:center;gap:6px}
+    body[data-theme="light"] .footer-text{color:#999}
     .footer-text svg{width:12px;height:12px}
     .loading-dots{display:inline-flex;gap:3px;margin-left:4px}
-    .loading-dots span{
-      width:4px;height:4px;border-radius:50%;
-      background:#666;animation:dotPulse 1.4s ease-in-out infinite;
-    }
+    .loading-dots span{width:4px;height:4px;border-radius:50%;background:#666;animation:dotPulse 1.4s ease-in-out infinite}
+    body[data-theme="light"] .loading-dots span{background:#999}
     .loading-dots span:nth-child(2){animation-delay:.2s}
     .loading-dots span:nth-child(3){animation-delay:.4s}
-    @keyframes dotPulse{
-      0%,80%,100%{opacity:.3}
-      40%{opacity:1}
-    }
+    @keyframes dotPulse{0%,80%,100%{opacity:.3}40%{opacity:1}}
     .success-state{display:none}
     .success-state.show{display:block}
     .verify-state.hide{display:none}
     .check-icon{
-      width:56px;height:56px;margin:0 auto 20px;
-      border-radius:50%;background:#22c55e;
-      display:flex;align-items:center;justify-content:center;
-      animation:scaleIn .4s ease;
+      width:56px;height:56px;margin:0 auto 20px;border-radius:50%;background:#22c55e;
+      display:flex;align-items:center;justify-content:center;animation:scaleIn .4s ease;
     }
     .check-icon svg{width:28px;height:28px;color:#fff}
-    @keyframes scaleIn{
-      from{transform:scale(0);opacity:0}
-      to{transform:scale(1);opacity:1}
+    @keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    .enter-btn{
+      margin-top:24px;padding:14px 40px;border-radius:100px;border:none;
+      background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;
+      font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;
+      transition:all .25s ease;box-shadow:0 4px 20px rgba(249,115,22,0.3);
     }
-    .redirect-text{font-size:15px;color:#aaa;margin-top:8px}
-    .redirect-text strong{color:#fff}
+    .enter-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(249,115,22,0.45)}
+    .enter-btn:active{transform:translateY(0)}
+    .enter-hint{font-size:13px;color:#888;margin-top:12px}
+    body[data-theme="light"] .enter-hint{color:#999}
+    @media(max-width:480px){h1{font-size:20px}.subtitle{font-size:13px}.enter-btn{padding:12px 32px;font-size:15px}}
   </style>
 </head>
-<body>
+<body data-theme="dark">
   <div class="verify-container">
     <div class="verify-state" id="verifyState">
       <div class="logo-wrap">
@@ -109,10 +80,10 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
       </div>
-      <h1>正在验证<span class="loading-dots"><span></span><span></span><span></span></span></h1>
-      <p class="subtitle">请完成下方的人机验证以继续访问<br/>xzd1314.github.io</p>
+      <h1>人机验证<span class="loading-dots"><span></span><span></span><span></span></span></h1>
+      <p class="subtitle">请点击下方按钮完成验证以继续访问<br/>xzd1314.github.io</p>
       <div class="turnstile-wrap">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onVerifySuccess" data-theme="dark"></div>
+        <div id="turnstileWidget"></div>
       </div>
       <div class="divider"></div>
       <p class="footer-text">
@@ -127,10 +98,10 @@
         </svg>
       </div>
       <h1>验证成功</h1>
-      <p class="redirect-text">正在跳转到网站<strong id="countdown">3</strong>秒...</p>
+      <button class="enter-btn" id="enterBtn">进入网站</button>
+      <p class="enter-hint">点击按钮进入 xzd1314.github.io</p>
     </div>
   </div>
-
   <script>
     // Allow search engine crawlers to bypass verification
     (function(){
@@ -138,17 +109,60 @@
       var bots=['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
       for(var i=0;i<bots.length;i++){if(ua.indexOf(bots[i])!==-1){window.location.replace('home.html');return;}}
     })();
+
+    // Load theme from localStorage
+    var currentTheme='dark';
+    try{
+      var savedTheme=localStorage.getItem('site_theme');
+      if(savedTheme==='light'||savedTheme==='dark'){currentTheme=savedTheme;}
+    }catch(e){}
+    document.body.setAttribute('data-theme',currentTheme);
+
+    // Render Turnstile with current theme
+    function renderTurnstile(){
+      if(!window.turnstile)return;
+      var container=document.getElementById('turnstileWidget');
+      if(!container)return;
+      container.innerHTML='';
+      try{
+        window.turnstile.render('#turnstileWidget',{
+          sitekey:'0x4AAAAAAEYslAufS7xZQ-Jn',
+          callback:'onVerifySuccess',
+          theme:currentTheme
+        });
+      }catch(e){}
+    }
+    if(window.turnstile){renderTurnstile();}
+    else{
+      var tries=0;
+      var check=setInterval(function(){
+        tries++;
+        if(window.turnstile){clearInterval(check);renderTurnstile();}
+        if(tries>60)clearInterval(check);
+      },100);
+    }
+
+    // Verification callback - show success state, require click to enter
     function onVerifySuccess(token){
-      document.getElementById('verifyState').classList.add('hide');
-      document.getElementById('successState').classList.add('show');
-      var count=3;
-      var el=document.getElementById('countdown');
-      var timer=setInterval(function(){
-        count--;
-        if(el)el.textContent=count;
-        if(count<=0){clearInterval(timer);window.location.href='home.html';}
-      },1000);
-      setTimeout(function(){window.location.href='home.html';},3200);
+      var vs=document.getElementById('verifyState');
+      var ss=document.getElementById('successState');
+      if(vs)vs.classList.add('hide');
+      if(ss)ss.classList.add('show');
+    }
+
+    // Enter button - must click to proceed
+    document.addEventListener('DOMContentLoaded',function(){
+      var btn=document.getElementById('enterBtn');
+      if(btn){
+        btn.addEventListener('click',function(){
+          window.location.href='home.html';
+        });
+      }
+    });
+    // Fallback in case DOMContentLoaded already fired
+    if(document.readyState!=='loading'){
+      var btn=document.getElementById('enterBtn');
+      if(btn){btn.addEventListener('click',function(){window.location.href='home.html';});}
     }
   </script>
 </body>
