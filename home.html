@@ -534,26 +534,31 @@
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
     var linkVerifyPoller=null;
+    var linkWidgetId=null;
     function renderLinkTurnstile(){
       var container=document.getElementById('linkTurnstile');
       if(!container||!window.turnstile)return;
       container.innerHTML='';
       var theme=document.body.getAttribute('data-theme')==='light'?'light':'dark';
       try{
-        window.turnstile.render('#linkTurnstile',{
+        linkWidgetId=window.turnstile.render('#linkTurnstile',{
           sitekey:'0x4AAAAAAEYslAufS7xZQ-Jn',
-          callback:onLinkVerifySuccess,
+          callback:'onLinkVerifySuccess',
           theme:theme
         });
-      }catch(e){}
-      // Fallback: poll for Turnstile response in case callback doesn't fire
+      }catch(e){linkWidgetId=null;}
+      // Fallback: poll getResponse() in case callback doesn't fire
       if(linkVerifyPoller)clearInterval(linkVerifyPoller);
       linkVerifyPoller=setInterval(function(){
-        var input=document.querySelector('#linkVerifyModal input[name="cf-turnstile-response"]');
-        if(input&&input.value&&pendingLinkUrl){
-          clearInterval(linkVerifyPoller);
-          linkVerifyPoller=null;
-          onLinkVerifySuccess(input.value);
+        if(linkWidgetId&&window.turnstile){
+          try{
+            var resp=window.turnstile.getResponse(linkWidgetId);
+            if(resp&&pendingLinkUrl){
+              clearInterval(linkVerifyPoller);
+              linkVerifyPoller=null;
+              onLinkVerifySuccess(resp);
+            }
+          }catch(e){}
         }
       },300);
     }
@@ -571,6 +576,7 @@
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
+      linkWidgetId=null;
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
     }
     function onLinkVerifySuccess(token){
@@ -591,6 +597,8 @@
       }
       setTimeout(closeLinkVerifyModal,300);
     }
+    // Ensure callback is globally accessible for Turnstile (string callback name)
+    window.onLinkVerifySuccess=onLinkVerifySuccess;
     // Bind link verification events immediately (script is at end of body, DOM is ready)
     (function(){
       var cancelBtn=document.getElementById('linkVerifyCancel');
