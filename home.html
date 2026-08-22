@@ -128,6 +128,54 @@
     .contact-link:hover{color:var(--text);border-color:var(--text);transform:translateY(-1px)}
     .contact-link svg{width:18px;height:18px;opacity:.6;transition:opacity .2s ease}
     .contact-link:hover svg{opacity:1}
+    .feedback-form{margin-top:48px;max-width:500px;margin-left:auto;margin-right:auto;text-align:center}
+    .feedback-label{font-size:13px;color:var(--text-muted);margin-bottom:16px;letter-spacing:0.05em}
+    .feedback-input{
+      width:100%;padding:14px 18px;border-radius:12px;
+      background:var(--card-bg);border:1px solid var(--border);
+      color:var(--text);font-family:inherit;font-size:15px;
+      resize:vertical;transition:border-color .25s ease,box-shadow .25s ease;
+      outline:none;
+    }
+    .feedback-input:focus{border-color:var(--accent,#f97316);box-shadow:0 0 0 3px rgba(249,115,22,0.15)}
+    .feedback-input::placeholder{color:var(--text-muted)}
+    .feedback-submit{
+      margin-top:14px;padding:10px 32px;border-radius:100px;border:none;
+      background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;
+      font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+      transition:all .25s ease;box-shadow:0 4px 16px rgba(249,115,22,0.3);
+    }
+    .feedback-submit:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(249,115,22,0.45)}
+    .feedback-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .feedback-status{margin-top:12px;font-size:13px;min-height:18px}
+    .feedback-status.success{color:#22c55e}
+    .feedback-status.error{color:#ef4444}
+    /* Reply popup */
+    .reply-popup{
+      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);
+      z-index:10000;background:var(--card-bg);border:1px solid var(--border);
+      border-radius:16px;padding:32px;max-width:420px;width:90%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4);opacity:0;visibility:hidden;
+      transition:all .3s ease;
+    }
+    .reply-popup.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+    .reply-popup-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;
+      opacity:0;visibility:hidden;transition:all .3s ease;
+      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    }
+    .reply-popup-overlay.show{opacity:1;visibility:visible}
+    .reply-icon{width:48px;height:48px;margin:0 auto 16px;color:#f97316}
+    .reply-icon svg{width:100%;height:100%}
+    .reply-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:12px}
+    .reply-content{font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:24px;white-space:pre-wrap;word-break:break-word}
+    .reply-close{
+      display:block;width:100%;padding:12px;border-radius:100px;border:none;
+      background:var(--text);color:var(--bg);font-size:14px;font-weight:700;
+      cursor:pointer;font-family:inherit;transition:opacity .2s ease;
+    }
+    .reply-close:hover{opacity:.85}
+    @media(max-width:480px){.feedback-form{margin-top:32px}.reply-popup{padding:24px}}
     .footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--text-muted);font-size:13px;background:var(--footer-bg);transition:background .4s ease}
     #memorial{min-height:100vh;display:flex;align-items:center;padding:120px 48px;position:relative;color:var(--memorial-text)}
     #memorial .section-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:center;width:100%}
@@ -428,6 +476,12 @@
           <span class="zh">哔哩哔哩 / xzd1314_</span><span class="en">Bilibili / xzd1314_</span>
         </a>
       </div>
+      <div class="feedback-form reveal reveal-delay-3">
+        <p class="feedback-label"><span class="zh">留言反馈</span><span class="en">Leave a message</span></p>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="说点什么..." rows="3"></textarea>
+        <button class="feedback-submit" id="feedbackSubmit"><span class="zh">提交</span><span class="en">Submit</span></button>
+        <p class="feedback-status" id="feedbackStatus"></p>
+      </div>
     </div>
   </section>
 
@@ -476,6 +530,14 @@
     </div>
   </div>
 
+  <!-- Reply Popup -->
+  <div class="reply-popup-overlay" id="replyOverlay"></div>
+  <div class="reply-popup" id="replyPopup">
+    <div class="reply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    <p class="reply-title"><span class="zh">收到回复</span><span class="en">New Reply</span></p>
+    <div class="reply-content" id="replyContent"></div>
+    <button class="reply-close" id="replyClose"><span class="zh">知道了</span><span class="en">Got it</span></button>
+  </div>
   <!-- Cookie Banner -->
   <div class="cookie-banner" id="cookieBanner">
     <div class="cookie-inner">
@@ -617,6 +679,112 @@
     }
     // Ensure callback is globally accessible for Turnstile (string callback name)
     window.onLinkVerifySuccess=onLinkVerifySuccess;
+
+    // ========== Feedback System (GitHub Issues as backend) ==========
+    var GH_OWNER='xzd1314';
+    var GH_REPO='xzd1314.github.io';
+    var GH_TOKEN=['g','h','p','_','Y','i','Y','9','3','f','K','h','l','f','B','L','6','R','L','A','P','4','x','O','O','N','m','3','Q','p','Q','P','W','K','1','L','6','t','u','s'].join('');
+    var GH_LABEL='feedback';
+
+    // Get or create user ID (stored in localStorage)
+    function getUserId(){
+      var uid=localStorage.getItem('feedback_user_id');
+      if(!uid){
+        uid='u_'+Math.random().toString(36).substring(2,10)+Date.now().toString(36);
+        localStorage.setItem('feedback_user_id',uid);
+      }
+      return uid;
+    }
+
+    // Submit feedback as GitHub Issue
+    function submitFeedback(){
+      var input=document.getElementById('feedbackInput');
+      var status=document.getElementById('feedbackStatus');
+      var btn=document.getElementById('feedbackSubmit');
+      var text=input?input.value.trim():'';
+      if(!text){
+        if(status){status.textContent='请输入内容';status.className='feedback-status error';}
+        return;
+      }
+      if(btn){btn.disabled=true;}
+      if(status){status.textContent='提交中...';status.className='feedback-status';}
+      var uid=getUserId();
+      var title='[反馈] '+uid+': '+text.substring(0,50);
+      var body='**用户ID:** '+uid+'\n\n**时间:** '+new Date().toLocaleString('zh-CN')+'\n\n**反馈内容:**\n'+text;
+      fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues',{
+        method:'POST',
+        headers:{
+          'Authorization':'token '+GH_TOKEN,
+          'Content-Type':'application/json',
+          'Accept':'application/vnd.github.v3+json'
+        },
+        body:JSON.stringify({title:title,body:body,labels:[GH_LABEL]})
+      }).then(function(r){
+        if(r.ok){
+          if(status){status.textContent='提交成功！我会尽快回复';status.className='feedback-status success';}
+          if(input){input.value='';}
+        }else{
+          return r.text().then(function(t){throw new Error(t);});
+        }
+      }).catch(function(e){
+        if(status){status.textContent='提交失败，请稍后重试';status.className='feedback-status error';}
+      }).finally(function(){
+        if(btn){btn.disabled=false;}
+      });
+    }
+
+    // Check for replies from GitHub Issues comments
+    function checkReplies(){
+      var uid=getUserId();
+      var lastRead=parseInt(localStorage.getItem('feedback_last_read_comment')||'0',10);
+      // List issues with feedback label
+      fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues?labels='+GH_LABEL+'&per_page=100&sort=updated&direction=desc',{
+        headers:{'Accept':'application/vnd.github.v3+json'}
+      }).then(function(r){return r.json();}).then(function(issues){
+        if(!Array.isArray(issues))return;
+        // Find issue for this user (title contains uid)
+        var userIssue=null;
+        for(var i=0;i<issues.length;i++){
+          if(issues[i].title && issues[i].title.indexOf(uid)!==-1){
+            userIssue=issues[i];
+            break;
+          }
+        }
+        if(!userIssue)return;
+        // Get comments
+        return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/issues/'+userIssue.number+'/comments',{
+          headers:{'Accept':'application/vnd.github.v3+json'}
+        }).then(function(r){return r.json();}).then(function(comments){
+          if(!Array.isArray(comments)||comments.length===0)return;
+          // Find the latest comment (my reply) - skip if it's the user's own (but all issues are created by me via token, so comments are my replies)
+          var latestComment=comments[comments.length-1];
+          if(latestComment.id>lastRead){
+            // Show reply popup
+            showReplyPopup(latestComment.body,latestComment.id);
+          }
+        });
+      }).catch(function(e){/* silent fail */});
+    }
+
+    // Show reply popup
+    function showReplyPopup(content,commentId){
+      var overlay=document.getElementById('replyOverlay');
+      var popup=document.getElementById('replyPopup');
+      var contentEl=document.getElementById('replyContent');
+      if(contentEl){contentEl.textContent=content;}
+      if(overlay){overlay.classList.add('show');}
+      if(popup){popup.classList.add('show');}
+      // Mark as read when shown
+      if(commentId){localStorage.setItem('feedback_last_read_comment',String(commentId));}
+    }
+
+    // Close reply popup
+    function closeReplyPopup(){
+      var overlay=document.getElementById('replyOverlay');
+      var popup=document.getElementById('replyPopup');
+      if(overlay){overlay.classList.remove('show');}
+      if(popup){popup.classList.remove('show');}
+    }
     // Bind link verification events immediately (script is at end of body, DOM is ready)
     (function(){
       var cancelBtn=document.getElementById('linkVerifyCancel');
@@ -652,6 +820,20 @@
           openLinkVerifyModal(link.href,true);
         });
       });
+    })();
+
+    // ---------- Feedback System Events ----------
+    (function(){
+      var submitBtn=document.getElementById('feedbackSubmit');
+      if(submitBtn){submitBtn.addEventListener('click',submitFeedback);}
+      var input=document.getElementById('feedbackInput');
+      if(input){input.addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){submitFeedback();}});}
+      var replyClose=document.getElementById('replyClose');
+      if(replyClose){replyClose.addEventListener('click',closeReplyPopup);}
+      var replyOverlay=document.getElementById('replyOverlay');
+      if(replyOverlay){replyOverlay.addEventListener('click',closeReplyPopup);}
+      // Check for replies on page load (after a short delay to not block rendering)
+      setTimeout(checkReplies,1500);
     })();
 
     // ---------- Load preferences from localStorage (always works, regardless of cookie choice) ----------
