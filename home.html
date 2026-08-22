@@ -154,27 +154,34 @@
     .reply-popup{
       position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);
       z-index:10000;background:var(--card-bg);border:1px solid var(--border);
-      border-radius:16px;padding:32px;max-width:420px;width:90%;
-      box-shadow:0 20px 60px rgba(0,0,0,0.4);opacity:0;visibility:hidden;
-      transition:all .3s ease;
+      border-radius:20px;padding:32px;max-width:440px;width:90%;
+      box-shadow:0 24px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05);
+      opacity:0;visibility:hidden;transition:all .35s cubic-bezier(.22,1,.36,1);
     }
     .reply-popup.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
     .reply-popup-overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;
-      opacity:0;visibility:hidden;transition:all .3s ease;
-      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;
+      opacity:0;visibility:hidden;transition:all .35s ease;
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     }
     .reply-popup-overlay.show{opacity:1;visibility:visible}
-    .reply-icon{width:48px;height:48px;margin:0 auto 16px;color:#f97316}
+    .reply-icon{width:52px;height:52px;margin:0 auto 16px;color:#f97316}
     .reply-icon svg{width:100%;height:100%}
-    .reply-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:12px}
-    .reply-content{font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:24px;white-space:pre-wrap;word-break:break-word}
+    .reply-title{font-size:22px;font-weight:800;text-align:center;margin-bottom:20px;letter-spacing:-0.01em}
+    .reply-user-msg{background:var(--bg);border-radius:12px;padding:14px 16px;margin-bottom:4px}
+    .reply-user-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;font-weight:600}
+    .reply-user-content{font-size:14px;line-height:1.6;color:var(--text-secondary);margin:0;white-space:pre-wrap;word-break:break-word}
+    .reply-divider{height:1px;background:var(--border);margin:16px 0}
+    .reply-admin-label{font-size:11px;color:#f97316;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;font-weight:600}
+    .reply-content{font-size:15px;line-height:1.7;color:var(--text);margin-bottom:24px;white-space:pre-wrap;word-break:break-word;font-weight:500}
     .reply-close{
-      display:block;width:100%;padding:12px;border-radius:100px;border:none;
-      background:var(--text);color:var(--bg);font-size:14px;font-weight:700;
-      cursor:pointer;font-family:inherit;transition:opacity .2s ease;
+      display:block;width:100%;padding:13px;border-radius:100px;border:none;
+      background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;font-size:14px;font-weight:700;
+      cursor:pointer;font-family:inherit;transition:all .25s ease;
+      box-shadow:0 4px 16px rgba(249,115,22,0.3);
     }
-    .reply-close:hover{opacity:.85}
+    .reply-close:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(249,115,22,0.45)}
+    .reply-close:active{transform:translateY(0)}
     @media(max-width:480px){.feedback-form{margin-top:32px}.reply-popup{padding:24px}}
     .footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--text-muted);font-size:13px;background:var(--footer-bg);transition:background .4s ease}
     #memorial{min-height:100vh;display:flex;align-items:center;padding:120px 48px;position:relative;color:var(--memorial-text)}
@@ -535,6 +542,12 @@
   <div class="reply-popup" id="replyPopup">
     <div class="reply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
     <p class="reply-title"><span class="zh">收到回复</span><span class="en">New Reply</span></p>
+    <div class="reply-user-msg">
+      <p class="reply-user-label"><span class="zh">你的留言</span><span class="en">Your message</span></p>
+      <p class="reply-user-content" id="replyUserContent"></p>
+    </div>
+    <div class="reply-divider"></div>
+    <p class="reply-admin-label"><span class="zh">站长回复</span><span class="en">Admin reply</span></p>
     <div class="reply-content" id="replyContent"></div>
     <button class="reply-close" id="replyClose"><span class="zh">知道了</span><span class="en">Got it</span></button>
   </div>
@@ -753,18 +766,20 @@
             var latest=result.data[0];
             console.log('[Feedback] latest reply id='+latest.id+' reply='+latest.reply);
             if(latest.id>lastRead){
-              showReplyPopup(latest.reply,latest.id);
+              showReplyPopup(latest.reply,latest.id,latest.content);
             }
           }
         }).catch(function(e){console.error('[Feedback] catch error:',e);});
     }
 
     // Show reply popup
-    function showReplyPopup(content,recordId){
+    function showReplyPopup(replyContent,recordId,userContent){
       var overlay=document.getElementById('replyOverlay');
       var popup=document.getElementById('replyPopup');
       var contentEl=document.getElementById('replyContent');
-      if(contentEl){contentEl.textContent=content;}
+      var userContentEl=document.getElementById('replyUserContent');
+      if(contentEl){contentEl.textContent=replyContent;}
+      if(userContentEl){userContentEl.textContent=userContent||'';}
       if(overlay){overlay.classList.add('show');}
       if(popup){popup.classList.add('show');}
       if(recordId){localStorage.setItem('feedback_last_read_id',String(recordId));}
@@ -825,7 +840,7 @@
       var replyOverlay=document.getElementById('replyOverlay');
       if(replyOverlay){replyOverlay.addEventListener('click',closeReplyPopup);}
       // Check for replies on page load (after a short delay to not block rendering)
-      setTimeout(checkReplies,1500);
+      setTimeout(checkReplies,3000);
     })();
 
     // ---------- Load preferences from localStorage (always works, regardless of cookie choice) ----------
