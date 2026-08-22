@@ -534,6 +534,7 @@
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
     var linkVerifyPoller=null;
+    var pendingNewWindow=null;
     function renderLinkTurnstile(){
       var container=document.getElementById('linkTurnstile');
       if(!container||!window.turnstile)return;
@@ -561,6 +562,10 @@
       if(isBot()){return true;}
       pendingLinkUrl=url;
       pendingLinkIsDownload=isDownload;
+      // Pre-open blank window in user gesture sync stack (Safari won't block)
+      if(!isDownload){
+        try{pendingNewWindow=window.open('','_blank');}catch(e){pendingNewWindow=null;}
+      }
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
       if(window.turnstile){renderLinkTurnstile();}
@@ -570,20 +575,43 @@
     function closeLinkVerifyModal(){
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
+      // Close pre-opened blank window if user cancelled (verification success sets it to null)
+      if(pendingNewWindow){
+        try{pendingNewWindow.close();}catch(e){}
+      }
       pendingLinkUrl=null;
+      pendingNewWindow=null;
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
     }
     function onLinkVerifySuccess(token){
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
+      var navigated=false;
       if(pendingLinkUrl){
         if(pendingLinkIsDownload){
           var a=document.createElement('a');
           a.href=pendingLinkUrl;a.download='';a.style.display='none';
-          document.body.appendChild(a);a.click();document.body.removeChild(a);
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
+          navigated=true;
+        }else if(pendingNewWindow){
+          try{pendingNewWindow.location.href=pendingLinkUrl;navigated=true;}catch(e){navigated=false;}
+          if(!navigated){
+            var fa=document.createElement('a');
+            fa.href=pendingLinkUrl;fa.target='_blank';fa.rel='noopener noreferrer';fa.style.display='none';
+            document.body.appendChild(fa);fa.click();
+            setTimeout(function(){try{document.body.removeChild(fa);}catch(e){}},100);
+            navigated=true;
+          }
         }else{
-          window.open(pendingLinkUrl,'_blank','noopener');
+          var fa2=document.createElement('a');
+          fa2.href=pendingLinkUrl;fa2.target='_blank';fa2.rel='noopener noreferrer';fa2.style.display='none';
+          document.body.appendChild(fa2);fa2.click();
+          setTimeout(function(){try{document.body.removeChild(fa2);}catch(e){}},100);
+          navigated=true;
         }
       }
+      if(navigated){pendingNewWindow=null;}
       setTimeout(closeLinkVerifyModal,300);
     }
     document.addEventListener('DOMContentLoaded',function(){
