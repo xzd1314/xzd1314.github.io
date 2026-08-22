@@ -533,6 +533,7 @@
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
+    var linkVerifyPoller=null;
     function renderLinkTurnstile(){
       var container=document.getElementById('linkTurnstile');
       if(!container||!window.turnstile)return;
@@ -541,10 +542,20 @@
       try{
         window.turnstile.render('#linkTurnstile',{
           sitekey:'0x4AAAAAAEYslAufS7xZQ-Jn',
-          callback:'onLinkVerifySuccess',
+          callback:onLinkVerifySuccess,
           theme:theme
         });
       }catch(e){}
+      // Fallback: poll for Turnstile response in case callback doesn't fire
+      if(linkVerifyPoller)clearInterval(linkVerifyPoller);
+      linkVerifyPoller=setInterval(function(){
+        var input=document.querySelector('#linkVerifyModal input[name="cf-turnstile-response"]');
+        if(input&&input.value&&pendingLinkUrl){
+          clearInterval(linkVerifyPoller);
+          linkVerifyPoller=null;
+          onLinkVerifySuccess(input.value);
+        }
+      },300);
     }
     function openLinkVerifyModal(url,isDownload){
       if(isBot()){return true;}
@@ -560,8 +571,10 @@
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
+      if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
     }
     function onLinkVerifySuccess(token){
+      if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
       if(pendingLinkUrl){
         if(pendingLinkIsDownload){
           var a=document.createElement('a');
