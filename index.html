@@ -19,6 +19,8 @@
       --projects-bg: linear-gradient(180deg,#ebe8f0 0%,#e8efee 100%);
       --contact-bg: linear-gradient(180deg,#e8efee 0%,#ffffff 100%);
       --footer-bg: #ffffff;
+      --cookie-bg: rgba(255,255,255,0.95);
+      --cookie-border: rgba(0,0,0,0.1);
     }
     [data-theme="dark"] {
       --bg: #000; --text: #fff; --text-secondary: #999; --text-muted: #666;
@@ -32,6 +34,8 @@
       --projects-bg: linear-gradient(180deg,#0c0612 0%,#060c0c 100%);
       --contact-bg: linear-gradient(180deg,#060c0c 0%,#000 100%);
       --footer-bg: #000;
+      --cookie-bg: rgba(20,20,20,0.97);
+      --cookie-border: rgba(255,255,255,0.1);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -112,6 +116,33 @@
     .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
     .reveal.is-visible{opacity:1;transform:translateY(0)}
     .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}
+
+    /* ---------- Cookie Banner ---------- */
+    .cookie-banner{
+      position:fixed;left:0;right:0;bottom:0;z-index:200;
+      background:var(--cookie-bg);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      border-top:1px solid var(--cookie-border);
+      padding:32px 48px 28px;
+      transform:translateY(100%);
+      transition:transform .5s cubic-bezier(.22,1,.36,1);
+      max-height:50vh;overflow-y:auto;
+    }
+    .cookie-banner.show{transform:translateY(0)}
+    .cookie-inner{max-width:900px;margin:0 auto}
+    .cookie-title{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:10px}
+    .cookie-title svg{width:22px;height:22px;opacity:.8}
+    .cookie-text{font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:20px}
+    .cookie-buttons{display:flex;gap:12px;flex-wrap:wrap}
+    .cookie-btn{
+      padding:10px 28px;border-radius:100px;font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;transition:all .25s ease;border:1px solid var(--border);
+    }
+    .cookie-btn-accept{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .cookie-btn-accept:hover{opacity:.85;transform:translateY(-1px)}
+    .cookie-btn-reject{background:transparent;color:var(--text-secondary)}
+    .cookie-btn-reject:hover{background:var(--card-hover);color:var(--text);border-color:var(--border-hover)}
+
     @media(max-width:1200px){.skill-cards{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:1024px){.nav{padding:18px 32px}.nav.scrolled{padding:12px 32px}.section{padding:100px 32px}#skills .section-inner{grid-template-columns:1fr;gap:40px}#skills .section-left{position:static}.skill-cards{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:768px){
@@ -129,19 +160,21 @@
       .project-actions{grid-column:2;justify-content:flex-start;margin-top:8px}
       .project-info h3{font-size:22px}
       .footer{flex-direction:column;gap:12px;padding:32px 24px;text-align:center}
+      .cookie-banner{padding:24px 20px 20px;max-height:60vh}
+      .cookie-btn{padding:9px 22px;font-size:13px}
     }
     @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:8px 14px;font-size:13px}}
   </style>
 </head>
-<body data-theme="light" data-lang="zh">
+<body data-theme="dark" data-lang="zh">
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#hero"><span class="zh">家页面</span><span class="en">Home</span></a></li>
+      <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
       <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
-      <li><a href="#skills"><span class="zh">技巧</span><span class="en">Skills</span></a></li>
+      <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
       <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
-      <li><a href="#contact"><span class="zh">接触</span><span class="en">Contact</span></a></li>
+      <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
     </ul>
     <div class="nav-right">
       <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
@@ -149,9 +182,9 @@
       </button>
       <button class="nav-btn" id="themeBtn" aria-label="切换主题">
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
-        <span class="btn-text" id="themeBtnText"><span class="zh">浅色</span><span class="en">Light</span></span>
+        <span class="btn-text" id="themeBtnText"><span class="zh">深色</span><span class="en">Dark</span></span>
       </button>
       <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     </div>
@@ -163,7 +196,7 @@
         <div class="avatar-wrap"><img src="assets/avatar.jpg" alt="xzd1314 avatar"/></div>
       </a>
       <h1 class="hero-title reveal reveal-delay-1">xzd1314.</h1>
-      <p class="hero-slogan reveal reveal-delay-2"><span class="zh">使用代码去建造数字的世界</span><span class="en">Use code to build the digital world</span></p>
+      <p class="hero-slogan reveal reveal-delay-2"><span class="zh">用代码构建数字世界</span><span class="en">Use code to build the digital world</span></p>
     </div>
     <div class="scroll-indicator"><span>SCROLL</span><div class="line"></div></div>
   </section>
@@ -171,32 +204,32 @@
   <section class="section" id="about">
     <div class="section-inner">
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
-      <h2 class="section-title reveal reveal-delay-1"><span class="zh">这里是没有任何东西</span><span class="en">There is nothing here</span></h2>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">这里什么都没有</span><span class="en">There is nothing here</span></h2>
     </div>
   </section>
 
   <section class="section" id="skills">
     <div class="section-inner">
       <div class="section-left">
-        <p class="section-label reveal"><span class="zh">技巧</span><span class="en">Skills</span></p>
-        <h2 class="section-title reveal reveal-delay-1"><span class="zh">一些事情我是能够做的</span><span class="en">Some things I can do</span></h2>
-        <p class="section-desc reveal reveal-delay-2"><span class="zh">从游戏的开发到网页的设计，从脚本的自动化到工具的制作。工具是正在改变的，但是创造的乐趣是从未有过改变的。</span><span class="en">From game development to web design, from script automation to tool making. Tools are changing, but the joy of creation has never changed.</span></p>
+        <p class="section-label reveal"><span class="zh">技能</span><span class="en">Skills</span></p>
+        <h2 class="section-title reveal reveal-delay-1"><span class="zh">我会的一些事</span><span class="en">Some things I can do</span></h2>
+        <p class="section-desc reveal reveal-delay-2"><span class="zh">从游戏开发到网页设计，从脚本自动化到工具制作。工具在变，但创造的乐趣从未改变。</span><span class="en">From game development to web design, from script automation to tool making. Tools are changing, but the joy of creation has never changed.</span></p>
       </div>
       <div class="skill-cards">
         <div class="skill-card reveal reveal-delay-1">
           <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
-          <div class="skill-name"><span class="zh">前面的末端开发</span><span class="en">Frontend Dev</span></div>
-          <p class="skill-desc"><span class="zh">HTML / CSS / JavaScript，使用代码去把想法变成可以被看见的界面。</span><span class="en">HTML / CSS / JavaScript, use code to turn ideas into visible interfaces.</span></p>
+          <div class="skill-name"><span class="zh">前端开发</span><span class="en">Frontend Dev</span></div>
+          <p class="skill-desc"><span class="zh">HTML / CSS / JavaScript，用代码把想法变成看得见的界面。</span><span class="en">HTML / CSS / JavaScript, use code to turn ideas into visible interfaces.</span></p>
         </div>
         <div class="skill-card reveal reveal-delay-2">
           <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 14l3-3 4 4 3-5"/></svg>
-          <div class="skill-name"><span class="zh">Roblox 的开发</span><span class="en">Roblox Dev</span></div>
-          <p class="skill-desc"><span class="zh">Lua 的脚本、游戏的机制设计，在 Roblox 的宇宙里面去建造属于自己的世界。</span><span class="en">Lua scripts, game mechanics design, build your own world in the Roblox universe.</span></p>
+          <div class="skill-name"><span class="zh">Roblox 开发</span><span class="en">Roblox Dev</span></div>
+          <p class="skill-desc"><span class="zh">Lua 脚本、游戏机制设计，在 Roblox 宇宙里建造属于自己的世界。</span><span class="en">Lua scripts, game mechanics design, build your own world in the Roblox universe.</span></p>
         </div>
         <div class="skill-card reveal reveal-delay-3">
           <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           <div class="skill-name">Python</div>
-          <p class="skill-desc"><span class="zh">自动化的脚本、数据的处理、爬虫，去让重复的事情交给程序。</span><span class="en">Automation scripts, data processing, web crawlers, let repetitive tasks be handed over to programs.</span></p>
+          <p class="skill-desc"><span class="zh">自动化脚本、数据处理、爬虫，让重复的事情交给程序。</span><span class="en">Automation scripts, data processing, web crawlers, let repetitive tasks be handed over to programs.</span></p>
         </div>
       </div>
     </div>
@@ -206,20 +239,20 @@
     <div class="section-inner">
       <div>
         <p class="section-label reveal"><span class="zh">项目</span><span class="en">Projects</span></p>
-        <h2 class="section-title reveal reveal-delay-1"><span class="zh">一些东西我已经做了</span><span class="en">Some things I have done</span></h2>
+        <h2 class="section-title reveal reveal-delay-1"><span class="zh">做过的一些东西</span><span class="en">Some things I have done</span></h2>
       </div>
       <div class="project-list">
         <div class="project-item reveal">
           <span class="project-num">01</span>
           <div class="project-info">
-            <h3><span class="zh">迷上城建造的 Forge 移植</span><span class="en">Mishanguc Forge Port</span></h3>
-            <p><span class="zh">Mishanguc mod for Forge 1.19.4 — 迷上城的建模组的 Forge 版本的移植</span><span class="en">Mishanguc mod for Forge 1.19.4 — Mishanguc modeling team Forge version port</span></p>
+            <h3><span class="zh">迷上城建 Forge 移植</span><span class="en">Mishanguc Forge Port</span></h3>
+            <p><span class="zh">Mishanguc mod for Forge 1.19.4 — 迷上城建模组 Forge 版本移植</span><span class="en">Mishanguc mod for Forge 1.19.4 — Mishanguc modeling team Forge version port</span></p>
           </div>
           <div class="project-actions">
             <span class="project-tag">Java / Forge</span>
             <a href="https://github.com/xzd1314/mishanguc-forge" target="_blank" rel="noopener" class="project-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              <span class="zh">去查看</span><span class="en">View</span>
+              <span class="zh">查看</span><span class="en">View</span>
             </a>
           </div>
         </div>
@@ -233,7 +266,7 @@
             <span class="project-tag">Android</span>
             <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/downloads/zhulaile-nextbot-v4.apk" download class="project-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span class="zh">去下载</span><span class="en">Download</span>
+              <span class="zh">下载</span><span class="en">Download</span>
             </a>
           </div>
         </div>
@@ -243,8 +276,8 @@
 
   <section class="section" id="contact">
     <div class="section-inner">
-      <p class="section-label reveal"><span class="zh">接触</span><span class="en">Contact</span></p>
-      <h2 class="contact-cta reveal reveal-delay-1"><span class="zh">如果你想要去聊天，任何时间找到我</span><span class="en">If you want to chat, find me anytime</span></h2>
+      <p class="section-label reveal"><span class="zh">联系</span><span class="en">Contact</span></p>
+      <h2 class="contact-cta reveal reveal-delay-1"><span class="zh">想聊聊的话，随时找我</span><span class="en">If you want to chat, find me anytime</span></h2>
       <div class="contact-links">
         <a href="mailto:robloxxzd1314@163.com" class="contact-link reveal reveal-delay-2">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -267,29 +300,159 @@
   </section>
 
   <footer class="footer">
-    <span>&copy; 2026 xzd1314. <span class="zh">所有权利是被保留的</span><span class="en">All rights reserved</span>.</span>
-    <span><span class="zh">使用代码去精心制作的</span><span class="en">Crafted with code</span>.</span>
+    <span>&copy; 2026 xzd1314. <span class="zh">版权所有</span><span class="en">All rights reserved</span>.</span>
+    <span><span class="zh">用代码精心打造</span><span class="en">Crafted with code</span>.</span>
   </footer>
 
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-inner">
+      <div class="cookie-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21.59 11.13a1 1 0 0 0-.84-.14 8.49 8.49 0 0 1-7.74-7.74 1 1 0 0 0-.14-.84A10 10 0 1 0 21.59 11.13z"/>
+          <circle cx="8.5" cy="8.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/><circle cx="9" cy="15" r="1"/>
+        </svg>
+        <span class="zh">Cookie 偏好设置</span><span class="en">Cookie Preferences</span>
+      </div>
+      <p class="cookie-text">
+        <span class="zh">本网站仅使用 Cookie 记录您的深色浅色、语言等界面使用偏好，不会进行追踪统计。</span>
+        <span class="en">This website only uses cookies to remember your interface preferences such as theme and language. No tracking or analytics.</span>
+      </p>
+      <div class="cookie-buttons">
+        <button class="cookie-btn cookie-btn-accept" id="cookieAccept">
+          <span class="zh">接受</span><span class="en">Accept</span>
+        </button>
+        <button class="cookie-btn cookie-btn-reject" id="cookieReject">
+          <span class="zh">拒绝</span><span class="en">Reject</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    window.addEventListener('load',()=>{window.location.hash='#hero';setTimeout(()=>window.scrollTo(0,0),10)});
-    const nav=document.getElementById('nav');
-    window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.add('scrolled')}else{nav.classList.remove('scrolled')}});
-    const navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
-    navToggle.addEventListener('click',()=>{navToggle.classList.toggle('active');navLinks.classList.toggle('open')});
-    navLinks.querySelectorAll('a').forEach(link=>{link.addEventListener('click',()=>{navToggle.classList.remove('active');navLinks.classList.remove('open')})});
-    const themeBtn=document.getElementById('themeBtn'),themeIcon=document.getElementById('themeIcon');
-    const sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
-    const moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-    themeBtn.addEventListener('click',()=>{const c=document.body.getAttribute('data-theme');if(c==='light'){document.body.setAttribute('data-theme','dark');themeIcon.innerHTML=moonIcon}else{document.body.setAttribute('data-theme','light');themeIcon.innerHTML=sunIcon}});
-    const langBtn=document.getElementById('langBtn');
-    langBtn.addEventListener('click',()=>{const c=document.body.getAttribute('data-lang');if(c==='zh'){document.body.setAttribute('data-lang','en');langBtn.setAttribute('data-active','en')}else{document.body.setAttribute('data-lang','zh');langBtn.setAttribute('data-active','zh')}});
-    const revealEls=document.querySelectorAll('.reveal');
+    // ---------- Load preferences from localStorage (always works, regardless of cookie choice) ----------
+    (function(){
+      try{
+        var savedTheme=localStorage.getItem('site_theme');
+        if(savedTheme==='light'||savedTheme==='dark'){
+          document.body.setAttribute('data-theme',savedTheme);
+        }
+        var savedLang=localStorage.getItem('site_lang');
+        if(savedLang==='zh'||savedLang==='en'){
+          document.body.setAttribute('data-lang',savedLang);
+        }
+      }catch(e){}
+    })();
+
+    window.addEventListener('load',function(){
+      window.location.hash='#hero';
+      setTimeout(function(){window.scrollTo(0,0)},10);
+
+      // Sync theme button state after loading preference
+      var currentTheme=document.body.getAttribute('data-theme');
+      var themeIcon=document.getElementById('themeIcon');
+      var themeBtnText=document.getElementById('themeBtnText');
+      var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+      var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      if(currentTheme==='light'){
+        themeIcon.innerHTML=sunIcon;
+        themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';
+      }else{
+        themeIcon.innerHTML=moonIcon;
+        themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
+      }
+
+      // Sync lang button state
+      var currentLang=document.body.getAttribute('data-lang');
+      var langBtn=document.getElementById('langBtn');
+      langBtn.setAttribute('data-active',currentLang);
+    });
+
+    // ---------- Nav scroll effect ----------
+    var nav=document.getElementById('nav');
+    window.addEventListener('scroll',function(){
+      if(window.scrollY>50){nav.classList.add('scrolled')}else{nav.classList.remove('scrolled')}
+    });
+
+    // ---------- Mobile nav toggle ----------
+    var navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
+    navToggle.addEventListener('click',function(){navToggle.classList.toggle('active');navLinks.classList.toggle('open')});
+    navLinks.querySelectorAll('a').forEach(function(link){link.addEventListener('click',function(){navToggle.classList.remove('active');navLinks.classList.remove('open')})});
+
+    // ---------- Theme toggle (saved to localStorage always) ----------
+    var themeBtn=document.getElementById('themeBtn');
+    var themeIcon=document.getElementById('themeIcon');
+    var themeBtnText=document.getElementById('themeBtnText');
+    var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    themeBtn.addEventListener('click',function(){
+      var c=document.body.getAttribute('data-theme');
+      if(c==='dark'){
+        document.body.setAttribute('data-theme','light');
+        themeIcon.innerHTML=sunIcon;
+        themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';
+      }else{
+        document.body.setAttribute('data-theme','dark');
+        themeIcon.innerHTML=moonIcon;
+        themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
+      }
+      try{localStorage.setItem('site_theme',document.body.getAttribute('data-theme'))}catch(e){}
+    });
+
+    // ---------- Language toggle (saved to localStorage always) ----------
+    var langBtn=document.getElementById('langBtn');
+    langBtn.addEventListener('click',function(){
+      var c=document.body.getAttribute('data-lang');
+      if(c==='zh'){
+        document.body.setAttribute('data-lang','en');
+        langBtn.setAttribute('data-active','en');
+      }else{
+        document.body.setAttribute('data-lang','zh');
+        langBtn.setAttribute('data-active','zh');
+      }
+      try{localStorage.setItem('site_lang',document.body.getAttribute('data-lang'))}catch(e){}
+    });
+
+    // ---------- Cookie banner (UI only, does not block preference storage) ----------
+    var cookieBanner=document.getElementById('cookieBanner');
+    var cookieAccept=document.getElementById('cookieAccept');
+    var cookieReject=document.getElementById('cookieReject');
+
+    function hideCookieBanner(){
+      cookieBanner.classList.remove('show');
+    }
+
+    function setCookieChoice(choice){
+      try{localStorage.setItem('cookie_choice',choice)}catch(e){}
+      hideCookieBanner();
+    }
+
+    cookieAccept.addEventListener('click',function(){setCookieChoice('accepted')});
+    cookieReject.addEventListener('click',function(){setCookieChoice('rejected')});
+
+    // Show banner only on first visit (no previous choice recorded)
+    try{
+      var cookieChoice=localStorage.getItem('cookie_choice');
+      if(!cookieChoice){
+        setTimeout(function(){cookieBanner.classList.add('show')},600);
+      }
+    }catch(e){
+      // If localStorage is unavailable, still show banner
+      setTimeout(function(){cookieBanner.classList.add('show')},600);
+    }
+
+    // ---------- Scroll reveal with fallback ----------
+    var revealEls=document.querySelectorAll('.reveal');
     if('IntersectionObserver' in window){
-      const observer=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible')}else{entry.target.classList.remove('is-visible')}})},{threshold:.15,rootMargin:'0px 0px -50px 0px'});
-      revealEls.forEach(el=>observer.observe(el));
+      var observer=new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){entry.target.classList.add('is-visible')}
+          else{entry.target.classList.remove('is-visible')}
+        });
+      },{threshold:.15,rootMargin:'0px 0px -50px 0px'});
+      revealEls.forEach(function(el){observer.observe(el)});
     }else{
-      revealEls.forEach(el=>el.classList.add('is-visible'));
+      revealEls.forEach(function(el){el.classList.add('is-visible')});
     }
   </script>
 </body>
