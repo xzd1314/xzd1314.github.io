@@ -462,7 +462,7 @@
       </div>
       <h3 class="verify-modal-title"><span class="zh">需要验证</span><span class="en">Verification Required</span></h3>
       <p class="verify-modal-desc"><span class="zh">请完成人机验证以继续</span><span class="en">Please complete human verification to continue</span></p>
-      <div id="linkTurnstile"></div>
+      <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
       <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
     </div>
   </div>
@@ -536,23 +536,21 @@
     var linkVerifyPoller=null;
     var linkWidgetId=null;
     function renderLinkTurnstile(){
-      var container=document.getElementById('linkTurnstile');
-      if(!container||!window.turnstile)return;
-      container.innerHTML='';
+      var widget=document.getElementById('linkTurnstile');
+      if(!widget)return;
+      // Update theme attribute
       var theme=document.body.getAttribute('data-theme')==='light'?'light':'dark';
-      try{
-        linkWidgetId=window.turnstile.render('#linkTurnstile',{
-          sitekey:'0x4AAAAAAEYslAufS7xZQ-Jn',
-          callback:'onLinkVerifySuccess',
-          theme:theme
-        });
-      }catch(e){linkWidgetId=null;}
+      widget.setAttribute('data-theme',theme);
+      // Reset widget if already rendered (standard HTML auto-render, no dynamic render needed)
+      if(window.turnstile){
+        try{window.turnstile.reset();}catch(e){}
+      }
       // Fallback: poll getResponse() in case callback doesn't fire
       if(linkVerifyPoller)clearInterval(linkVerifyPoller);
       linkVerifyPoller=setInterval(function(){
-        if(linkWidgetId&&window.turnstile){
+        if(window.turnstile){
           try{
-            var resp=window.turnstile.getResponse(linkWidgetId);
+            var resp=window.turnstile.getResponse();
             if(resp&&pendingLinkUrl){
               clearInterval(linkVerifyPoller);
               linkVerifyPoller=null;
