@@ -1340,10 +1340,8 @@
     (function(){
       var el=document.getElementById('visitorCount');
       if(!el)return;
-      // Wait for supabaseClient to be initialized
-      var tries=0;
+      // Wait for supabaseClient to be initialized (no timeout — initSupabase polls until library loads)
       var check=setInterval(function(){
-        tries++;
         if(window.supabaseClient){
           clearInterval(check);
           try{
@@ -1356,14 +1354,12 @@
             }).catch(function(){el.textContent='---';});
           }catch(e){el.textContent='---';}
         }
-        if(tries>50)clearInterval(check);
       },100);
     })();
 
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
-    var pendingIosDownload=false;
     var linkVerifyPoller=null;
     var linkWidgetId=null;
     function renderLinkTurnstile(){
@@ -1391,13 +1387,12 @@
         }
       },300);
     }
-    function openLinkVerifyModal(url,isDownload,isIos){
+    function openLinkVerifyModal(url,isDownload){
       // Bots: bypass external link verification (SEO needs to follow links),
       // but NEVER bypass download verification.
       if(isBot()&&!isDownload){return true;}
       pendingLinkUrl=url;
       pendingLinkIsDownload=isDownload;
-      pendingIosDownload=!!isIos;
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
       if(window.turnstile){renderLinkTurnstile();}
@@ -1408,7 +1403,6 @@
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
-      pendingIosDownload=false;
       linkWidgetId=null;
       // Reset button states
       var turnstileEl=document.getElementById('linkTurnstile');
@@ -1502,20 +1496,17 @@
 
     // Check for replies from Supabase
     function checkReplies(){
-      if(!supabaseClient){console.log('[Feedback] supabase not ready');return;}
+      if(!supabaseClient){return;}
       var uid=getUserId();
       var lastRead=parseInt(localStorage.getItem('feedback_last_read_id')||'0',10);
-      console.log('[Feedback] checkReplies, uid='+uid+', lastRead='+lastRead);
       supabaseClient.rpc('get_my_replies',{p_user_id:uid})
         .then(function(result){
           if(result.error){
             console.error('[Feedback] query error:',result.error);
             return;
           }
-          console.log('[Feedback] query result count='+(result.data?result.data.length:0));
           if(result.data&&result.data.length>0){
             var latest=result.data[0];
-            console.log('[Feedback] latest reply id='+latest.id+' reply='+latest.reply);
             if(latest.id>lastRead){
               showReplyPopup(latest.reply,latest.id,latest.content);
             }
@@ -1555,22 +1546,6 @@
       },400);
     }
     // Show iOS not available popup (reuses reply popup styling)
-    function showIosNotAvailablePopup(){
-      var overlay=document.getElementById('replyOverlay');
-      var popup=document.getElementById('replyPopup');
-      var titleEl=document.querySelector('#replyPopup .reply-title');
-      var userMsg=document.querySelector('#replyPopup .reply-user-msg');
-      var arrow=document.querySelector('#replyPopup .reply-arrow');
-      var adminLabel=document.querySelector('#replyPopup .reply-admin-label');
-      var contentEl=document.getElementById('replyContent');
-      if(titleEl){titleEl.innerHTML='<span class="zh">暂不可用</span><span class="en">Not Available</span>';}
-      if(userMsg){userMsg.style.display='none';}
-      if(arrow){arrow.style.display='none';}
-      if(adminLabel){adminLabel.style.display='none';}
-      if(contentEl){contentEl.textContent=(document.body.getAttribute('data-lang')==='en'?'Content not uploaded yet. Please wait or contact the developer.':'开发者未上传该内容，请等待上传或联系开发者。');}
-      if(overlay){overlay.classList.add('show');}
-      if(popup){popup.classList.add('show');}
-    }
     // Bind link verification events immediately (script is at end of body, DOM is ready)
     (function(){
       var cancelBtn=document.getElementById('linkVerifyCancel');
@@ -1603,8 +1578,7 @@
       dlLinks.forEach(function(link){
         link.addEventListener('click',function(e){
           e.preventDefault();
-          var isIos=link.href.toLowerCase().indexOf('.ipa')!==-1;
-          openLinkVerifyModal(link.href,true,isIos);
+          openLinkVerifyModal(link.href,true);
         });
       });
     })();
