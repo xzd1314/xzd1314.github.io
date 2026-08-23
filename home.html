@@ -22,6 +22,13 @@
       font-style: normal;
       font-display: swap;
     }
+    @font-face {
+      font-family: 'Cascadia Mono';
+      src: url('assets/fonts/cascadia-mono-700-italic.woff2') format('woff2');
+      font-weight: 700;
+      font-style: italic;
+      font-display: swap;
+    }
     * {
       font-family: 'ChuangZhongHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
@@ -385,15 +392,14 @@
       z-index:-1;pointer-events:none;opacity:0.6;
     }
     body[data-theme="light"] .bg-canvas{opacity:0.3}
-    /* ---------- Custom Cursor ---------- */
-    .custom-cursor{
-      position:fixed;width:20px;height:20px;border:2px solid var(--accent);
-      border-radius:50%;pointer-events:none;z-index:99999;
-      transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s,border-color .2s;
+    /* ---------- Custom Cursor (ASUS) ---------- */
+    body{
+      cursor: url('assets/cursors/Normal Select.ani'), url('assets/cursors/Computer.ico'), auto;
     }
-    .custom-cursor.hover{
-      width:40px;height:40px;background:rgba(var(--accent-rgb),0.2);
+    a, button, .project-card, .skill-card, input, textarea, .hero-title, .nav-logo{
+      cursor: url('assets/cursors/Link Select.ani'), url('assets/cursors/Computer.ico'), pointer;
     }
+    .custom-cursor{display:none!important}
     .cursor-trail{
       position:fixed;pointer-events:none;z-index:99998;
     }
@@ -793,32 +799,12 @@
       animate();
     })();
 
-    // ========== Custom Cursor + Particle Trail ==========
+    // ========== Custom Cursor Particle Trail (ASUS cursor via CSS) ==========
     (function(){
       if(window.matchMedia('(pointer:coarse)').matches)return;
-      var cursor=document.getElementById('customCursor');
-      if(!cursor)return;
-      document.body.style.cursor='none';
-
-      var mx=0,my=0,cx=0,cy=0;
       document.addEventListener('mousemove',function(e){
-        mx=e.clientX;my=e.clientY;
         // Spawn trail particle
-        spawnParticle(mx,my);
-      });
-
-      function animateCursor(){
-        cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;
-        cursor.style.left=cx+'px';cursor.style.top=cy+'px';
-        requestAnimationFrame(animateCursor);
-      }
-      animateCursor();
-
-      // Hover effect on interactive elements
-      var hoverEls='a,button,.project-card,.skill-card,input,textarea';
-      document.querySelectorAll(hoverEls).forEach(function(el){
-        el.addEventListener('mouseenter',function(){cursor.classList.add('hover');});
-        el.addEventListener('mouseleave',function(){cursor.classList.remove('hover');});
+        spawnParticle(e.clientX,e.clientY);
       });
 
       // Particle trail
