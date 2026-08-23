@@ -1873,57 +1873,45 @@
       var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
       var currentSongId=null;
 
-      // CORS代理列表（依次尝试，全部失败则报错）
-      var proxies=[
-        function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
-        function(u){return 'https://corsproxy.io/?url='+encodeURIComponent(u);},
-        function(u){return 'https://thingproxy.freeboard.io/fetch/'+u;}
-      ];
-
-      function fetchWithProxy(url,cb){
-        var idx=0;
-        function tryNext(){
-          if(idx>=proxies.length){cb(null,'所有代理均失败');return;}
-          var pu=proxies[idx](url);idx++;
-          fetch(pu).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();})
-            .then(function(t){try{cb(JSON.parse(t),null);}catch(e){tryNext();}})
-            .catch(function(){tryNext();});
-        }
-        tryNext();
-      }
-
+      // QQ音乐搜索（JSONP绕过CORS）+ Meting API播放（QQ音乐源）
+      var jsonpSeq=0;
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
 
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">搜索中...</div>';
-        var apiUrl='https://music.163.com/api/search/get/web?s='+encodeURIComponent(kw)+'&type=1&limit=15';
-        fetchWithProxy(apiUrl,function(data,err){
-          if(err||!data||!data.result||!data.result.songs||data.result.songs.length===0){
-            resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果，请稍后重试</div>';return;
-          }
+        var cbName='bgm_jsonp_'+(++jsonpSeq);
+        var script=document.createElement('script');
+        function cleanup(){delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);}
+        window[cbName]=function(data){
+          cleanup();
+          var list=data&&data.data&&data.data.song&&data.data.song.list;
+          if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果</div>';return;}
           resultsEl.innerHTML='';
-          data.result.songs.forEach(function(song,i){
-            var artists=(song.artists||song.ar||[]).map(function(a){return a.name;}).join(' / ');
+          list.forEach(function(song,i){
+            var artists=(song.singer||[]).map(function(s){return s.name;}).join(' / ');
             var item=document.createElement('div');
-            item.className='bgm-result-item'+(song.id===currentSongId?' active':'');
+            item.className='bgm-result-item'+(song.songmid===currentSongId?' active':'');
             item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
-              '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.name)+'</div><div class="bgm-result-artist">'+escapeHtml(artists)+'</div></div>'+
+              '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.songname)+'</div><div class="bgm-result-artist">'+escapeHtml(artists)+'</div></div>'+
               '<button class="bgm-result-play">▶</button>';
             item.addEventListener('click',function(){playSong(song,artists);});
             resultsEl.appendChild(item);
           });
-        });
+        };
+        script.onerror=function(){cleanup();resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';};
+        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(kw)+'&format=jsonp&callback='+cbName+'&p=1&n=15';
+        document.head.appendChild(script);
       }
 
       function playSong(song,artists){
-        currentSongId=song.id;
-        npName.textContent=song.name;
+        currentSongId=song.songmid;
+        npName.textContent=song.songname;
         npArtist.textContent=artists;
-        var pic=(song.album&&song.album.picUrl)||(song.al&&song.al.picUrl)||'';
+        var pic=song.albummid?'https://api.injahow.cn/meting/?server=tencent&type=pic&id='+song.albummid:'';
         npCover.innerHTML=pic?'<img src="'+pic+'" alt="cover">':'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
-        audio.src='https://api.injahow.cn/meting/?server=netease&type=url&id='+song.id;
+        audio.src='https://api.injahow.cn/meting/?server=tencent&type=url&id='+song.songmid;
         audio.play().catch(function(){npName.textContent='播放失败，可能是版权限制';});
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
       }
