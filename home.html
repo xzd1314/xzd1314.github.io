@@ -1874,17 +1874,18 @@
       var currentSongId=null;
 
       // QQ音乐搜索（JSONP绕过CORS）+ Meting API播放（QQ音乐源）
-      var jsonpSeq=0;
+      // 注意：QQ音乐API忽略callback参数，总是返回 callback(...)，因此固定用window.callback
+      var searchCb=null;
+      window.callback=function(data){if(searchCb){var cb=searchCb;searchCb=null;cb(data);}};
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
 
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">搜索中...</div>';
-        var cbName='bgm_jsonp_'+(++jsonpSeq);
         var script=document.createElement('script');
-        function cleanup(){delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);}
-        window[cbName]=function(data){
+        function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);}
+        searchCb=function(data){
           cleanup();
           var list=data&&data.data&&data.data.song&&data.data.song.list;
           if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果</div>';return;}
@@ -1900,8 +1901,8 @@
             resultsEl.appendChild(item);
           });
         };
-        script.onerror=function(){cleanup();resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';};
-        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(kw)+'&format=jsonp&callback='+cbName+'&p=1&n=15';
+        script.onerror=function(){searchCb=null;cleanup();resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';};
+        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(kw)+'&format=jsonp&callback=callback&p=1&n=15';
         document.head.appendChild(script);
       }
 
