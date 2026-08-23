@@ -596,37 +596,37 @@
   </button>
   <div class="bgm-panel" id="bgmPanel">
     <div class="bgm-panel-header">
-      <span class="bgm-panel-title">🎵 BGM</span>
+      <span class="bgm-panel-title"><span class="zh">🎵 音乐</span><span class="en">🎵 Music</span></span>
       <button class="bgm-panel-close" id="bgmClose">×</button>
     </div>
     <div class="bgm-tabs">
-      <button class="bgm-tab-btn active" data-tab="search">搜索</button>
-      <button class="bgm-tab-btn" data-tab="queue">队列</button>
-      <button class="bgm-tab-btn" data-tab="fav">收藏</button>
-      <button class="bgm-tab-btn" data-tab="lyric">歌词</button>
+      <button class="bgm-tab-btn active" data-tab="search"><span class="zh">搜索</span><span class="en">Search</span></button>
+      <button class="bgm-tab-btn" data-tab="queue"><span class="zh">队列</span><span class="en">Queue</span></button>
+      <button class="bgm-tab-btn" data-tab="fav"><span class="zh">收藏</span><span class="en">Favorites</span></button>
+      <button class="bgm-tab-btn" data-tab="lyric"><span class="zh">歌词</span><span class="en">Lyrics</span></button>
     </div>
     <div class="bgm-tab-pane active" id="bgmTabSearch">
       <div class="bgm-search">
         <input type="text" id="bgmSearchInput" placeholder="搜索歌曲..." maxlength="50">
-        <button id="bgmSearchBtn">搜索</button>
+        <button id="bgmSearchBtn"><span class="zh">搜索</span><span class="en">Search</span></button>
       </div>
       <div class="bgm-results" id="bgmResults">
-        <div class="bgm-empty">搜索歌曲开始播放</div>
+        <div class="bgm-empty"><span class="zh">搜索歌曲开始播放</span><span class="en">Search songs to play</span></div>
       </div>
     </div>
     <div class="bgm-tab-pane" id="bgmTabQueue">
       <div class="bgm-results" id="bgmQueueList">
-        <div class="bgm-empty">队列为空</div>
+        <div class="bgm-empty"><span class="zh">队列为空</span><span class="en">Queue is empty</span></div>
       </div>
     </div>
     <div class="bgm-tab-pane" id="bgmTabFav">
       <div class="bgm-results" id="bgmFavList">
-        <div class="bgm-empty">暂无收藏</div>
+        <div class="bgm-empty"><span class="zh">暂无收藏</span><span class="en">No favorites</span></div>
       </div>
     </div>
     <div class="bgm-tab-pane" id="bgmTabLyric">
       <div class="bgm-lyric-wrap" id="bgmLyricWrap">
-        <div class="bgm-empty">暂无歌词</div>
+        <div class="bgm-empty"><span class="zh">暂无歌词</span><span class="en">No lyrics</span></div>
       </div>
     </div>
     <div class="bgm-now-playing">
@@ -635,8 +635,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
         </div>
         <div class="bgm-np-text">
-          <div class="bgm-np-name" id="bgmNpName">未播放</div>
-          <div class="bgm-np-artist" id="bgmNpArtist">选择一首歌</div>
+          <div class="bgm-np-name" id="bgmNpName"><span class="zh">未播放</span><span class="en">Not playing</span></div>
+          <div class="bgm-np-artist" id="bgmNpArtist"><span class="zh">选择一首歌</span><span class="en">Select a song</span></div>
         </div>
         <button class="bgm-np-fav" id="bgmNpFav" aria-label="收藏">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -658,6 +658,9 @@
         </button>
         <button class="bgm-ctrl-btn" id="bgmNextBtn" aria-label="下一首">
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,4 15,12 5,20"/><rect x="17" y="4" width="2" height="16"/></svg>
+        </button>
+        <button class="bgm-ctrl-btn" id="bgmDownloadBtn" aria-label="下载" title="下载 MP3" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
         <div class="bgm-volume">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;color:var(--text-muted)"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
@@ -787,6 +790,20 @@
                 <span class="zh">下载APK（安卓）</span><span class="en">Download APK (Android)</span>
               </a>
             </div>
+          </div>
+        </div>
+        <div class="project-item project-card reveal reveal-delay-2">
+          <span class="project-num">03</span>
+          <div class="project-info">
+            <h3><span class="zh">UEG 行政管理中心</span><span class="en">UEG Administration Console</span></h3>
+            <p><span class="zh">流浪地球世界观的地球联合政府管理后台，行星发动机、地下城、政务办理全链路指挥。</span><span class="en">United Earth Government admin console — engines, shelters, services and more.</span></p>
+          </div>
+          <div class="project-actions">
+            <span class="project-tag">React / Vite</span>
+            <button class="project-btn" onclick="openLinkVerifyModal('https://ueg-admin.vercel.app',false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              <span class="zh">进入</span><span class="en">Enter</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1872,6 +1889,7 @@
         langBtn.setAttribute('data-active','zh');
       }
       try{localStorage.setItem('site_lang',document.body.getAttribute('data-lang'))}catch(e){}
+      if(window.updateBgmLang)window.updateBgmLang();
     });
 
     // ---------- Cookie banner (UI only, does not block preference storage) ----------
@@ -1933,6 +1951,7 @@
       var playBtn=document.getElementById('bgmPlayBtn');
       var prevBtn=document.getElementById('bgmPrevBtn');
       var nextBtn=document.getElementById('bgmNextBtn');
+      var downloadBtn=document.getElementById('bgmDownloadBtn');
       var playIcon=document.getElementById('bgmPlayIcon');
       var progressBar=document.getElementById('bgmProgressBar');
       var progressFill=document.getElementById('bgmProgressFill');
@@ -1946,6 +1965,12 @@
       var ICON_PLAY='<polygon points="5,3 19,12 5,21"/>';
       var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
       var STORAGE_KEY='xzd1314_bgm';
+      var I18N={
+        zh:{searchPlaceholder:'搜索歌曲...',searching:'搜索中...',noResult:'搜索失败或无结果',searchError:'搜索失败，请稍后重试',loading:'加载中...',tryingSource:'正在尝试其他音源...',vipRestricted:'该歌曲需要VIP或版权限制',playError:'播放失败，请稍后重试',queueEmpty:'队列为空',noFavorites:'暂无收藏',noLyrics:'暂无歌词',playFailed:'播放失败',download:'下载'},
+        en:{searchPlaceholder:'Search songs...',searching:'Searching...',noResult:'No results found',searchError:'Search failed, please retry',loading:'Loading...',tryingSource:'Trying other source...',vipRestricted:'VIP or copyright restricted',playError:'Playback failed, please retry',queueEmpty:'Queue is empty',noFavorites:'No favorites',noLyrics:'No lyrics',playFailed:'Playback failed',download:'Download'}
+      };
+      function bgmT(key){var lang=document.body.getAttribute('data-lang')||'zh';return(I18N[lang]&&I18N[lang][key])||I18N.zh[key]||key;}
+      function updateBgmLang(){searchInput.placeholder=bgmT('searchPlaceholder');}
       var currentSong=null;
       var queue=[];
       var favorites=[];
@@ -2048,11 +2073,11 @@
       // ===== 搜索 =====
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
-        resultsEl.innerHTML='<div class="bgm-loading">搜索中...</div>';
+        resultsEl.innerHTML='<div class="bgm-loading">'+bgmT('searching')+'</div>';
         jsonpReq('https://songsearch.kugou.com/song_search_v2?keyword='+encodeURIComponent(kw)+'&page=1&pagesize=15&platform=WebFilter')
           .then(function(data){
             var list=data&&data.data&&data.data.lists;
-            if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果</div>';return;}
+            if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
             resultsEl.innerHTML='';
             list.forEach(function(song,i){
               var item=document.createElement('div');
@@ -2078,13 +2103,13 @@
               resultsEl.appendChild(item);
             });
           })
-          .catch(function(){resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';});
+          .catch(function(){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('searchError')+'</div>';});
       }
 
       // ===== 播放 =====
       function playSong(song){
         currentSong=song;
-        npName.textContent='加载中...';
+        npName.textContent=bgmT('loading');
         npArtist.textContent=song.SingerName;
         updateCover(song.Image);
         updateNpFavBtn();
@@ -2096,6 +2121,7 @@
               npName.textContent=data.songName||song.SongName;
               npArtist.textContent=data.author_name||song.SingerName;
               audio.src=data.url;
+              downloadBtn.disabled=false;
               audio.play().catch(function(){tryQQMusic(song);});
               fetchLyrics(song);
             }else{tryQQMusic(song);}
@@ -2104,7 +2130,7 @@
         scheduleSave();
       }
       function tryQQMusic(song){
-        npName.textContent='正在尝试其他音源...';
+        npName.textContent=bgmT('tryingSource');
         var script=document.createElement('script');
         function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);}
         window.callback=function(data){
@@ -2117,15 +2143,16 @@
             var qpic=qq.albummid?'https://api.injahow.cn/meting/?server=tencent&type=pic&id='+qq.albummid:'';
             if(qpic)updateCover(qpic);
             audio.src='https://api.injahow.cn/meting/?server=tencent&type=url&id='+qq.songmid;
+            downloadBtn.disabled=false;
             audio.play().catch(function(){
-              npName.textContent=song.SongName;npArtist.textContent='该歌曲需要VIP或版权限制';
+              npName.textContent=song.SongName;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
             });
             fetchLyricsByMid(qq.songmid);
           }else{
-            npName.textContent=song.SongName;npArtist.textContent='该歌曲需要VIP或版权限制';
+            npName.textContent=song.SongName;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
           }
         };
-        script.onerror=function(){cleanup();npName.textContent=song.SongName;npArtist.textContent='播放失败，请稍后重试';};
+        script.onerror=function(){cleanup();npName.textContent=song.SongName;npArtist.textContent=bgmT('playError');downloadBtn.disabled=true;};
         script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(song.SongName+' '+song.SingerName)+'&format=jsonp&callback=callback&p=1&n=5';
         document.head.appendChild(script);
       }
@@ -2138,7 +2165,7 @@
       }
       function removeFromQueue(idx){queue.splice(idx,1);scheduleSave();renderQueue();}
       function renderQueue(){
-        if(queue.length===0){queueListEl.innerHTML='<div class="bgm-empty">队列为空</div>';return;}
+        if(queue.length===0){queueListEl.innerHTML='<div class="bgm-empty">'+bgmT('queueEmpty')+'</div>';return;}
         queueListEl.innerHTML='';
         queue.forEach(function(song,i){
           var item=document.createElement('div');
@@ -2165,7 +2192,7 @@
       }
       function removeFav(idx){favorites.splice(idx,1);scheduleSave();renderFavorites();updateNpFavBtn();}
       function renderFavorites(){
-        if(favorites.length===0){favListEl.innerHTML='<div class="bgm-empty">暂无收藏</div>';return;}
+        if(favorites.length===0){favListEl.innerHTML='<div class="bgm-empty">'+bgmT('noFavorites')+'</div>';return;}
         favListEl.innerHTML='';
         favorites.forEach(function(song,i){
           var item=document.createElement('div');
@@ -2218,7 +2245,7 @@
         renderLyrics();
       }
       function renderLyrics(){
-        if(lyrics.length===0){lyricWrap.innerHTML='<div class="bgm-empty">暂无歌词</div>';return;}
+        if(lyrics.length===0){lyricWrap.innerHTML='<div class="bgm-empty">'+bgmT('noLyrics')+'</div>';return;}
         lyricWrap.innerHTML='';
         lyrics.forEach(function(l,i){
           var div=document.createElement('div');
@@ -2263,6 +2290,20 @@
       prevBtn.addEventListener('click',function(){audio.currentTime=0;audio.play();});
       nextBtn.addEventListener('click',playNext);
       npFav.addEventListener('click',function(){if(currentSong)toggleFav(currentSong);});
+      downloadBtn.addEventListener('click',function(){
+        if(!audio.src||!currentSong)return;
+        var filename=(currentSong.SongName||'song').replace(/[<>:"/\\|?*]/g,'_')+'.mp3';
+        fetch(audio.src).then(function(r){return r.blob();}).then(function(blob){
+          var url=URL.createObjectURL(blob);
+          var a=document.createElement('a');a.href=url;a.download=filename;a.style.display='none';
+          document.body.appendChild(a);a.click();
+          setTimeout(function(){try{document.body.removeChild(a);URL.revokeObjectURL(url);}catch(e){}},100);
+        }).catch(function(){
+          var a=document.createElement('a');a.href=audio.src;a.download=filename;a.style.display='none';
+          document.body.appendChild(a);a.click();
+          setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
+        });
+      });
       audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');});
       audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();});
       audio.addEventListener('timeupdate',function(){
@@ -2280,7 +2321,7 @@
         }
       });
       audio.addEventListener('ended',function(){fab.classList.remove('playing');playIcon.innerHTML=ICON_PLAY;playNext();});
-      audio.addEventListener('error',function(){npName.textContent='播放失败';fab.classList.remove('playing');});
+      audio.addEventListener('error',function(){npName.textContent=bgmT('playFailed');fab.classList.remove('playing');downloadBtn.disabled=true;});
       progressBar.addEventListener('click',function(e){
         if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}
       });
@@ -2290,6 +2331,8 @@
       // ===== 初始化 =====
       audio.volume=0.7;
       loadState();
+      updateBgmLang();
+      window.updateBgmLang=updateBgmLang;
     })();
 
     // ---------- Konami Code: 上上下下左右左右BABA ----------
