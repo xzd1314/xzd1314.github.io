@@ -938,19 +938,24 @@
         return r+','+g+','+b;
       }
 
+      var lastTriggerTime=0;
       function bindClick(el){
         if(!el)return;
-        if(isTouch){
-          el.addEventListener('touchstart',function(ev){
-            var t=ev.touches[0];
-            handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});
-          },{passive:true});
-        }else{
-          // Use mousedown instead of click for more reliable rapid-fire triggering
-          el.addEventListener('mousedown',function(ev){
-            handleClick({clientX:ev.clientX,clientY:ev.clientY,currentTarget:el});
-          });
-        }
+        // Bind BOTH mousedown and touchstart — works on mouse, touch, and hybrid touch laptops.
+        // Debounce: ignore second event within 100ms (touch devices fire touchstart then mousedown).
+        el.addEventListener('mousedown',function(ev){
+          var now=Date.now();
+          if(now-lastTriggerTime<100)return;
+          lastTriggerTime=now;
+          handleClick({clientX:ev.clientX,clientY:ev.clientY,currentTarget:el});
+        });
+        el.addEventListener('touchstart',function(ev){
+          var now=Date.now();
+          if(now-lastTriggerTime<100)return;
+          lastTriggerTime=now;
+          var t=ev.touches[0];
+          handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});
+        },{passive:true});
       }
       bindClick(heroTitle);
       bindClick(navLogo);
@@ -1365,7 +1370,7 @@
       if(userMsg){userMsg.style.display='none';}
       if(arrow){arrow.style.display='none';}
       if(adminLabel){adminLabel.style.display='none';}
-      if(contentEl){contentEl.textContent='开发者未上传该内容，请等待上传或联系开发者。';}
+      if(contentEl){contentEl.textContent=(document.body.getAttribute('data-lang')==='en'?'Content not uploaded yet. Please wait or contact the developer.':'开发者未上传该内容，请等待上传或联系开发者。');}
       if(overlay){overlay.classList.add('show');}
       if(popup){popup.classList.add('show');}
     }
@@ -1421,23 +1426,48 @@
       setTimeout(checkReplies,3000);
     })();
 
-    // ---------- Load preferences from localStorage (always works, regardless of cookie choice) ----------
-    (function(){
-      try{
-        var savedTheme=localStorage.getItem('site_theme');
-        if(savedTheme==='light'||savedTheme==='dark'){
-          document.body.setAttribute('data-theme',savedTheme);
-        }
-        var savedLang=localStorage.getItem('site_lang');
-        if(savedLang==='zh'||savedLang==='en'){
-          document.body.setAttribute('data-lang',savedLang);
-        }
-      }catch(e){}
-      // Sync Turnstile widget theme on page load
-      var currentTheme=document.body.getAttribute('data-theme')||'dark';
+    // ---------- Theme Management: dark / light / auto (follows system) ----------
+    var themeBtn=document.getElementById('themeBtn');
+    var themeIcon=document.getElementById('themeIcon');
+    var themeBtnText=document.getElementById('themeBtnText');
+    var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    var autoIcon='<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>';
+    function getThemePreference(){
+      try{var s=localStorage.getItem('site_theme');if(s==='dark'||s==='light'||s==='auto')return s;}catch(e){}
+      return 'auto';
+    }
+    function getEffectiveTheme(){
+      var p=getThemePreference();
+      if(p==='dark'||p==='light')return p;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    }
+    function updateThemeButton(){
+      var p=getThemePreference();
+      if(p==='auto'){themeIcon.innerHTML=autoIcon;themeBtnText.innerHTML='<span class="zh">自动</span><span class="en">Auto</span>';}
+      else if(p==='light'){themeIcon.innerHTML=sunIcon;themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';}
+      else{themeIcon.innerHTML=moonIcon;themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';}
+    }
+    function applyTheme(){
+      var effective=getEffectiveTheme();
+      document.body.setAttribute('data-theme',effective);
+      updateThemeButton();
       var overlayTurnstile=document.querySelector('#turnstileOverlay .cf-turnstile');
-      if(overlayTurnstile)overlayTurnstile.setAttribute('data-theme',currentTheme);
-    })();
+      if(overlayTurnstile)overlayTurnstile.setAttribute('data-theme',effective);
+    }
+    themeBtn.addEventListener('click',function(){
+      var current=getThemePreference();
+      var next=current==='dark'?'light':(current==='light'?'auto':'dark');
+      try{localStorage.setItem('site_theme',next)}catch(e){}
+      applyTheme();
+      var modal=document.getElementById('linkVerifyModal');
+      if(modal&&modal.classList.contains('show')){setTimeout(renderLinkTurnstile,50);}
+    });
+    var colorSchemeMQ=window.matchMedia('(prefers-color-scheme: dark)');
+    colorSchemeMQ.addEventListener('change',function(){if(getThemePreference()==='auto')applyTheme();});
+    // Load language preference
+    try{var savedLang=localStorage.getItem('site_lang');if(savedLang==='zh'||savedLang==='en'){document.body.setAttribute('data-lang',savedLang);}}catch(e){}
+    applyTheme();
 
     window.addEventListener('load',function(){
       // Only force-top when there's no anchor in URL (preserves #projects etc.)
@@ -1445,21 +1475,6 @@
         window.location.hash='#hero';
         setTimeout(function(){window.scrollTo(0,0)},10);
       }
-
-      // Sync theme button state after loading preference
-      var currentTheme=document.body.getAttribute('data-theme');
-      var themeIcon=document.getElementById('themeIcon');
-      var themeBtnText=document.getElementById('themeBtnText');
-      var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
-      var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-      if(currentTheme==='light'){
-        themeIcon.innerHTML=sunIcon;
-        themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';
-      }else{
-        themeIcon.innerHTML=moonIcon;
-        themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
-      }
-
       // Sync lang button state
       var currentLang=document.body.getAttribute('data-lang');
       var langBtn=document.getElementById('langBtn');
@@ -1476,32 +1491,6 @@
     var navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
     navToggle.addEventListener('click',function(){navToggle.classList.toggle('active');navLinks.classList.toggle('open')});
     navLinks.querySelectorAll('a').forEach(function(link){link.addEventListener('click',function(){navToggle.classList.remove('active');navLinks.classList.remove('open')})});
-
-    // ---------- Theme toggle (saved to localStorage always) ----------
-    var themeBtn=document.getElementById('themeBtn');
-    var themeIcon=document.getElementById('themeIcon');
-    var themeBtnText=document.getElementById('themeBtnText');
-    var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
-    var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-    themeBtn.addEventListener('click',function(){
-      var c=document.body.getAttribute('data-theme');
-      if(c==='dark'){
-        document.body.setAttribute('data-theme','light');
-        themeIcon.innerHTML=sunIcon;
-        themeBtnText.innerHTML='<span class="zh">浅色</span><span class="en">Light</span>';
-      }else{
-        document.body.setAttribute('data-theme','dark');
-        themeIcon.innerHTML=moonIcon;
-        themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
-      }
-      try{localStorage.setItem('site_theme',document.body.getAttribute('data-theme'))}catch(e){}
-      // Sync Turnstile widget theme when user toggles theme
-      var newTheme=document.body.getAttribute('data-theme')||'dark';
-      var overlayTurnstile=document.querySelector('#turnstileOverlay .cf-turnstile');
-      if(overlayTurnstile)overlayTurnstile.setAttribute('data-theme',newTheme);
-      var modal=document.getElementById('linkVerifyModal');
-      if(modal&&modal.classList.contains('show')){setTimeout(renderLinkTurnstile,50);}
-    });
 
     // ---------- Language toggle (saved to localStorage always) ----------
     var langBtn=document.getElementById('langBtn');

@@ -64,12 +64,16 @@
 <body data-theme="dark">
   <script>
     // Theme init must run AFTER body exists (head would hit null body)
+    // Supports dark / light / auto (follows system)
     (function(){
       try{
         var saved=localStorage.getItem('site_theme');
-        if(saved==='light'||saved==='dark'){
-          document.body.setAttribute('data-theme',saved);
+        if(saved!=='dark'&&saved!=='light'&&saved!=='auto')saved='auto';
+        var effective=saved;
+        if(saved==='auto'){
+          effective=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
         }
+        document.body.setAttribute('data-theme',effective);
       }catch(e){}
     })();
   </script>
@@ -115,23 +119,35 @@
       enSpans.forEach(function(el){el.style.display=isEn?'inline':'none'});
     }
     applyLang();
-    // Theme toggle
+    // Theme toggle: dark → light → auto → dark
     var toggle=document.getElementById('themeToggle');
     var icon=document.getElementById('themeIcon');
     var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
     var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    var autoIcon='<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>';
+    function getPref(){
+      try{var s=localStorage.getItem('site_theme');if(s==='dark'||s==='light'||s==='auto')return s;}catch(e){}
+      return 'auto';
+    }
     function syncIcon(){
-      var isLight=document.body.getAttribute('data-theme')==='light';
-      icon.innerHTML=isLight?sunIcon:moonIcon;
+      var p=getPref();
+      icon.innerHTML=p==='auto'?autoIcon:(p==='light'?sunIcon:moonIcon);
+    }
+    function applyTheme(){
+      var p=getPref();
+      var effective=p==='auto'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;
+      document.body.setAttribute('data-theme',effective);
+      syncIcon();
     }
     syncIcon();
     toggle.addEventListener('click',function(){
-      var current=document.body.getAttribute('data-theme');
-      var next=current==='dark'?'light':'dark';
-      document.body.setAttribute('data-theme',next);
+      var current=getPref();
+      var next=current==='dark'?'light':(current==='light'?'auto':'dark');
       try{localStorage.setItem('site_theme',next)}catch(e){}
-      syncIcon();
+      applyTheme();
     });
+    var mq=window.matchMedia('(prefers-color-scheme: dark)');
+    mq.addEventListener('change',function(){if(getPref()==='auto')applyTheme();});
   </script>
 </body>
 </html>
