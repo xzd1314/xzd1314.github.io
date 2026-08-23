@@ -8,30 +8,38 @@
   <style>
     :root{
       --bg:#ffffff;--text:#111111;--text-secondary:#666666;--text-muted:#999999;
-      --border:rgba(0,0,0,0.1);--link:#0066cc;--spinner:#111111;
+      --border:rgba(0,0,0,0.1);--link:#0066cc;--icon:#111111;
     }
     [data-theme="dark"]{
       --bg:#000000;--text:#ffffff;--text-secondary:#999999;--text-muted:#666666;
-      --border:rgba(255,255,255,0.1);--link:#4d9fff;--spinner:#ffffff;
+      --border:rgba(255,255,255,0.1);--link:#4d9fff;--icon:#ffffff;
     }
     *{margin:0;padding:0;box-sizing:border-box}
     html,body{height:100%}
+    html{background:var(--bg);transition:background .3s ease}
     body{
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
       background:var(--bg);color:var(--text);
       min-height:100vh;display:flex;flex-direction:column;
-      padding:48px;transition:background .3s ease,color .3s ease;
+      padding:48px 24px;transition:background .3s ease,color .3s ease;
     }
+    .wrap{width:100%;max-width:680px;margin:0 auto;flex:1;display:flex;flex-direction:column}
     .domain{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-.02em;word-break:break-all}
     .title{font-size:24px;font-weight:700;margin-bottom:12px}
     .desc{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:32px;max-width:560px}
     .verify-area{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
-    .spinner{
-      width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--spinner);
-      border-radius:50%;animation:spin 1s linear infinite;margin-bottom:24px;
+    .verify-icon{
+      width:48px;height:48px;margin-bottom:24px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--icon);opacity:0.75;
+      animation:iconPulse 2s ease-in-out infinite;
     }
-    .spinner.hidden{display:none}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    .verify-icon svg{width:40px;height:40px}
+    .verify-icon.hidden{display:none}
+    @keyframes iconPulse{
+      0%,100%{transform:scale(1);opacity:0.65}
+      50%{transform:scale(1.1);opacity:1}
+    }
     .turnstile-wrap{margin-bottom:24px;min-height:65px}
     .faq{margin-top:32px;max-width:560px}
     .faq summary{
@@ -67,7 +75,7 @@
     [data-lang="en"] .zh{display:none}
     [data-lang="zh"] .en{display:none}
     @media(max-width:600px){
-      body{padding:32px 24px}
+      body{padding:32px 20px}
       .domain{font-size:22px}
       .title{font-size:20px}
       .verify-area{justify-content:flex-start;padding-top:24px}
@@ -84,6 +92,7 @@
       }catch(e){}
     })();
     window.onVerifySuccess=function(token){
+      try{sessionStorage.setItem('index_verified','1');}catch(e){}
       var vs=document.getElementById('verifyState');
       var ss=document.getElementById('successState');
       if(vs)vs.classList.add('hide');
@@ -101,11 +110,15 @@
       var ua=navigator.userAgent.toLowerCase();
       var bots=['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
       for(var i=0;i<bots.length;i++){
-        if(ua.indexOf(bots[i])!==-1){window.location.replace('home.html');return;}
+        if(ua.indexOf(bots[i])!==-1){
+          try{sessionStorage.setItem('index_verified','1');}catch(e){}
+          window.location.replace('home.html');return;
+        }
       }
     })();
     setTimeout(function(){
       if(!document.getElementById('successState').classList.contains('show')){
+        try{sessionStorage.setItem('index_verified','1');}catch(e){}
         window.location.href='home.html';
       }
     },12000);
@@ -113,49 +126,55 @@
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body data-theme="light" data-lang="zh">
-  <div class="domain">xzd1314.github.io</div>
+  <div class="wrap">
+    <div class="domain">xzd1314.github.io</div>
 
-  <div id="verifyState" class="verify-state">
-    <h1 class="title"><span class="zh">正在进行安全验证</span><span class="en">Checking your browser</span></h1>
-    <p class="desc">
-      <span class="zh">本网站使用安全服务防护恶意自动程序。在验证您不是自动程序期间，将显示此页面。</span>
-      <span class="en">This website uses a security service to protect against malicious automated programs. This page will appear while verifying that you are not a bot.</span>
-    </p>
+    <div id="verifyState" class="verify-state">
+      <h1 class="title"><span class="zh">正在进行安全验证</span><span class="en">Checking your browser</span></h1>
+      <p class="desc">
+        <span class="zh">本网站使用安全服务防护恶意自动程序。在验证您不是自动程序期间，将显示此页面。</span>
+        <span class="en">This website uses a security service to protect against malicious automated programs. This page will appear while verifying that you are not a bot.</span>
+      </p>
 
-    <div class="verify-area">
-      <div class="spinner" id="spinner"></div>
-      <div class="turnstile-wrap">
-        <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onVerifySuccess" data-theme="light"></div>
+      <div class="verify-area">
+        <div class="verify-icon" id="verifyIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="turnstile-wrap">
+          <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onVerifySuccess" data-theme="light"></div>
+        </div>
+      </div>
+
+      <details class="faq">
+        <summary><span class="zh">为什么验证时间较长？</span><span class="en">Why is this taking so long?</span></summary>
+        <div class="faq-content">
+          <p><span class="zh">电脑配置较旧或网络连接较慢可能导致验证时间延长。</span><span class="en">Older computers or slow network connections may cause longer verification times.</span></p>
+          <p><span class="zh">下一步操作：</span><span class="en">Next steps:</span></p>
+          <ol>
+            <li><span class="zh">请稍等片刻，刷新页面将重新开始安全验证，可能需要更长时间。</span><span class="en">Please wait. Refreshing the page will restart the security check and may take longer.</span></li>
+            <li><span class="zh">如验证仍未完成，请刷新此页面。</span><span class="en">If the verification still hasn't completed, please refresh this page.</span></li>
+            <li><span class="zh">如刷新后仍停留在此页面，请参阅 <a href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/general-errors/" target="_blank" rel="noopener">Cloudflare 故障排除文档</a> 获取更多帮助。</span><span class="en">If you still remain on this page after refreshing, please refer to the <a href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/general-errors/" target="_blank" rel="noopener">Cloudflare troubleshooting documentation</a> for more help.</span></li>
+          </ol>
+        </div>
+      </details>
+    </div>
+
+    <div id="successState" class="success-state">
+      <div class="verify-area">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h1 class="title"><span class="zh">验证成功</span><span class="en">Verification successful</span></h1>
+        <p class="redirect-text"><span class="zh">正在进入网站</span><span class="en">Redirecting to site</span> <strong id="countdown">2</strong><span class="zh">秒...</span><span class="en">s...</span></p>
       </div>
     </div>
 
-    <details class="faq">
-      <summary><span class="zh">为什么验证时间较长？</span><span class="en">Why is this taking so long?</span></summary>
-      <div class="faq-content">
-        <p><span class="zh">电脑配置较旧或网络连接较慢可能导致验证时间延长。</span><span class="en">Older computers or slow network connections may cause longer verification times.</span></p>
-        <p><span class="zh">下一步操作：</span><span class="en">Next steps:</span></p>
-        <ol>
-          <li><span class="zh">请稍等片刻，刷新页面将重新开始安全验证，可能需要更长时间。</span><span class="en">Please wait. Refreshing the page will restart the security check and may take longer.</span></li>
-          <li><span class="zh">如验证仍未完成，请刷新此页面。</span><span class="en">If the verification still hasn't completed, please refresh this page.</span></li>
-          <li><span class="zh">如刷新后仍停留在此页面，请参阅 <a href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/general-errors/" target="_blank" rel="noopener">Cloudflare 故障排除文档</a> 获取更多帮助。</span><span class="en">If you still remain on this page after refreshing, please refer to the <a href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/general-errors/" target="_blank" rel="noopener">Cloudflare troubleshooting documentation</a> for more help.</span></li>
-        </ol>
-      </div>
-    </details>
-  </div>
-
-  <div id="successState" class="success-state">
-    <div class="verify-area">
-      <div class="check-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <h1 class="title"><span class="zh">验证成功</span><span class="en">Verification successful</span></h1>
-      <p class="redirect-text"><span class="zh">正在进入网站</span><span class="en">Redirecting to site</span> <strong id="countdown">2</strong><span class="zh">秒...</span><span class="en">s...</span></p>
+    <div class="footer">
+      <div class="ray-id">Ray ID: <span id="rayId">--</span></div>
+      <div><span class="zh">由 Cloudflare Turnstile 提供性能和安全服务</span><span class="en">Performance &amp; security by Cloudflare Turnstile</span></div>
     </div>
-  </div>
-
-  <div class="footer">
-    <div class="ray-id">Ray ID: <span id="rayId">--</span></div>
-    <div><span class="zh">由 Cloudflare Turnstile 提供性能和安全服务</span><span class="en">Performance &amp; security by Cloudflare Turnstile</span></div>
   </div>
 
   <script>
@@ -164,7 +183,7 @@
       var widget=document.querySelector('#turnstileWidget iframe');
       if(widget){
         clearInterval(turnstileCheck);
-        document.getElementById('spinner').classList.add('hidden');
+        document.getElementById('verifyIcon').classList.add('hidden');
       }
     },300);
     setTimeout(function(){clearInterval(turnstileCheck);},12000);
