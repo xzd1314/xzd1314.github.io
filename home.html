@@ -412,6 +412,11 @@
       z-index:0;pointer-events:none;opacity:0.9;
     }
     body[data-theme="light"] .bg-canvas{opacity:0.85}
+    body[data-dragging="true"],body[data-dragging="true"] *{
+      user-select:none !important;-webkit-user-select:none !important;
+      -moz-user-select:none !important;-ms-user-select:none !important;
+      cursor:grabbing !important;
+    }
     /* ---------- Custom Cursor (ASUS) ---------- */
     *{
       cursor: url('assets/cursors/normal-select.cur'), auto !important;
@@ -843,6 +848,8 @@
         dragging=true;hasMoved=false;
         lastX=e.clientX;lastY=e.clientY;
         camVX=0;camVY=0;
+        document.body.setAttribute('data-dragging','true');
+        e.preventDefault();
       });
       window.addEventListener('mousemove',function(e){
         if(dragging){
@@ -854,7 +861,7 @@
           clampCam();
         }
       });
-      window.addEventListener('mouseup',function(){dragging=false;});
+      window.addEventListener('mouseup',function(){dragging=false;document.body.removeAttribute('data-dragging');});
 
       // Touch drag (on window, skip interactive elements)
       window.addEventListener('touchstart',function(e){
@@ -873,7 +880,7 @@
         lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
         clampCam();
       },{passive:true});
-      window.addEventListener('touchend',function(){dragging=false;});
+      window.addEventListener('touchend',function(){dragging=false;document.body.removeAttribute('data-dragging');});
 
       function clampCam(){
         if(camX<0){camX=0;if(camVX<0)camVX*=-0.4;}
