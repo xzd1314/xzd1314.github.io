@@ -15,6 +15,16 @@
   <link rel="icon" type="image/jpeg" href="assets/avatar.jpg" />
   <link rel="apple-touch-icon" href="assets/avatar.jpg" />
   <style>
+    @font-face {
+      font-family: 'ChuangZhongHei';
+      src: url('assets/fonts/chuangzhonghei.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    * {
+      font-family: 'ChuangZhongHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
     :root {
       --bg: #ffffff; --text: #1d1d1f; --text-secondary: #6e6e73; --text-muted: #86868b;
       --border: rgba(0,0,0,0.08); --border-hover: rgba(0,0,0,0.18);
@@ -63,7 +73,7 @@
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
     .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
-    .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text)}
+    .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic}
     .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
     .nav-links a{font-size:14px;font-weight:500;color:var(--text-secondary);position:relative;transition:color .2s ease}
     .nav-links a:hover{color:var(--text)}
@@ -92,7 +102,7 @@
     .avatar-wrap{width:160px;height:160px;border-radius:50%;overflow:hidden;border:1px solid var(--border);transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease}
     .avatar-link:hover .avatar-wrap{transform:scale(1.05);box-shadow:0 20px 60px var(--accent-glow)}
     .avatar-wrap img{width:100%;height:100%;object-fit:cover}
-    .hero-title{font-weight:900;font-size:96px;font-size:clamp(64px,12vw,180px);line-height:1;letter-spacing:-.04em;color:var(--text)}
+    .hero-title{font-weight:900;font-size:96px;font-size:clamp(64px,12vw,180px);line-height:1;letter-spacing:-.04em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic}
     .hero-slogan{font-size:18px;color:var(--text-secondary);letter-spacing:.02em}
     .scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase;animation:float 2s ease-in-out infinite}
     .scroll-indicator .line{width:1px;height:40px;background:linear-gradient(to bottom,var(--text-muted),transparent)}
@@ -362,11 +372,62 @@
     .visitor-count{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted)}
     .visitor-count svg{width:12px;height:12px;opacity:.6}
     .visitor-count .count-num{font-weight:600;color:var(--text-secondary)}
+    /* ---------- Scroll Progress Bar ---------- */
+    .scroll-progress{
+      position:fixed;top:0;left:0;height:3px;width:0%;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      z-index:10001;transition:width .1s ease;
+      box-shadow:0 0 10px rgba(var(--accent-rgb),0.5);
+    }
+    /* ---------- Dynamic Background Canvas ---------- */
+    .bg-canvas{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      z-index:-1;pointer-events:none;opacity:0.6;
+    }
+    body[data-theme="light"] .bg-canvas{opacity:0.3}
+    /* ---------- Custom Cursor ---------- */
+    .custom-cursor{
+      position:fixed;width:20px;height:20px;border:2px solid var(--accent);
+      border-radius:50%;pointer-events:none;z-index:99999;
+      transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s,border-color .2s;
+      mix-blend-mode:difference;
+    }
+    .custom-cursor.hover{
+      width:40px;height:40px;background:rgba(var(--accent-rgb),0.2);
+    }
+    .cursor-trail{
+      position:fixed;pointer-events:none;z-index:99998;
+    }
+    .cursor-particle{
+      position:fixed;width:6px;height:6px;border-radius:50%;
+      background:var(--accent);pointer-events:none;z-index:99997;
+      transform:translate(-50%,-50%);
+    }
+    @media (pointer: coarse){
+      .custom-cursor,.cursor-trail,.cursor-particle{display:none!important}
+    }
+    /* ---------- 3D Card Hover ---------- */
+    .project-card{
+      transform-style:preserve-3d;transition:transform .3s ease;
+    }
+    .project-card > *{
+      transform:translateZ(20px);
+    }
+    @media (pointer: coarse){
+      .project-card{transform:none!important}
+    }
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body data-theme="dark" data-lang="zh">
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <!-- Dynamic Background Canvas -->
+  <canvas class="bg-canvas" id="bgCanvas"></canvas>
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="customCursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
   <!-- Turnstile Overlay -->
   <div class="turnstile-overlay" id="turnstileOverlay">
     <div class="turnstile-box">
@@ -454,7 +515,7 @@
         <h2 class="section-title reveal reveal-delay-1"><span class="zh">做过的一些东西</span><span class="en">Some things I have done</span></h2>
       </div>
       <div class="project-list">
-        <div class="project-item reveal">
+        <div class="project-item project-card reveal">
           <span class="project-num">01</span>
           <div class="project-info">
             <h3><span class="zh">迷上城建 Forge 移植</span><span class="en">Mishanguc Forge Port</span></h3>
@@ -468,7 +529,7 @@
             </a>
           </div>
         </div>
-        <div class="project-item reveal reveal-delay-1">
+        <div class="project-item project-card reveal reveal-delay-1">
           <span class="project-num">02</span>
           <div class="project-info">
             <h3><span class="zh">猪来了 nextbotV6</span><span class="en">Zhulaile nextbotV6</span></h3>
@@ -617,6 +678,256 @@
   </div>
 
   <script>
+    // ========== Scroll Progress Bar ==========
+    (function(){
+      var bar=document.getElementById('scrollProgress');
+      if(!bar)return;
+      function update(){
+        var h=document.documentElement;
+        var scrolled=h.scrollTop/(h.scrollHeight-h.clientHeight);
+        bar.style.width=(scrolled*100)+'%';
+      }
+      window.addEventListener('scroll',update,{passive:true});
+      update();
+    })();
+
+    // ========== Dynamic Background (Particles + Stars + Gradient) ==========
+    (function(){
+      var canvas=document.getElementById('bgCanvas');
+      if(!canvas)return;
+      var ctx=canvas.getContext('2d');
+      var w,h,particles=[],stars=[];
+      var isMobile=window.matchMedia('(pointer:coarse)').matches;
+      var particleCount=isMobile?30:80;
+      var starCount=isMobile?50:120;
+
+      function resize(){
+        w=canvas.width=window.innerWidth;
+        h=canvas.height=window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize',resize);
+
+      // Init particles
+      for(var i=0;i<particleCount;i++){
+        particles.push({
+          x:Math.random()*w,y:Math.random()*h,
+          vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5,
+          r:Math.random()*2+1
+        });
+      }
+      // Init stars
+      for(var i=0;i<starCount;i++){
+        stars.push({
+          x:Math.random()*w,y:Math.random()*h,
+          r:Math.random()*1.5+0.5,
+          twinkle:Math.random()*Math.PI*2
+        });
+      }
+
+      var mouseX=w/2,mouseY=h/2;
+      window.addEventListener('mousemove',function(e){mouseX=e.clientX;mouseY=e.clientY;});
+
+      function getAccentColor(){
+        var style=getComputedStyle(document.body);
+        return style.getPropertyValue('--accent-rgb').trim()||'139,92,246';
+      }
+
+      function animate(){
+        ctx.clearRect(0,0,w,h);
+        var rgb=getAccentColor();
+
+        // Draw gradient flow
+        var grad=ctx.createRadialGradient(mouseX,mouseY,0,mouseX,mouseY,300);
+        grad.addColorStop(0,'rgba('+rgb+',0.08)');
+        grad.addColorStop(1,'rgba('+rgb+',0)');
+        ctx.fillStyle=grad;
+        ctx.fillRect(0,0,w,h);
+
+        // Draw stars
+        for(var i=0;i<stars.length;i++){
+          var s=stars[i];
+          s.twinkle+=0.02;
+          var alpha=0.3+Math.sin(s.twinkle)*0.3;
+          ctx.beginPath();
+          ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle='rgba('+rgb+','+alpha+')';
+          ctx.fill();
+        }
+
+        // Draw particles and connections
+        for(var i=0;i<particles.length;i++){
+          var p=particles[i];
+          p.x+=p.vx;p.y+=p.vy;
+          if(p.x<0||p.x>w)p.vx*=-1;
+          if(p.y<0||p.y>h)p.vy*=-1;
+
+          // Mouse attraction
+          var dx=mouseX-p.x,dy=mouseY-p.y;
+          var dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<150){
+            p.vx+=dx/dist*0.02;p.vy+=dy/dist*0.02;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle='rgba('+rgb+',0.5)';
+          ctx.fill();
+
+          // Connections
+          for(var j=i+1;j<particles.length;j++){
+            var p2=particles[j];
+            var ddx=p.x-p2.x,ddy=p.y-p2.y;
+            var d=Math.sqrt(ddx*ddx+ddy*ddy);
+            if(d<120){
+              ctx.beginPath();
+              ctx.moveTo(p.x,p.y);
+              ctx.lineTo(p2.x,p2.y);
+              ctx.strokeStyle='rgba('+rgb+','+(0.15*(1-d/120))+')';
+              ctx.lineWidth=0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ========== Custom Cursor + Particle Trail ==========
+    (function(){
+      if(window.matchMedia('(pointer:coarse)').matches)return;
+      var cursor=document.getElementById('customCursor');
+      if(!cursor)return;
+      document.body.style.cursor='none';
+
+      var mx=0,my=0,cx=0,cy=0;
+      document.addEventListener('mousemove',function(e){
+        mx=e.clientX;my=e.clientY;
+        // Spawn trail particle
+        spawnParticle(mx,my);
+      });
+
+      function animateCursor(){
+        cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;
+        cursor.style.left=cx+'px';cursor.style.top=cy+'px';
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+
+      // Hover effect on interactive elements
+      var hoverEls='a,button,.project-card,.skill-card,input,textarea';
+      document.querySelectorAll(hoverEls).forEach(function(el){
+        el.addEventListener('mouseenter',function(){cursor.classList.add('hover');});
+        el.addEventListener('mouseleave',function(){cursor.classList.remove('hover');});
+      });
+
+      // Particle trail
+      var particles=[];
+      function spawnParticle(x,y){
+        if(particles.length>20)return;
+        var p=document.createElement('div');
+        p.className='cursor-particle';
+        p.style.left=x+'px';p.style.top=y+'px';
+        p.style.opacity='1';
+        document.body.appendChild(p);
+        particles.push({el:p,x:x,y:y,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,life:1});
+      }
+
+      function updateParticles(){
+        for(var i=particles.length-1;i>=0;i--){
+          var p=particles[i];
+          p.life-=0.03;
+          p.x+=p.vx;p.y+=p.vy;
+          p.el.style.left=p.x+'px';p.el.style.top=p.y+'px';
+          p.el.style.opacity=p.life;
+          p.el.style.transform='translate(-50%,-50%) scale('+p.life+')';
+          if(p.life<=0){
+            p.el.remove();
+            particles.splice(i,1);
+          }
+        }
+        requestAnimationFrame(updateParticles);
+      }
+      updateParticles();
+    })();
+
+    // ========== Easter Egg: Click name 5 times for explosion ==========
+    (function(){
+      var heroTitle=document.querySelector('.hero-title');
+      var navLogo=document.querySelector('.nav-logo');
+      if(!heroTitle&&!navLogo)return;
+      var clickCount=0;
+      var clickTimer=null;
+
+      function handleClick(e){
+        clickCount++;
+        clearTimeout(clickTimer);
+        clickTimer=setTimeout(function(){clickCount=0;},1000);
+
+        if(clickCount>=5){
+          clickCount=0;
+          triggerExplosion(e.clientX||window.innerWidth/2,e.clientY||window.innerHeight/2);
+        }
+      }
+
+      if(heroTitle)heroTitle.addEventListener('click',handleClick);
+      if(navLogo)navLogo.addEventListener('click',handleClick);
+      // Touch support
+      if(heroTitle)heroTitle.addEventListener('touchstart',function(e){
+        var t=e.touches[0];handleClick({clientX:t.clientX,clientY:t.clientY});
+      });
+      if(navLogo)navLogo.addEventListener('touchstart',function(e){
+        var t=e.touches[0];handleClick({clientX:t.clientX,clientY:t.clientY});
+      });
+
+      function triggerExplosion(x,y){
+        var colors=['#f97316','#8b5cf6','#3b82f6','#22c55e','#eab308','#ec4899'];
+        for(var i=0;i<60;i++){
+          var p=document.createElement('div');
+          p.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;width:'+(Math.random()*8+4)+'px;height:'+(Math.random()*8+4)+'px;border-radius:50%;background:'+colors[Math.floor(Math.random()*colors.length)]+';pointer-events:none;z-index:99999;transform:translate(-50%,-50%);';
+          document.body.appendChild(p);
+          var angle=Math.random()*Math.PI*2;
+          var speed=Math.random()*8+4;
+          var vx=Math.cos(angle)*speed;
+          var vy=Math.sin(angle)*speed;
+          var life=1;
+          (function(particle,vx,vy){
+            function anim(){
+              life-=0.02;
+              particle.style.left=(parseFloat(particle.style.left)+vx)+'px';
+              particle.style.top=(parseFloat(particle.style.top)+vy)+'px';
+              vy+=0.2; // gravity
+              particle.style.opacity=life;
+              particle.style.transform='translate(-50%,-50%) scale('+life+')';
+              if(life>0)requestAnimationFrame(anim);
+              else particle.remove();
+            }
+            anim();
+          })(p,vx,vy);
+        }
+      }
+    })();
+
+    // ========== 3D Card Hover ==========
+    (function(){
+      if(window.matchMedia('(pointer:coarse)').matches)return;
+      var cards=document.querySelectorAll('.project-card');
+      cards.forEach(function(card){
+        card.addEventListener('mousemove',function(e){
+          var rect=card.getBoundingClientRect();
+          var x=e.clientX-rect.left;
+          var y=e.clientY-rect.top;
+          var rotateY=((x/rect.width)-0.5)*15;
+          var rotateX=((y/rect.height)-0.5)*-15;
+          card.style.transform='perspective(1000px) rotateX('+rotateX+'deg) rotateY('+rotateY+'deg) scale(1.02)';
+        });
+        card.addEventListener('mouseleave',function(){
+          card.style.transform='perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        });
+      });
+    })();
+
     // ---------- Turnstile callback ----------
     function onTurnstileSuccess(token){
       var overlay=document.getElementById('turnstileOverlay');
