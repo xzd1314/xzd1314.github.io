@@ -60,18 +60,19 @@
     .theme-toggle svg{width:18px;height:18px}
     @media(max-width:480px){.error-code{font-size:80px}h1{font-size:20px}.subtitle{font-size:14px}}
   </style>
-  <script>
-    (function(){
-      var theme='dark';
-      try{
-        var saved=localStorage.getItem('site_theme');
-        if(saved==='light'||saved==='dark')theme=saved;
-      }catch(e){}
-      document.body.setAttribute('data-theme',theme);
-    })();
-  </script>
 </head>
 <body data-theme="dark">
+  <script>
+    // Theme init must run AFTER body exists (head would hit null body)
+    (function(){
+      try{
+        var saved=localStorage.getItem('site_theme');
+        if(saved==='light'||saved==='dark'){
+          document.body.setAttribute('data-theme',saved);
+        }
+      }catch(e){}
+    })();
+  </script>
   <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
     <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>

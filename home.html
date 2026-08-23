@@ -80,7 +80,7 @@
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
     .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
-    .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none;-webkit-user-select:none;cursor:pointer}
+    .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none;-webkit-user-select:none;cursor:pointer;touch-action:manipulation}
     .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
     .nav-links a{font-size:14px;font-weight:500;color:var(--text-secondary);position:relative;transition:color .2s ease}
     .nav-links a:hover{color:var(--text)}
@@ -109,7 +109,7 @@
     .avatar-wrap{width:160px;height:160px;border-radius:50%;overflow:hidden;border:1px solid var(--border);transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease}
     .avatar-link:hover .avatar-wrap{transform:scale(1.05);box-shadow:0 20px 60px var(--accent-glow)}
     .avatar-wrap img{width:100%;height:100%;object-fit:cover}
-    .hero-title{font-weight:900;font-size:96px;font-size:clamp(64px,12vw,180px);line-height:1;letter-spacing:-.04em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none;-webkit-user-select:none;cursor:pointer}
+    .hero-title{font-weight:900;font-size:96px;font-size:clamp(64px,12vw,180px);line-height:1;letter-spacing:-.04em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none;-webkit-user-select:none;cursor:pointer;touch-action:manipulation}
     .hero-slogan{font-size:18px;color:var(--text-secondary);letter-spacing:.02em}
     .scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase;animation:float 2s ease-in-out infinite}
     .scroll-indicator .line{width:1px;height:40px;background:linear-gradient(to bottom,var(--text-muted),transparent)}
@@ -253,6 +253,7 @@
       transition:opacity .5s ease,visibility .5s ease;
     }
     .turnstile-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    [data-theme="light"] .turnstile-overlay{background:rgba(245,245,247,0.92)}
     .turnstile-box{
       background:var(--card-bg);
       border:1px solid var(--border);
@@ -945,7 +946,10 @@
             handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});
           },{passive:true});
         }else{
-          el.addEventListener('click',handleClick);
+          // Use mousedown instead of click for more reliable rapid-fire triggering
+          el.addEventListener('mousedown',function(ev){
+            handleClick({clientX:ev.clientX,clientY:ev.clientY,currentTarget:el});
+          });
         }
       }
       bindClick(heroTitle);
@@ -1429,6 +1433,10 @@
           document.body.setAttribute('data-lang',savedLang);
         }
       }catch(e){}
+      // Sync Turnstile widget theme on page load
+      var currentTheme=document.body.getAttribute('data-theme')||'dark';
+      var overlayTurnstile=document.querySelector('#turnstileOverlay .cf-turnstile');
+      if(overlayTurnstile)overlayTurnstile.setAttribute('data-theme',currentTheme);
     })();
 
     window.addEventListener('load',function(){
@@ -1487,6 +1495,10 @@
         themeBtnText.innerHTML='<span class="zh">深色</span><span class="en">Dark</span>';
       }
       try{localStorage.setItem('site_theme',document.body.getAttribute('data-theme'))}catch(e){}
+      // Sync Turnstile widget theme when user toggles theme
+      var newTheme=document.body.getAttribute('data-theme')||'dark';
+      var overlayTurnstile=document.querySelector('#turnstileOverlay .cf-turnstile');
+      if(overlayTurnstile)overlayTurnstile.setAttribute('data-theme',newTheme);
       var modal=document.getElementById('linkVerifyModal');
       if(modal&&modal.classList.contains('show')){setTimeout(renderLinkTurnstile,50);}
     });
