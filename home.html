@@ -394,10 +394,10 @@
     body[data-theme="light"] .bg-canvas{opacity:0.3}
     /* ---------- Custom Cursor (ASUS) ---------- */
     body{
-      cursor: url('assets/cursors/Normal Select.ani'), url('assets/cursors/Computer.ico'), auto;
+      cursor: url('assets/cursors/normal-select.cur'), auto;
     }
     a, button, .project-card, .skill-card, input, textarea, .hero-title, .nav-logo{
-      cursor: url('assets/cursors/Link Select.ani'), url('assets/cursors/Computer.ico'), pointer;
+      cursor: url('assets/cursors/link-select.cur'), pointer;
     }
     .custom-cursor{display:none!important}
     .cursor-trail{
@@ -439,7 +439,7 @@
       <div class="turnstile-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
-      <h2 class="turnstile-title"><span class="zh">人机验证</span><span class="en">Human Verification</span></h2>
+      <h2 class="turnstile-title"><span class="zh">证明你是人类</span><span class="en">Prove You're Human</span></h2>
       <p class="turnstile-desc"><span class="zh">请完成下方验证以继续访问网站</span><span class="en">Please complete the verification below to continue</span></p>
       <div class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onTurnstileSuccess" data-theme="dark"></div>
     </div>
@@ -631,7 +631,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
       <h3 class="verify-modal-title"><span class="zh">需要验证</span><span class="en">Verification Required</span></h3>
-      <p class="verify-modal-desc"><span class="zh">请完成人机验证以继续</span><span class="en">Please complete human verification to continue</span></p>
+      <p class="verify-modal-desc"><span class="zh">请证明你是人类以继续</span><span class="en">Please prove you're human to continue</span></p>
       <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
       <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
       <button class="verify-modal-continue" id="linkVerifyContinue" style="display:none"><span class="zh">点击继续</span><span class="en">Click to continue</span></button>
