@@ -485,11 +485,7 @@
   <section class="section" id="about">
     <div class="section-inner">
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
-      <h2 class="section-title reveal reveal-delay-1"><span class="zh">用代码折腾点有意思的东西</span><span class="en">Building interesting things with code</span></h2>
-      <p class="section-desc reveal reveal-delay-2">
-        <span class="zh">我是 xzd1314，一个喜欢折腾的独立开发者。从 Roblox 里写 Lua 游戏，到 Minecraft Forge 模组移植，再到前端网页和 Python 自动化——工具一直在变，但享受创造的过程从未改变。这里放着我做过的一些项目，欢迎随便看看。</span>
-        <span class="en">I'm xzd1314, an indie developer who loves tinkering. From writing Lua games in Roblox, to porting Minecraft Forge mods, to frontend web design and Python automation — the tools keep changing, but the joy of creation never does. This is where I keep some of my projects, feel free to look around.</span>
-      </p>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">这里什么都没有</span><span class="en">There is nothing here</span></h2>
     </div>
   </section>
 
@@ -881,8 +877,6 @@
       var COOLDOWN_MS=60000; // 1 minute cooldown on mobile
 
       function handleClick(e){
-        // (touch devices only bind touchstart, no double-counting issue)
-
         // Cooldown check (mobile only)
         if(isTouch&&Date.now()<cooldownEnd){
           return;
@@ -890,14 +884,25 @@
 
         clickCount++;
         clearTimeout(clickTimer);
-        clickTimer=setTimeout(function(){clickCount=0;},2000);
+        clickTimer=setTimeout(function(){
+          clickCount=0;
+          resetFeedbackStyle();
+        },2000);
 
-        // Click feedback: scale animation
+        // Click feedback: scale + theme-color glow that gets deeper with each click
         var target=e.currentTarget||e.target;
         if(target){
-          target.style.transition='transform .1s ease';
-          target.style.transform='scale(0.95)';
-          setTimeout(function(){target.style.transform='scale(1)';},100);
+          var accent=getComputedStyle(document.body).getPropertyValue('--accent').trim()||'#8b5cf6';
+          var rgb=hexToRgb(accent);
+          // Glow intensity increases: click1=0.25, 2=0.4, 3=0.55, 4=0.7, 5=0.85
+          var intensity=Math.min(0.25+clickCount*0.15,0.85);
+          var blur=6+clickCount*4;
+          target.style.transition='transform .12s ease, text-shadow .25s ease';
+          target.style.textShadow='0 0 '+blur+'px rgba('+rgb+','+intensity+'), 0 0 '+(blur*2.5)+'px rgba('+rgb+','+(intensity*0.4)+')';
+          target.style.transform='scale(0.94)';
+          setTimeout(function(){
+            target.style.transform='';
+          },120);
         }
 
         if(clickCount>=5){
@@ -905,14 +910,40 @@
           if(isTouch){cooldownEnd=Date.now()+COOLDOWN_MS;}
           var x=(e.clientX||window.innerWidth/2);
           var y=(e.clientY||window.innerHeight/2);
+          // Reset glow right before explosion
+          if(target){
+            target.style.textShadow='';
+            target.style.transform='';
+          }
           triggerExplosion(x,y);
         }
+      }
+
+      function resetFeedbackStyle(){
+        [heroTitle,navLogo].forEach(function(el){
+          if(el){
+            el.style.textShadow='';
+            el.style.transform='';
+          }
+        });
+      }
+
+      function hexToRgb(hex){
+        hex=String(hex).replace('#','').trim();
+        if(hex.length===3){hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];}
+        var r=parseInt(hex.substring(0,2),16)||0;
+        var g=parseInt(hex.substring(2,4),16)||0;
+        var b=parseInt(hex.substring(4,6),16)||0;
+        return r+','+g+','+b;
       }
 
       function bindClick(el){
         if(!el)return;
         if(isTouch){
-          el.addEventListener('touchstart',function(ev){var t=ev.touches[0];handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});},{passive:true});
+          el.addEventListener('touchstart',function(ev){
+            var t=ev.touches[0];
+            handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});
+          },{passive:true});
         }else{
           el.addEventListener('click',handleClick);
         }
