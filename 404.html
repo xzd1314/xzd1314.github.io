@@ -61,7 +61,7 @@
     @media(max-width:480px){.error-code{font-size:80px}h1{font-size:20px}.subtitle{font-size:14px}}
   </style>
 </head>
-<body data-theme="dark">
+<body data-theme="dark" data-lang="zh">
   <script>
     // Theme init must run AFTER body exists (head would hit null body)
     // Supports dark / light / auto (follows system)
@@ -74,6 +74,13 @@
           effective=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
         }
         document.body.setAttribute('data-theme',effective);
+      }catch(e){}
+      // 初始化语言（与 home.html 一致，从 localStorage 读取）
+      try{
+        var savedLang=localStorage.getItem('site_lang');
+        if(savedLang==='zh'||savedLang==='en'){
+          document.body.setAttribute('data-lang',savedLang);
+        }
       }catch(e){}
     })();
   </script>
