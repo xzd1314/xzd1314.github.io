@@ -1873,48 +1873,74 @@
       var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
       var currentSongId=null;
 
-      // QQ音乐搜索（JSONP绕过CORS）+ Meting API播放（QQ音乐源）
-      // 注意：QQ音乐API忽略callback参数，总是返回 callback(...)，因此固定用window.callback
-      var searchCb=null;
-      window.callback=function(data){if(searchCb){var cb=searchCb;searchCb=null;cb(data);}};
+      // 酷狗音乐：搜索JSONP + 播放API JSONP（全链路绕过CORS，无需代理）
+      var jsonpSeq=0;
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
+      function jsonpReq(url,timeout){
+        return new Promise(function(resolve,reject){
+          var cbName='bgm_jp_'+(++jsonpSeq);
+          var script=document.createElement('script');
+          var done=false;
+          var timer=setTimeout(function(){if(!done){done=true;cleanup();reject('timeout');}},timeout||10000);
+          function cleanup(){clearTimeout(timer);try{delete window[cbName];}catch(e){window[cbName]=null;}if(script.parentNode)script.parentNode.removeChild(script);}
+          window[cbName]=function(data){if(!done){done=true;cleanup();resolve(data);}};
+          script.onerror=function(){if(!done){done=true;cleanup();reject('error');}};
+          script.src=url+(url.indexOf('?')>-1?'&':'?')+'callback='+cbName;
+          document.head.appendChild(script);
+        });
+      }
 
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">搜索中...</div>';
-        var script=document.createElement('script');
-        function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);}
-        searchCb=function(data){
-          cleanup();
-          var list=data&&data.data&&data.data.song&&data.data.song.list;
-          if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果</div>';return;}
-          resultsEl.innerHTML='';
-          list.forEach(function(song,i){
-            var artists=(song.singer||[]).map(function(s){return s.name;}).join(' / ');
-            var item=document.createElement('div');
-            item.className='bgm-result-item'+(song.songmid===currentSongId?' active':'');
-            item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
-              '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.songname)+'</div><div class="bgm-result-artist">'+escapeHtml(artists)+'</div></div>'+
-              '<button class="bgm-result-play">▶</button>';
-            item.addEventListener('click',function(){playSong(song,artists);});
-            resultsEl.appendChild(item);
-          });
-        };
-        script.onerror=function(){searchCb=null;cleanup();resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';};
-        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(kw)+'&format=jsonp&callback=callback&p=1&n=15';
-        document.head.appendChild(script);
+        jsonpReq('https://songsearch.kugou.com/song_search_v2?keyword='+encodeURIComponent(kw)+'&page=1&pagesize=15&platform=WebFilter')
+          .then(function(data){
+            var list=data&&data.data&&data.data.lists;
+            if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果</div>';return;}
+            resultsEl.innerHTML='';
+            list.forEach(function(song,i){
+              var item=document.createElement('div');
+              item.className='bgm-result-item'+(song.FileHash===currentSongId?' active':'');
+              item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
+                '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-result-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
+                '<button class="bgm-result-play">▶</button>';
+              item.addEventListener('click',function(){playSong(song);});
+              resultsEl.appendChild(item);
+            });
+          })
+          .catch(function(){resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';});
       }
 
-      function playSong(song,artists){
-        currentSongId=song.songmid;
-        npName.textContent=song.songname;
-        npArtist.textContent=artists;
-        var pic=song.albummid?'https://api.injahow.cn/meting/?server=tencent&type=pic&id='+song.albummid:'';
+      function playSong(song){
+        currentSongId=song.FileHash;
+        npName.textContent=song.SongName;
+        npArtist.textContent=song.SingerName;
+        var pic=song.Image?song.Image.replace('{size}','400'):'';
         npCover.innerHTML=pic?'<img src="'+pic+'" alt="cover">':'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
-        audio.src='https://api.injahow.cn/meting/?server=tencent&type=url&id='+song.songmid;
-        audio.play().catch(function(){npName.textContent='播放失败，可能是版权限制';});
+        // 高亮当前歌曲
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
+        var items=document.querySelectorAll('.bgm-result-item');
+        var allSongs=document.querySelectorAll('.bgm-result-item');
+        // 通过歌曲名匹配高亮
+        allSongs.forEach(function(el){
+          var nameEl=el.querySelector('.bgm-result-name');
+          if(nameEl&&nameEl.textContent===song.SongName){el.classList.add('active');}
+        });
+        npName.textContent='加载中...';
+        jsonpReq('https://m.kugou.com/app/i/getSongInfo.php?hash='+song.FileHash+'&cmd=playInfo&format=jsonp')
+          .then(function(data){
+            if(data.error||!data.url){
+              npName.textContent=song.SongName;
+              npArtist.textContent=(data.error||'该歌曲需要VIP或版权限制');
+              return;
+            }
+            npName.textContent=data.songName||song.SongName;
+            npArtist.textContent=data.author_name||song.SingerName;
+            audio.src=data.url;
+            audio.play().catch(function(){npName.textContent='播放失败，可能是版权限制';});
+          })
+          .catch(function(){npName.textContent=song.SongName;npArtist.textContent='播放失败，请稍后重试';});
       }
 
       fab.addEventListener('click',function(){panel.classList.toggle('show');});
