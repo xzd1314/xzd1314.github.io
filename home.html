@@ -473,6 +473,75 @@
     @media (pointer: coarse){
       .project-card, .skill-card{transform:none!important}
     }
+    /* ---------- BGM Player ---------- */
+    .bgm-fab{position:fixed;top:80px;right:24px;z-index:90;width:56px;height:56px;border-radius:50%;background:var(--card-bg,#1a1a2e);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform .3s ease,box-shadow .3s ease;overflow:hidden;padding:0}
+    .bgm-fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(139,92,246,0.4)}
+    .bgm-disc{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#2a2a4a,#0a0a1a);display:flex;align-items:center;justify-content:center;position:relative}
+    .bgm-disc::before{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(255,255,255,0.08)}
+    .bgm-disc::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#3b82f6);z-index:2;box-shadow:0 0 8px rgba(139,92,246,0.6)}
+    .bgm-fab.playing .bgm-disc{animation:bgmSpin 3s linear infinite}
+    .bgm-disc svg{width:22px;height:22px;color:rgba(255,255,255,0.7);position:relative;z-index:1}
+    @keyframes bgmSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    .bgm-panel{position:fixed;top:150px;right:24px;z-index:89;width:320px;max-height:65vh;background:var(--card-bg,#1a1a2e);border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);display:flex;flex-direction:column;overflow:hidden;transform:translateX(120%);opacity:0;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s ease;pointer-events:none}
+    .bgm-panel.show{transform:translateX(0);opacity:1;pointer-events:auto}
+    .bgm-panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+    .bgm-panel-title{font-size:15px;font-weight:700}
+    .bgm-panel-close{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:22px;padding:2px 8px;border-radius:6px;line-height:1;transition:background .2s}
+    .bgm-panel-close:hover{background:var(--border)}
+    .bgm-search{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border)}
+    .bgm-search input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
+    .bgm-search input:focus{border-color:#8b5cf6}
+    .bgm-search button{padding:8px 14px;border:none;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-size:13px;cursor:pointer;font-weight:600;transition:opacity .2s}
+    .bgm-search button:hover{opacity:0.85}
+    .bgm-results{flex:1;overflow-y:auto;padding:6px 0}
+    .bgm-result-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:background .2s}
+    .bgm-result-item:hover{background:rgba(139,92,246,0.08)}
+    .bgm-result-item.active{background:rgba(139,92,246,0.15)}
+    .bgm-result-index{width:22px;text-align:center;color:var(--text-muted);font-size:12px;flex-shrink:0}
+    .bgm-result-info{flex:1;min-width:0}
+    .bgm-result-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bgm-result-artist{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+    .bgm-result-play{width:26px;height:26px;border-radius:50%;background:rgba(139,92,246,0.15);color:#8b5cf6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px}
+    .bgm-now-playing{padding:12px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.15)}
+    .bgm-np-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .bgm-np-cover{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .bgm-np-cover img{width:100%;height:100%;object-fit:cover}
+    .bgm-np-text{flex:1;min-width:0}
+    .bgm-np-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bgm-np-artist{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+    .bgm-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .bgm-time{font-size:10px;color:var(--text-muted);min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
+    .bgm-progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;cursor:pointer;position:relative}
+    .bgm-progress-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#3b82f6);border-radius:2px;width:0%;transition:width .1s linear}
+    .bgm-controls{display:flex;align-items:center;justify-content:center;gap:14px}
+    .bgm-ctrl-btn{background:none;border:none;color:var(--text);cursor:pointer;padding:6px;border-radius:6px;transition:background .2s;display:flex;align-items:center;justify-content:center}
+    .bgm-ctrl-btn:hover{background:var(--border)}
+    .bgm-ctrl-btn svg{width:18px;height:18px}
+    .bgm-volume{display:flex;align-items:center;gap:6px}
+    .bgm-volume input{width:55px;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+    .bgm-volume input::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#8b5cf6;cursor:pointer}
+    .bgm-volume input::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#8b5cf6;border:none;cursor:pointer}
+    .bgm-loading,.bgm-error,.bgm-empty{text-align:center;padding:24px 16px;font-size:13px}
+    .bgm-loading{color:var(--text-muted)}
+    .bgm-error{color:#ef4444}
+    .bgm-empty{color:var(--text-muted)}
+    @media(max-width:600px){.bgm-fab{width:48px;height:48px;top:72px;right:14px}.bgm-panel{right:12px;left:12px;width:auto;top:130px;max-height:60vh}}
+    /* ---------- Weird Mode (Konami) ---------- */
+    body.weird-mode{animation:weirdHue 4s linear infinite}
+    body.weird-mode .section-title{animation:weirdGlitch .25s infinite;filter:hue-rotate(180deg) saturate(2.5)}
+    body.weird-mode .nav-logo{animation:weirdGlitch .2s infinite;color:#ff00ff!important}
+    body.weird-mode .project-card,body.weird-mode .skill-card{animation:weirdShake .4s infinite;filter:invert(1) hue-rotate(90deg) saturate(1.5)}
+    body.weird-mode .bg-canvas{filter:hue-rotate(270deg) saturate(4) contrast(1.6)}
+    body.weird-mode p,body.weird-mode h1,body.weird-mode h2,body.weird-mode h3,body.weird-mode a{animation:weirdWobble .35s infinite}
+    body.weird-mode .avatar-link img{animation:weirdSpin 2s linear infinite;border-radius:50%!important}
+    body.weird-mode::after{content:'WEIRD';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:140px;font-weight:900;color:rgba(255,0,255,0.04);pointer-events:none;z-index:99999;animation:weirdSpin 4s linear infinite;letter-spacing:-0.05em}
+    body.weird-mode .scroll-progress{background:linear-gradient(90deg,#ff00ff,#00ffff,#ffff00,#ff00ff)!important;background-size:300% 100%!important;animation:weirdGradient 1s linear infinite}
+    @keyframes weirdHue{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+    @keyframes weirdGlitch{0%,100%{transform:translate(0);text-shadow:none}25%{transform:translate(-3px,1px);text-shadow:2px 0 #ff00ff,-2px 0 #00ffff}50%{transform:translate(3px,-1px);text-shadow:-2px 0 #ff00ff,2px 0 #00ffff}75%{transform:translate(-1px,2px)}}
+    @keyframes weirdShake{0%,100%{transform:rotate(0deg) translateX(0)}25%{transform:rotate(0.8deg) translateX(1px)}75%{transform:rotate(-0.8deg) translateX(-1px)}}
+    @keyframes weirdWobble{0%,100%{transform:skewX(0deg)}50%{transform:skewX(3deg) translateY(-1px)}}
+    @keyframes weirdSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+    @keyframes weirdGradient{0%{background-position:0% 50%}100%{background-position:300% 50%}}
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -485,6 +554,53 @@
   <!-- Custom Cursor -->
   <div class="custom-cursor" id="customCursor"></div>
   <div class="cursor-trail" id="cursorTrail"></div>
+  <!-- BGM Player -->
+  <button class="bgm-fab" id="bgmFab" aria-label="音乐播放器">
+    <div class="bgm-disc" id="bgmDisc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    </div>
+  </button>
+  <div class="bgm-panel" id="bgmPanel">
+    <div class="bgm-panel-header">
+      <span class="bgm-panel-title">🎵 BGM</span>
+      <button class="bgm-panel-close" id="bgmClose">×</button>
+    </div>
+    <div class="bgm-search">
+      <input type="text" id="bgmSearchInput" placeholder="搜索歌曲..." maxlength="50">
+      <button id="bgmSearchBtn">搜索</button>
+    </div>
+    <div class="bgm-results" id="bgmResults">
+      <div class="bgm-empty">搜索歌曲开始播放</div>
+    </div>
+    <div class="bgm-now-playing">
+      <div class="bgm-np-info">
+        <div class="bgm-np-cover" id="bgmNpCover">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <div class="bgm-np-text">
+          <div class="bgm-np-name" id="bgmNpName">未播放</div>
+          <div class="bgm-np-artist" id="bgmNpArtist">选择一首歌</div>
+        </div>
+      </div>
+      <div class="bgm-progress-row">
+        <span class="bgm-time" id="bgmCurTime">0:00</span>
+        <div class="bgm-progress-bar" id="bgmProgressBar">
+          <div class="bgm-progress-fill" id="bgmProgressFill"></div>
+        </div>
+        <span class="bgm-time" id="bgmDurTime">0:00</span>
+      </div>
+      <div class="bgm-controls">
+        <button class="bgm-ctrl-btn" id="bgmPlayBtn" aria-label="播放/暂停">
+          <svg id="bgmPlayIcon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <div class="bgm-volume">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;color:var(--text-muted)"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          <input type="range" id="bgmVolume" min="0" max="100" value="70">
+        </div>
+      </div>
+    </div>
+  </div>
+  <audio id="bgmAudio" preload="none"></audio>
   <!-- Turnstile Overlay -->
   <div class="turnstile-overlay" id="turnstileOverlay">
     <div class="turnstile-box">
@@ -1733,6 +1849,118 @@
     }else{
       revealEls.forEach(function(el){el.classList.add('is-visible')});
     }
+
+    // ---------- BGM Player ----------
+    (function(){
+      var fab=document.getElementById('bgmFab');
+      var panel=document.getElementById('bgmPanel');
+      var closeBtn=document.getElementById('bgmClose');
+      var searchInput=document.getElementById('bgmSearchInput');
+      var searchBtn=document.getElementById('bgmSearchBtn');
+      var resultsEl=document.getElementById('bgmResults');
+      var audio=document.getElementById('bgmAudio');
+      var playBtn=document.getElementById('bgmPlayBtn');
+      var playIcon=document.getElementById('bgmPlayIcon');
+      var progressBar=document.getElementById('bgmProgressBar');
+      var progressFill=document.getElementById('bgmProgressFill');
+      var curTimeEl=document.getElementById('bgmCurTime');
+      var durTimeEl=document.getElementById('bgmDurTime');
+      var volumeSlider=document.getElementById('bgmVolume');
+      var npName=document.getElementById('bgmNpName');
+      var npArtist=document.getElementById('bgmNpArtist');
+      var npCover=document.getElementById('bgmNpCover');
+      var ICON_PLAY='<polygon points="5,3 19,12 5,21"/>';
+      var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
+      var currentSongId=null;
+
+      // CORS代理列表（依次尝试，全部失败则报错）
+      var proxies=[
+        function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
+        function(u){return 'https://corsproxy.io/?url='+encodeURIComponent(u);},
+        function(u){return 'https://thingproxy.freeboard.io/fetch/'+u;}
+      ];
+
+      function fetchWithProxy(url,cb){
+        var idx=0;
+        function tryNext(){
+          if(idx>=proxies.length){cb(null,'所有代理均失败');return;}
+          var pu=proxies[idx](url);idx++;
+          fetch(pu).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();})
+            .then(function(t){try{cb(JSON.parse(t),null);}catch(e){tryNext();}})
+            .catch(function(){tryNext();});
+        }
+        tryNext();
+      }
+
+      function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+      function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
+
+      function searchSongs(kw){
+        kw=kw.trim();if(!kw)return;
+        resultsEl.innerHTML='<div class="bgm-loading">搜索中...</div>';
+        var apiUrl='https://music.163.com/api/search/get/web?s='+encodeURIComponent(kw)+'&type=1&limit=15';
+        fetchWithProxy(apiUrl,function(data,err){
+          if(err||!data||!data.result||!data.result.songs||data.result.songs.length===0){
+            resultsEl.innerHTML='<div class="bgm-error">搜索失败或无结果，请稍后重试</div>';return;
+          }
+          resultsEl.innerHTML='';
+          data.result.songs.forEach(function(song,i){
+            var artists=(song.artists||song.ar||[]).map(function(a){return a.name;}).join(' / ');
+            var item=document.createElement('div');
+            item.className='bgm-result-item'+(song.id===currentSongId?' active':'');
+            item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
+              '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.name)+'</div><div class="bgm-result-artist">'+escapeHtml(artists)+'</div></div>'+
+              '<button class="bgm-result-play">▶</button>';
+            item.addEventListener('click',function(){playSong(song,artists);});
+            resultsEl.appendChild(item);
+          });
+        });
+      }
+
+      function playSong(song,artists){
+        currentSongId=song.id;
+        npName.textContent=song.name;
+        npArtist.textContent=artists;
+        var pic=(song.album&&song.album.picUrl)||(song.al&&song.al.picUrl)||'';
+        npCover.innerHTML=pic?'<img src="'+pic+'" alt="cover">':'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+        audio.src='https://api.injahow.cn/meting/?server=netease&type=url&id='+song.id;
+        audio.play().catch(function(){npName.textContent='播放失败，可能是版权限制';});
+        document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
+      }
+
+      fab.addEventListener('click',function(){panel.classList.toggle('show');});
+      closeBtn.addEventListener('click',function(){panel.classList.remove('show');});
+      searchBtn.addEventListener('click',function(){searchSongs(searchInput.value);});
+      searchInput.addEventListener('keydown',function(e){if(e.key==='Enter')searchSongs(searchInput.value);});
+      playBtn.addEventListener('click',function(){if(audio.paused){if(audio.src)audio.play();}else{audio.pause();}});
+      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');});
+      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');});
+      audio.addEventListener('timeupdate',function(){if(audio.duration){progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';curTimeEl.textContent=fmtTime(audio.currentTime);}});
+      audio.addEventListener('loadedmetadata',function(){durTimeEl.textContent=fmtTime(audio.duration);});
+      audio.addEventListener('ended',function(){fab.classList.remove('playing');playIcon.innerHTML=ICON_PLAY;});
+      audio.addEventListener('error',function(){npName.textContent='播放失败';fab.classList.remove('playing');});
+      progressBar.addEventListener('click',function(e){if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}});
+      volumeSlider.addEventListener('input',function(){audio.volume=this.value/100;});
+      audio.volume=0.7;
+    })();
+
+    // ---------- Konami Code: 上上下下左右左右BABA ----------
+    (function(){
+      var seq=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA','KeyB','KeyA'];
+      var idx=0;
+      document.addEventListener('keydown',function(e){
+        if(e.code===seq[idx]){
+          idx++;
+          if(idx===seq.length){
+            idx=0;
+            document.body.classList.add('weird-mode');
+            // 不存localStorage，刷新即失效
+          }
+        }else{
+          idx=(e.code===seq[0])?1:0;
+        }
+      });
+    })();
   </script>
 </body>
 </html>
