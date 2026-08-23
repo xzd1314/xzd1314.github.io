@@ -338,6 +338,25 @@
     .back-to-top:hover{background:var(--text);color:var(--bg);border-color:var(--text);transform:translateY(-2px)}
     .back-to-top svg{width:18px;height:18px}
     @media(max-width:480px){.back-to-top{bottom:20px;right:20px;width:40px;height:40px}}
+    /* ---------- Friend Links ---------- */
+    .link-cards{display:flex;flex-direction:column;gap:12px;margin-top:40px;max-width:600px}
+    .link-card{
+      display:flex;align-items:center;gap:20px;padding:24px;
+      border:1px solid var(--border);border-radius:4px;background:var(--card-bg);
+      text-decoration:none;color:var(--text);transition:all .3s cubic-bezier(.22,1,.36,1);
+      position:relative;overflow:hidden;
+    }
+    .link-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border-hover),transparent);transform:translateX(-100%);transition:transform .6s ease}
+    .link-card:hover{border-color:var(--border-hover);background:var(--card-hover);transform:translateY(-2px);padding-left:32px}
+    .link-card:hover::before{transform:translateX(100%)}
+    .link-icon{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--accent);background:rgba(var(--accent-rgb),0.1);border-radius:8px}
+    .link-icon svg{width:24px;height:24px}
+    .link-info{flex:1;min-width:0}
+    .link-info h3{font-size:18px;font-weight:800;margin-bottom:4px;letter-spacing:-.01em}
+    .link-info p{font-size:14px;color:var(--text-secondary)}
+    .link-arrow{width:20px;height:20px;color:var(--text-muted);flex-shrink:0;transition:transform .3s ease,color .3s ease}
+    .link-card:hover .link-arrow{transform:translate(4px,-4px);color:var(--text)}
+    @media(max-width:480px){.link-card{padding:18px;gap:14px}.link-icon{width:40px;height:40px}.link-info h3{font-size:16px}}
     /* ---------- Link Verification Modal ---------- */
     .verify-modal{
       position:fixed;inset:0;z-index:9998;
@@ -456,6 +475,7 @@
       <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
       <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
       <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+      <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
       <li><a href="#memorial"><span class="zh">纪念</span><span class="en">Memorial</span></a></li>
     </ul>
     <div class="nav-right">
@@ -593,6 +613,25 @@
         <textarea class="feedback-input" id="feedbackInput" placeholder="说点什么... / Say something..." rows="3" maxlength="500"></textarea>
         <button class="feedback-submit" id="feedbackSubmit"><span class="zh">提交</span><span class="en">Submit</span></button>
         <p class="feedback-status" id="feedbackStatus"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="links">
+    <div class="section-inner">
+      <p class="section-label reveal"><span class="zh">友链</span><span class="en">Links</span></p>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">朋友们的网站</span><span class="en">Friends' Sites</span></h2>
+      <div class="link-cards">
+        <a href="https://45.206mhz.com/link/" target="_blank" rel="noopener" class="link-card reveal reveal-delay-1">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="link-info">
+            <h3>45.206MHz</h3>
+            <p><span class="zh">一个有趣的个人网站</span><span class="en">An interesting personal site</span></p>
+          </div>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
       </div>
     </div>
   </section>
@@ -1468,6 +1507,18 @@
     // Load language preference
     try{var savedLang=localStorage.getItem('site_lang');if(savedLang==='zh'||savedLang==='en'){document.body.setAttribute('data-lang',savedLang);}}catch(e){}
     applyTheme();
+
+    // ---------- Memorial section: only show on Sep 9 (local timezone) ----------
+    (function(){
+      var now=new Date();
+      var isMemorialDay=now.getMonth()===8&&now.getDate()===9; // Month 0-based: Sep=8
+      var memorialSection=document.getElementById('memorial');
+      var memorialNavLink=document.querySelector('a[href="#memorial"]');
+      if(!isMemorialDay){
+        if(memorialSection)memorialSection.style.display='none';
+        if(memorialNavLink&&memorialNavLink.parentElement)memorialNavLink.parentElement.style.display='none';
+      }
+    })();
 
     window.addEventListener('load',function(){
       // Only force-top when there's no anchor in URL (preserves #projects etc.)

@@ -3,155 +3,179 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>验证中... | xzd1314</title>
+  <title>正在进行安全验证... | xzd1314.github.io</title>
   <meta name="robots" content="noindex, nofollow" />
   <style>
+    :root{
+      --bg:#ffffff;--text:#111111;--text-secondary:#666666;--text-muted:#999999;
+      --border:rgba(0,0,0,0.1);--link:#0066cc;--spinner:#111111;
+    }
+    [data-theme="dark"]{
+      --bg:#000000;--text:#ffffff;--text-secondary:#999999;--text-muted:#666666;
+      --border:rgba(255,255,255,0.1);--link:#4d9fff;--spinner:#ffffff;
+    }
     *{margin:0;padding:0;box-sizing:border-box}
-    html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif}
+    html,body{height:100%}
     body{
-      background:#000;color:#fff;
-      display:flex;align-items:center;justify-content:center;
-      min-height:100vh;overflow:hidden;position:relative;
-      transition:background .3s ease,color .3s ease;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+      background:var(--bg);color:var(--text);
+      min-height:100vh;display:flex;flex-direction:column;
+      padding:48px;transition:background .3s ease,color .3s ease;
     }
-    body[data-theme="light"]{background:#f5f5f7;color:#111}
-    body::before{
-      content:'';position:absolute;inset:0;
-      background:radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.08) 0%,transparent 60%);
-      pointer-events:none;
+    .domain{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-.02em;word-break:break-all}
+    .title{font-size:24px;font-weight:700;margin-bottom:12px}
+    .desc{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:32px;max-width:560px}
+    .verify-area{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+    .spinner{
+      width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--spinner);
+      border-radius:50%;animation:spin 1s linear infinite;margin-bottom:24px;
     }
-    body[data-theme="light"]::before{background:radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.06) 0%,transparent 60%)}
-    .verify-container{text-align:center;z-index:1;padding:20px;max-width:420px;width:100%}
-    .logo-wrap{
-      width:72px;height:72px;margin:0 auto 28px;border-radius:50%;
-      background:linear-gradient(135deg,#f97316,#ea580c);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 8px 32px rgba(249,115,22,0.3);
-      animation:pulse 2s ease-in-out infinite;
+    .spinner.hidden{display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .turnstile-wrap{margin-bottom:24px;min-height:65px}
+    .faq{margin-top:32px;max-width:560px}
+    .faq summary{
+      font-size:16px;font-weight:600;cursor:pointer;padding:8px 0;list-style:none;
+      display:flex;align-items:center;
     }
-    .logo-wrap svg{width:36px;height:36px;color:#fff}
-    @keyframes pulse{
-      0%,100%{box-shadow:0 8px 32px rgba(249,115,22,0.3)}
-      50%{box-shadow:0 8px 48px rgba(249,115,22,0.5)}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::before{content:'\203A';display:inline-block;margin-right:8px;font-size:20px;transition:transform .2s ease}
+    .faq[open] summary::before{transform:rotate(90deg)}
+    .faq-content{font-size:14px;color:var(--text-secondary);line-height:1.7;padding:8px 0 8px 24px}
+    .faq-content ol{padding-left:20px;margin-top:8px}
+    .faq-content li{margin-bottom:6px}
+    .faq-content a{color:var(--link);text-decoration:none}
+    .faq-content a:hover{text-decoration:underline}
+    .footer{
+      margin-top:48px;padding-top:24px;border-top:1px solid var(--border);
+      font-size:12px;color:var(--text-muted);
     }
-    h1{font-size:24px;font-weight:700;margin-bottom:10px;letter-spacing:-0.01em}
-    .subtitle{font-size:14px;color:#888;margin-bottom:32px;line-height:1.6}
-    body[data-theme="light"] .subtitle{color:#666}
-    .turnstile-wrap{display:flex;justify-content:center;margin-bottom:28px;min-height:65px}
-    .divider{width:40px;height:1px;background:#333;margin:0 auto 20px}
-    body[data-theme="light"] .divider{background:#ddd}
-    .footer-text{font-size:11px;color:#555;display:flex;align-items:center;justify-content:center;gap:6px}
-    body[data-theme="light"] .footer-text{color:#999}
-    .footer-text svg{width:12px;height:12px}
-    .loading-dots{display:inline-flex;gap:3px;margin-left:4px}
-    .loading-dots span{width:4px;height:4px;border-radius:50%;background:#666;animation:dotPulse 1.4s ease-in-out infinite}
-    body[data-theme="light"] .loading-dots span{background:#999}
-    .loading-dots span:nth-child(2){animation-delay:.2s}
-    .loading-dots span:nth-child(3){animation-delay:.4s}
-    @keyframes dotPulse{0%,80%,100%{opacity:.3}40%{opacity:1}}
+    .footer .ray-id{margin-bottom:4px}
+    .footer a{color:var(--text-muted);text-decoration:none}
+    .footer a:hover{text-decoration:underline}
     .success-state{display:none}
     .success-state.show{display:block}
     .verify-state.hide{display:none}
     .check-icon{
-      width:56px;height:56px;margin:0 auto 20px;border-radius:50%;background:#22c55e;
-      display:flex;align-items:center;justify-content:center;animation:scaleIn .4s ease;
+      width:48px;height:48px;border-radius:50%;background:#22c55e;
+      display:flex;align-items:center;justify-content:center;margin-bottom:16px;animation:scaleIn .4s ease;
     }
-    .check-icon svg{width:28px;height:28px;color:#fff}
+    .check-icon svg{width:24px;height:24px;color:#fff}
     @keyframes scaleIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-    .redirect-text{font-size:15px;color:#aaa;margin-top:8px}
-    body[data-theme="light"] .redirect-text{color:#666}
-    .redirect-text strong{color:#fff}
-    body[data-theme="light"] .redirect-text strong{color:#111}
-    @media(max-width:480px){h1{font-size:20px}.subtitle{font-size:13px}}
+    .redirect-text{font-size:15px;color:var(--text-secondary)}
+    .redirect-text strong{color:var(--text)}
+    [data-lang="en"] .zh{display:none}
+    [data-lang="zh"] .en{display:none}
+    @media(max-width:600px){
+      body{padding:32px 24px}
+      .domain{font-size:22px}
+      .title{font-size:20px}
+      .verify-area{justify-content:flex-start;padding-top:24px}
+    }
   </style>
   <script>
-    // Define callback BEFORE Turnstile loads - must be global
-    window.onVerifySuccess = function(token) {
-      var vs = document.getElementById('verifyState');
-      var ss = document.getElementById('successState');
-      if(vs) vs.classList.add('hide');
-      if(ss) ss.classList.add('show');
-      var count = 2;
-      var el = document.getElementById('countdown');
-      var timer = setInterval(function() {
-        count--;
-        if(el) el.textContent = count;
-        if(count <= 0) { clearInterval(timer); window.location.href = 'home.html'; }
-      }, 1000);
-      setTimeout(function() { window.location.href = 'home.html'; }, 2500);
-    };
-
-    // Load theme and set data-theme before Turnstile renders
-    (function() {
-      var theme = 'dark';
-      try {
-        var saved = localStorage.getItem('site_theme');
-        if(saved === 'light' || saved === 'dark') theme = saved;
-      } catch(e) {}
-      document.body.setAttribute('data-theme', theme);
-      // Set Turnstile theme attribute
-      var w = document.getElementById('turnstileWidget');
-      if(w) w.setAttribute('data-theme', theme);
+    (function(){
+      try{
+        var saved=localStorage.getItem('site_theme');
+        if(saved!=='dark'&&saved!=='light'&&saved!=='auto')saved='auto';
+        var effective=saved;
+        if(saved==='auto')effective=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+        document.body.setAttribute('data-theme',effective);
+      }catch(e){}
     })();
-
-    // Crawler bypass
-    (function() {
-      var ua = navigator.userAgent.toLowerCase();
-      var bots = ['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
-      for(var i = 0; i < bots.length; i++) {
-        if(ua.indexOf(bots[i]) !== -1) { window.location.replace('home.html'); return; }
+    window.onVerifySuccess=function(token){
+      var vs=document.getElementById('verifyState');
+      var ss=document.getElementById('successState');
+      if(vs)vs.classList.add('hide');
+      if(ss)ss.classList.add('show');
+      var count=2;
+      var el=document.getElementById('countdown');
+      var timer=setInterval(function(){
+        count--;
+        if(el)el.textContent=count;
+        if(count<=0){clearInterval(timer);window.location.href='home.html';}
+      },1000);
+      setTimeout(function(){window.location.href='home.html';},2500);
+    };
+    (function(){
+      var ua=navigator.userAgent.toLowerCase();
+      var bots=['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
+      for(var i=0;i<bots.length;i++){
+        if(ua.indexOf(bots[i])!==-1){window.location.replace('home.html');return;}
       }
     })();
-  </script>
-</head>
-<body data-theme="dark">
-  <div class="verify-container">
-    <div class="verify-state" id="verifyState">
-      <div class="logo-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-      </div>
-      <h1>人机验证<span class="loading-dots"><span></span><span></span><span></span></span></h1>
-      <p class="subtitle">请完成下方验证以继续访问<br/>xzd1314.github.io</p>
-      <div class="turnstile-wrap">
-        <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onVerifySuccess" data-theme="dark"></div>
-      </div>
-      <div class="divider"></div>
-      <p class="footer-text">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        由 Cloudflare Turnstile 提供安全验证
-      </p>
-    </div>
-    <div class="success-state" id="successState">
-      <div class="check-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </div>
-      <h1>验证成功</h1>
-      <p class="redirect-text">正在进入网站<strong id="countdown">2</strong>秒...</p>
-    </div>
-  </div>
-  <script>
-    // Fallback: poll for Turnstile response in case callback doesn't fire
-    (function() {
-      var fired = false;
-      var check = setInterval(function() {
-        if(fired) return;
-        var input = document.querySelector('input[name="cf-turnstile-response"]');
-        if(input && input.value) {
-          fired = true;
-          clearInterval(check);
-          if(typeof window.onVerifySuccess === 'function') {
-            window.onVerifySuccess(input.value);
-          }
-        }
-      }, 300);
-      // Stop polling after 5 minutes
-      setTimeout(function() { clearInterval(check); }, 300000);
-    })();
+    setTimeout(function(){
+      if(!document.getElementById('successState').classList.contains('show')){
+        window.location.href='home.html';
+      }
+    },12000);
   </script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body data-theme="light" data-lang="zh">
+  <div class="domain">xzd1314.github.io</div>
+
+  <div id="verifyState" class="verify-state">
+    <h1 class="title"><span class="zh">正在进行安全验证</span><span class="en">Checking your browser</span></h1>
+    <p class="desc">
+      <span class="zh">本网站使用安全服务防护恶意自动程序。在验证您不是自动程序期间，将显示此页面。</span>
+      <span class="en">This website uses a security service to protect against malicious automated programs. This page will appear while verifying that you are not a bot.</span>
+    </p>
+
+    <div class="verify-area">
+      <div class="spinner" id="spinner"></div>
+      <div class="turnstile-wrap">
+        <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onVerifySuccess" data-theme="light"></div>
+      </div>
+    </div>
+
+    <details class="faq">
+      <summary><span class="zh">为什么验证时间较长？</span><span class="en">Why is this taking so long?</span></summary>
+      <div class="faq-content">
+        <p><span class="zh">电脑配置较旧或网络连接较慢可能导致验证时间延长。</span><span class="en">Older computers or slow network connections may cause longer verification times.</span></p>
+        <p><span class="zh">下一步操作：</span><span class="en">Next steps:</span></p>
+        <ol>
+          <li><span class="zh">请稍等片刻，刷新页面将重新开始安全验证，可能需要更长时间。</span><span class="en">Please wait. Refreshing the page will restart the security check and may take longer.</span></li>
+          <li><span class="zh">如验证仍未完成，请刷新此页面。</span><span class="en">If the verification still hasn't completed, please refresh this page.</span></li>
+          <li><span class="zh">如刷新后仍停留在此页面，请参阅 <a href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/general-errors/" target="_blank" rel="noopener">Cloudflare 故障排除文档</a> 获取更多帮助。</span><span class="en">If you still remain on this page after refreshing, please refer to the <a href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/general-errors/" target="_blank" rel="noopener">Cloudflare troubleshooting documentation</a> for more help.</span></li>
+        </ol>
+      </div>
+    </details>
+  </div>
+
+  <div id="successState" class="success-state">
+    <div class="verify-area">
+      <div class="check-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h1 class="title"><span class="zh">验证成功</span><span class="en">Verification successful</span></h1>
+      <p class="redirect-text"><span class="zh">正在进入网站</span><span class="en">Redirecting to site</span> <strong id="countdown">2</strong><span class="zh">秒...</span><span class="en">s...</span></p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="ray-id">Ray ID: <span id="rayId">--</span></div>
+    <div><span class="zh">由 Cloudflare Turnstile 提供性能和安全服务</span><span class="en">Performance &amp; security by Cloudflare Turnstile</span></div>
+  </div>
+
+  <script>
+    document.getElementById('rayId').textContent=Math.random().toString(16).substring(2,10)+Math.random().toString(16).substring(2,10);
+    var turnstileCheck=setInterval(function(){
+      var widget=document.querySelector('#turnstileWidget iframe');
+      if(widget){
+        clearInterval(turnstileCheck);
+        document.getElementById('spinner').classList.add('hidden');
+      }
+    },300);
+    setTimeout(function(){clearInterval(turnstileCheck);},12000);
+    (function(){
+      var theme=document.body.getAttribute('data-theme')||'light';
+      var w=document.getElementById('turnstileWidget');
+      if(w)w.setAttribute('data-theme',theme);
+    })();
+    (function(){
+      try{var lang=localStorage.getItem('site_lang')||'zh';document.body.setAttribute('data-lang',lang);}catch(e){}
+    })();
+  </script>
 </body>
 </html>
