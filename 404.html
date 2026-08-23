@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — 页面不存在 | xzd1314</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/jpeg" href="assets/avatar.jpg" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}
+    body{
+      background:#000;color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;overflow:hidden;position:relative;
+      transition:background .3s ease,color .3s ease;
+    }
+    body[data-theme="light"]{background:#f5f5f7;color:#111}
+    body::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,0.1) 0%,transparent 60%);
+      pointer-events:none;
+    }
+    .container{text-align:center;z-index:1;padding:20px;max-width:480px;width:100%}
+    .error-code{
+      font-size:120px;font-weight:900;letter-spacing:-.04em;
+      background:linear-gradient(135deg,#8b5cf6,#3b82f6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;line-height:1;margin-bottom:8px;
+      font-family:'Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;
+    }
+    h1{font-size:24px;font-weight:700;margin-bottom:12px;letter-spacing:-.01em}
+    .subtitle{font-size:15px;color:#888;margin-bottom:36px;line-height:1.6}
+    body[data-theme="light"] .subtitle{color:#666}
+    .btn-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:12px 28px;border-radius:100px;font-size:14px;font-weight:600;
+      text-decoration:none;transition:all .25s ease;cursor:pointer;
+      border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#fff;
+    }
+    body[data-theme="light"] .btn{border-color:rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:#111}
+    .btn:hover{background:#fff;color:#000;border-color:#fff;transform:translateY(-1px)}
+    body[data-theme="light"] .btn:hover{background:#111;color:#fff;border-color:#111}
+    .btn-primary{
+      background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;border:none;
+      box-shadow:0 4px 16px rgba(139,92,246,0.3);
+    }
+    .btn-primary:hover{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 6px 24px rgba(139,92,246,0.45)}
+    .theme-toggle{
+      position:fixed;top:24px;right:24px;
+      width:40px;height:40px;border-radius:50%;
+      background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+      color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      transition:all .25s ease;z-index:10;
+    }
+    body[data-theme="light"] .theme-toggle{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.1);color:#111}
+    .theme-toggle:hover{background:rgba(255,255,255,0.1);transform:scale(1.05)}
+    body[data-theme="light"] .theme-toggle:hover{background:rgba(0,0,0,0.06)}
+    .theme-toggle svg{width:18px;height:18px}
+    @media(max-width:480px){.error-code{font-size:80px}h1{font-size:20px}.subtitle{font-size:14px}}
+  </style>
+  <script>
+    (function(){
+      var theme='dark';
+      try{
+        var saved=localStorage.getItem('site_theme');
+        if(saved==='light'||saved==='dark')theme=saved;
+      }catch(e){}
+      document.body.setAttribute('data-theme',theme);
+    })();
+  </script>
+</head>
+<body data-theme="dark">
+  <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
+  <div class="container">
+    <div class="error-code">404</div>
+    <h1><span class="zh">页面走丢了</span><span class="en">Page Not Found</span></h1>
+    <p class="subtitle">
+      <span class="zh">你要找的页面不存在，或者已经被移动了。</span>
+      <span class="en">The page you're looking for doesn't exist or has been moved.</span>
+    </p>
+    <div class="btn-group">
+      <a href="home.html" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="zh">回到首页</span><span class="en">Go Home</span>
+      </a>
+      <a href="javascript:history.back()" class="btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span class="zh">返回上页</span><span class="en">Go Back</span>
+      </a>
+    </div>
+  </div>
+  <script>
+    var lang=(document.body.getAttribute('data-lang')||'zh');
+    // Sync language from localStorage if available
+    try{
+      var savedLang=localStorage.getItem('site_lang');
+      if(savedLang==='zh'||savedLang==='en'){
+        lang=savedLang;
+        document.body.setAttribute('data-lang',lang);
+      }
+    }catch(e){}
+    // Show/hide language spans
+    function applyLang(){
+      var zhSpans=document.querySelectorAll('.zh');
+      var enSpans=document.querySelectorAll('.en');
+      var isEn=document.body.getAttribute('data-lang')==='en';
+      zhSpans.forEach(function(el){el.style.display=isEn?'none':'inline'});
+      enSpans.forEach(function(el){el.style.display=isEn?'inline':'none'});
+    }
+    applyLang();
+    // Theme toggle
+    var toggle=document.getElementById('themeToggle');
+    var icon=document.getElementById('themeIcon');
+    var sunIcon='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    var moonIcon='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    function syncIcon(){
+      var isLight=document.body.getAttribute('data-theme')==='light';
+      icon.innerHTML=isLight?sunIcon:moonIcon;
+    }
+    syncIcon();
+    toggle.addEventListener('click',function(){
+      var current=document.body.getAttribute('data-theme');
+      var next=current==='dark'?'light':'dark';
+      document.body.setAttribute('data-theme',next);
+      try{localStorage.setItem('site_theme',next)}catch(e){}
+      syncIcon();
+    });
+  </script>
+</body>
+</html>

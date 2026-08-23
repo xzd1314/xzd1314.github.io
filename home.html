@@ -485,7 +485,11 @@
   <section class="section" id="about">
     <div class="section-inner">
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
-      <h2 class="section-title reveal reveal-delay-1"><span class="zh">这里什么都没有</span><span class="en">There is nothing here</span></h2>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">用代码折腾点有意思的东西</span><span class="en">Building interesting things with code</span></h2>
+      <p class="section-desc reveal reveal-delay-2">
+        <span class="zh">我是 xzd1314，一个喜欢折腾的独立开发者。从 Roblox 里写 Lua 游戏，到 Minecraft Forge 模组移植，再到前端网页和 Python 自动化——工具一直在变，但享受创造的过程从未改变。这里放着我做过的一些项目，欢迎随便看看。</span>
+        <span class="en">I'm xzd1314, an indie developer who loves tinkering. From writing Lua games in Roblox, to porting Minecraft Forge mods, to frontend web design and Python automation — the tools keep changing, but the joy of creation never does. This is where I keep some of my projects, feel free to look around.</span>
+      </p>
     </div>
   </section>
 
@@ -546,11 +550,11 @@
           <div class="project-actions">
             <span class="project-tag">IOS/Android</span>
             <div class="project-btns">
-              <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/downloads/zhulaile-nextbot-v6.ipa" download class="project-btn project-btn-ios">
+              <a href="downloads/zhulaile-nextbot-v6.ipa" download class="project-btn project-btn-ios">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span class="zh">下载IPA（苹果）</span><span class="en">Download IPA (iOS)</span>
               </a>
-              <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/downloads/zhulaile-nextbot-v6.apk" download class="project-btn">
+              <a href="downloads/zhulaile-nextbot-v6.apk" download class="project-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span class="zh">下载APK（安卓）</span><span class="en">Download APK (Android)</span>
               </a>
@@ -589,7 +593,7 @@
       </div>
       <div class="feedback-form reveal reveal-delay-3">
         <p class="feedback-label"><span class="zh">留言反馈</span><span class="en">Leave a message</span></p>
-        <textarea class="feedback-input" id="feedbackInput" placeholder="说点什么..." rows="3"></textarea>
+        <textarea class="feedback-input" id="feedbackInput" placeholder="说点什么... / Say something..." rows="3" maxlength="500"></textarea>
         <button class="feedback-submit" id="feedbackSubmit"><span class="zh">提交</span><span class="en">Submit</span></button>
         <p class="feedback-status" id="feedbackStatus"></p>
       </div>
@@ -701,6 +705,12 @@
 
     // ========== Dynamic Background (Particles + Stars + Gradient) ==========
     (function(){
+      // Respect reduced motion preference
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        var c=document.getElementById('bgCanvas');
+        if(c)c.style.display='none';
+        return;
+      }
       var canvas=document.getElementById('bgCanvas');
       if(!canvas)return;
       var ctx=canvas.getContext('2d');
@@ -805,6 +815,7 @@
     // ========== Custom Cursor Particle Trail (ASUS cursor via CSS) ==========
     (function(){
       if(window.matchMedia('(pointer:coarse)').matches)return;
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
       var particles=[];
       var mouseX=window.innerWidth/2, mouseY=window.innerHeight/2;
       var MAX_PARTICLES=60;
@@ -865,15 +876,12 @@
       if(!heroTitle&&!navLogo)return;
       var clickCount=0;
       var clickTimer=null;
-      var justTouched=false;
       var isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
       var cooldownEnd=0;
       var COOLDOWN_MS=60000; // 1 minute cooldown on mobile
 
       function handleClick(e){
-        // Prevent double-counting on mobile (touchstart + click both fire)
-        if(justTouched){justTouched=false;return;}
-        if(e.preventDefault)e.preventDefault();
+        // (touch devices only bind touchstart, no double-counting issue)
 
         // Cooldown check (mobile only)
         if(isTouch&&Date.now()<cooldownEnd){
@@ -901,16 +909,10 @@
         }
       }
 
-      function handleTouch(e){
-        justTouched=true;
-        var t=e.touches[0];
-        handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:e.currentTarget,preventDefault:function(){}});
-      }
-
       function bindClick(el){
         if(!el)return;
         if(isTouch){
-          el.addEventListener('touchstart',handleTouch,{passive:true});
+          el.addEventListener('touchstart',function(ev){var t=ev.touches[0];handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});},{passive:true});
         }else{
           el.addEventListener('click',handleClick);
         }
@@ -1055,6 +1057,24 @@
       var overlay=document.getElementById('turnstileOverlay');
       if(overlay){overlay.classList.add('hidden');setTimeout(function(){overlay.style.display='none';},500);}
     }
+    // ---------- Turnstile overlay: bot bypass + timeout fallback ----------
+    (function(){
+      var overlay=document.getElementById('turnstileOverlay');
+      if(!overlay)return;
+      // Search engines: show content immediately so they can index
+      if(isBot()){
+        overlay.classList.add('hidden');
+        setTimeout(function(){overlay.style.display='none';},500);
+        return;
+      }
+      // Fallback: if Turnstile fails to load within 8s, let user in anyway
+      setTimeout(function(){
+        if(!overlay.classList.contains('hidden')){
+          overlay.classList.add('hidden');
+          setTimeout(function(){overlay.style.display='none';},500);
+        }
+      },8000);
+    })();
     // ---------- Bot Detection (allow search engines) ----------
     function isBot(){
       var ua=navigator.userAgent.toLowerCase();
@@ -1130,10 +1150,13 @@
         }
       },300);
     }
-    function openLinkVerifyModal(url,isDownload){
-      if(isBot()){return true;}
+    function openLinkVerifyModal(url,isDownload,isIos){
+      // Bots: bypass external link verification (SEO needs to follow links),
+      // but NEVER bypass download verification.
+      if(isBot()&&!isDownload){return true;}
       pendingLinkUrl=url;
       pendingLinkIsDownload=isDownload;
+      pendingIosDownload=!!isIos;
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
       if(window.turnstile){renderLinkTurnstile();}
@@ -1214,27 +1237,27 @@
       var btn=document.getElementById('feedbackSubmit');
       var text=input?input.value.trim():'';
       if(!text){
-        if(status){status.textContent='请输入内容';status.className='feedback-status error';}
+        if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Please enter content':'请输入内容');status.className='feedback-status error';}
         return;
       }
       if(!supabaseClient){
-        if(status){status.textContent='服务未就绪，请稍后重试';status.className='feedback-status error';}
+        if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Service not ready, please retry later':'服务未就绪，请稍后重试');status.className='feedback-status error';}
         return;
       }
       if(btn){btn.disabled=true;}
-      if(status){status.textContent='提交中...';status.className='feedback-status';}
+      if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submitting...':'提交中...');status.className='feedback-status';}
       var uid=getUserId();
       supabaseClient.from('feedback').insert({user_id:uid,content:text}).then(function(result){
         if(result.error){
           console.error('[Feedback] insert error:',result.error);
-          if(status){status.textContent='提交失败，请稍后重试';status.className='feedback-status error';}
+          if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submit failed, please retry later':'提交失败，请稍后重试');status.className='feedback-status error';}
         }else{
-          if(status){status.textContent='提交成功！我会尽快回复';status.className='feedback-status success';}
+          if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submitted! I will reply soon':'提交成功！我会尽快回复');status.className='feedback-status success';}
           if(input){input.value='';}
         }
       }).catch(function(e){
         console.error('[Feedback] catch error:',e);
-        if(status){status.textContent='提交失败，请稍后重试';status.className='feedback-status error';}
+        if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submit failed, please retry later':'提交失败，请稍后重试');status.className='feedback-status error';}
       }).finally(function(){
         if(btn){btn.disabled=false;}
       });
@@ -1348,7 +1371,8 @@
       dlLinks.forEach(function(link){
         link.addEventListener('click',function(e){
           e.preventDefault();
-          openLinkVerifyModal(link.href,true);
+          var isIos=link.href.toLowerCase().indexOf('.ipa')!==-1;
+          openLinkVerifyModal(link.href,true,isIos);
         });
       });
     })();
@@ -1382,8 +1406,11 @@
     })();
 
     window.addEventListener('load',function(){
-      window.location.hash='#hero';
-      setTimeout(function(){window.scrollTo(0,0)},10);
+      // Only force-top when there's no anchor in URL (preserves #projects etc.)
+      if(!window.location.hash){
+        window.location.hash='#hero';
+        setTimeout(function(){window.scrollTo(0,0)},10);
+      }
 
       // Sync theme button state after loading preference
       var currentTheme=document.body.getAttribute('data-theme');
