@@ -802,31 +802,47 @@
     // ========== Custom Cursor Particle Trail (ASUS cursor via CSS) ==========
     (function(){
       if(window.matchMedia('(pointer:coarse)').matches)return;
+      var particles=[];
+      var lastX=0,lastY=0,hasMoved=false;
+
       document.addEventListener('mousemove',function(e){
-        // Spawn trail particle
-        spawnParticle(e.clientX,e.clientY);
+        if(!hasMoved){lastX=e.clientX;lastY=e.clientY;hasMoved=true;return;}
+        // Interpolate between last and current position for continuous trail
+        var dx=e.clientX-lastX, dy=e.clientY-lastY;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        var steps=Math.max(1,Math.floor(dist/4)); // Spawn particle every 4px
+        for(var i=0;i<steps;i++){
+          var t=i/steps;
+          spawnParticle(lastX+dx*t, lastY+dy*t);
+        }
+        lastX=e.clientX;lastY=e.clientY;
       });
 
-      // Particle trail
-      var particles=[];
       function spawnParticle(x,y){
-        if(particles.length>20)return;
+        if(particles.length>40)return;
         var p=document.createElement('div');
         p.className='cursor-particle';
         p.style.left=x+'px';p.style.top=y+'px';
         p.style.opacity='1';
         document.body.appendChild(p);
-        particles.push({el:p,x:x,y:y,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,life:1});
+        particles.push({
+          el:p,x:x,y:y,
+          vx:(Math.random()-0.5)*0.6,
+          vy:(Math.random()-0.5)*0.6,
+          life:1,
+          size:Math.random()*3+3
+        });
       }
 
       function updateParticles(){
         for(var i=particles.length-1;i>=0;i--){
           var p=particles[i];
-          p.life-=0.03;
+          p.life-=0.012; // Slower fade for longer trail
           p.x+=p.vx;p.y+=p.vy;
+          p.vx*=0.96;p.vy*=0.96; // Slow down
           p.el.style.left=p.x+'px';p.el.style.top=p.y+'px';
-          p.el.style.opacity=p.life;
-          p.el.style.transform='translate(-50%,-50%) scale('+p.life+')';
+          p.el.style.opacity=p.life*0.7;
+          p.el.style.transform='translate(-50%,-50%) scale('+(p.life*p.size/4)+')';
           if(p.life<=0){
             p.el.remove();
             particles.splice(i,1);
