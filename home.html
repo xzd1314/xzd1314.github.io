@@ -761,7 +761,7 @@
       update();
     })();
 
-    // ========== Dynamic Background (Draggable Constellation Star Map) ==========
+    // ========== Dynamic Background (Infinite Draggable Constellation Star Map) ==========
     (function(){
       if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
         var c=document.getElementById('bgCanvas');
@@ -781,9 +781,7 @@
       function resize(){
         w=canvas.width=window.innerWidth;
         h=canvas.height=window.innerHeight;
-        worldW=w*1.5; worldH=h*1.5;
-        if(camX>worldW-w)camX=worldW-w;
-        if(camY>worldH-h)camY=worldH-h;
+        worldW=w*2; worldH=h*2;
       }
       resize();
 
@@ -795,6 +793,9 @@
       }
       function glowColor(alpha){
         return isDark()?'rgba(130,160,255,'+alpha+')':'rgba(30,60,160,'+alpha+')';
+      }
+      function wrap(val,max){
+        return ((val%max)+max)%max;
       }
 
       function initStars(){
@@ -812,7 +813,9 @@
         constellations=[];
         var groupCount=isMobile?5:10;
         for(var g=0;g<groupCount;g++){
-          var cx=100+Math.random()*(worldW-200), cy=100+Math.random()*(worldH-200);
+          // Keep constellations away from world edges to avoid wrap-around cutting
+          var cx=w*0.35+Math.random()*(worldW-w*0.7);
+          var cy=h*0.35+Math.random()*(worldH-h*0.7);
           var starNum=Math.floor(Math.random()*4)+3;
           var group=[];
           var angleBase=Math.random()*Math.PI*2;
@@ -833,7 +836,7 @@
         }
       }
       initStars();initConstellations();
-      camX=(worldW-w)/2; camY=(worldH-h)/2;
+      camX=w*0.5; camY=h*0.5;
 
       window.addEventListener('resize',function(){resize();initStars();initConstellations();});
 
@@ -858,18 +861,18 @@
           camX-=dx; camY-=dy;
           camVX=-dx; camVY=-dy;
           lastX=e.clientX;lastY=e.clientY;
-          clampCam();
         }
       });
       window.addEventListener('mouseup',function(){dragging=false;document.body.removeAttribute('data-dragging');});
 
-      // Touch drag (on window, skip interactive elements)
+      // Touch drag
       window.addEventListener('touchstart',function(e){
         if(e.touches.length!==1)return;
         if(isInteractive(e.target))return;
         dragging=true;hasMoved=false;
         lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
         camVX=0;camVY=0;
+        document.body.setAttribute('data-dragging','true');
       },{passive:true});
       window.addEventListener('touchmove',function(e){
         if(!dragging||e.touches.length!==1)return;
@@ -878,16 +881,8 @@
         camX-=dx; camY-=dy;
         camVX=-dx; camVY=-dy;
         lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
-        clampCam();
       },{passive:true});
       window.addEventListener('touchend',function(){dragging=false;document.body.removeAttribute('data-dragging');});
-
-      function clampCam(){
-        if(camX<0){camX=0;if(camVX<0)camVX*=-0.4;}
-        if(camX>worldW-w){camX=worldW-w;if(camVX>0)camVX*=-0.4;}
-        if(camY<0){camY=0;if(camVY<0)camVY*=-0.4;}
-        if(camY>worldH-h){camY=worldH-h;if(camVY>0)camVY*=-0.4;}
-      }
 
       var mouseX=w/2,mouseY=h/2,mouseActive=false;
       window.addEventListener('mousemove',function(e){mouseX=e.clientX;mouseY=e.clientY;mouseActive=true;});
@@ -898,7 +893,7 @@
         var angle=Math.PI/4+Math.random()*0.25;
         var speed=Math.random()*7+5;
         meteors.push({
-          x:camX+Math.random()*w*0.7,y:camY+Math.random()*h*0.25,
+          x:camX+Math.random()*w,y:camY+Math.random()*h*0.3,
           vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
           life:1,length:Math.random()*70+50
         });
@@ -908,13 +903,12 @@
       function animate(){
         ctx.clearRect(0,0,w,h);
 
-        // Inertia
+        // Inertia (no boundary clamp — infinite world)
         if(!dragging){
           camX+=camVX; camY+=camVY;
           camVX*=0.94; camVY*=0.94;
           if(Math.abs(camVX)<0.05)camVX=0;
           if(Math.abs(camVY)<0.05)camVY=0;
-          clampCam();
         }
 
         // Mouse world position for interaction
@@ -927,41 +921,49 @@
           ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
         }
 
-        // Constellations (slow drift + draggable)
+        // Constellations (slow drift + infinite wrap)
         for(var g=0;g<constellations.length;g++){
           var grp=constellations[g];
           grp.cx+=grp.vx; grp.cy+=grp.vy;
-          if(grp.cx<80||grp.cx>worldW-80)grp.vx*=-1;
-          if(grp.cy<80||grp.cy>worldH-80)grp.vy*=-1;
+          if(grp.cx<w*0.2||grp.cx>worldW-w*0.2)grp.vx*=-1;
+          if(grp.cy<h*0.2||grp.cy>worldH-h*0.2)grp.vy*=-1;
 
-          // Draw connections
-          ctx.beginPath();
+          // Compute wrapped screen positions for all stars first
+          var positions=[];
+          var allOnScreen=true;
           for(var s=0;s<grp.stars.length;s++){
-            var sx=grp.cx+grp.stars[s].ox-camX, sy=grp.cy+grp.stars[s].oy-camY;
-            if(s===0)ctx.moveTo(sx,sy);else ctx.lineTo(sx,sy);
+            var wx=grp.cx+grp.stars[s].ox, wy=grp.cy+grp.stars[s].oy;
+            var sx=wrap(wx-camX,worldW), sy=wrap(wy-camY,worldH);
+            if(sx>w||sy>h)allOnScreen=false;
+            positions.push({sx:sx,sy:sy,wx:wx,wy:wy,r:grp.stars[s].r});
           }
-          ctx.strokeStyle=starColor(0.3);ctx.lineWidth=0.9;ctx.stroke();
-
-          // Draw constellation stars
-          for(var s=0;s<grp.stars.length;s++){
-            var cs=grp.stars[s];
-            var csx=grp.cx+cs.ox-camX, csy=grp.cy+cs.oy-camY;
-            if(csx<-20||csx>w+20||csy<-20||csy>h+20)continue;
-            var cwx=grp.cx+cs.ox, cwy=grp.cy+cs.oy;
-            var dm=Math.sqrt((cwx-mwx)*(cwx-mwx)+(cwy-mwy)*(cwy-mwy));
+          // Only draw connections if all stars are on screen (avoids wrap artifacts)
+          if(allOnScreen){
+            ctx.beginPath();
+            for(var s=0;s<positions.length;s++){
+              if(s===0)ctx.moveTo(positions[s].sx,positions[s].sy);
+              else ctx.lineTo(positions[s].sx,positions[s].sy);
+            }
+            ctx.strokeStyle=starColor(0.3);ctx.lineWidth=0.9;ctx.stroke();
+          }
+          // Draw stars
+          for(var s=0;s<positions.length;s++){
+            var p=positions[s];
+            if(p.sx>w||p.sy>h)continue;
+            var dm=Math.sqrt((p.wx-mwx)*(p.wx-mwx)+(p.wy-mwy)*(p.wy-mwy));
             var mb=mouseActive&&!dragging&&dm<200?(1-dm/200)*1.5:0;
-            var r=cs.r+mb;
-            ctx.beginPath();ctx.arc(csx,csy,r*3,0,Math.PI*2);ctx.fillStyle=glowColor(0.1+mb*0.12);ctx.fill();
-            ctx.beginPath();ctx.arc(csx,csy,r,0,Math.PI*2);ctx.fillStyle=starColor(0.85+mb*0.15);ctx.fill();
+            var r=p.r+mb;
+            ctx.beginPath();ctx.arc(p.sx,p.sy,r*3,0,Math.PI*2);ctx.fillStyle=glowColor(0.1+mb*0.12);ctx.fill();
+            ctx.beginPath();ctx.arc(p.sx,p.sy,r,0,Math.PI*2);ctx.fillStyle=starColor(0.85+mb*0.15);ctx.fill();
           }
         }
 
-        // Twinkling stars
+        // Twinkling stars (infinite wrap)
         for(var i=0;i<stars.length;i++){
           var st=stars[i];st.twinkle+=st.twinkleSpeed;
           var ta=0.3+Math.sin(st.twinkle)*0.4;
-          var sx=st.x-camX, sy=st.y-camY;
-          if(sx<-10||sx>w+10||sy<-10||sy>h+10)continue;
+          var sx=wrap(st.x-camX,worldW), sy=wrap(st.y-camY,worldH);
+          if(sx>w||sy>h)continue;
           var dm=Math.sqrt((st.x-mwx)*(st.x-mwx)+(st.y-mwy)*(st.y-mwy));
           var mb=mouseActive&&!dragging&&dm<180?(1-dm/180):0;
           var r=st.baseR*(1+mb*0.8);
@@ -977,9 +979,10 @@
         // Meteors
         for(var m=meteors.length-1;m>=0;m--){
           var mt=meteors[m];mt.x+=mt.vx;mt.y+=mt.vy;mt.life-=0.015;
-          if(mt.life<=0||mt.x>worldW+100||mt.y>worldH+100){meteors.splice(m,1);continue;}
-          var mx=mt.x-camX, my=mt.y-camY;
-          var tx=mx-mt.vx*mt.length/10, ty=my-mt.vy*mt.length/10;
+          if(mt.life<=0){meteors.splice(m,1);continue;}
+          var mx=wrap(mt.x-camX,worldW), my=wrap(mt.y-camY,worldH);
+          if(mx>w||my>h)continue;
+          var tx=wrap(mt.x-mt.vx*mt.length/10-camX,worldW), ty=wrap(mt.y-mt.vy*mt.length/10-camY,worldH);
           var tg=ctx.createLinearGradient(mx,my,tx,ty);
           tg.addColorStop(0,starColor(mt.life*0.9));tg.addColorStop(1,starColor(0));
           ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(tx,ty);ctx.strokeStyle=tg;ctx.lineWidth=2;ctx.stroke();
@@ -1056,15 +1059,8 @@
       var clickCount=0;
       var clickTimer=null;
       var isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
-      var cooldownEnd=0;
-      var COOLDOWN_MS=60000; // 1 minute cooldown on mobile
 
       function handleClick(e){
-        // Cooldown check (mobile only)
-        if(isTouch&&Date.now()<cooldownEnd){
-          return;
-        }
-
         clickCount++;
         clearTimeout(clickTimer);
         clickTimer=setTimeout(function(){
@@ -1090,7 +1086,6 @@
 
         if(clickCount>=5){
           clickCount=0;
-          if(isTouch){cooldownEnd=Date.now()+COOLDOWN_MS;}
           var x=(e.clientX||window.innerWidth/2);
           var y=(e.clientY||window.innerHeight/2);
           // Reset glow right before explosion
