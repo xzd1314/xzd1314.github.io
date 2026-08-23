@@ -110,12 +110,6 @@
         }
       }
     })();
-    setTimeout(function(){
-      if(!document.getElementById('successState').classList.contains('show')){
-        try{sessionStorage.setItem('index_verified','1');}catch(e){}
-        window.location.href='home.html';
-      }
-    },12000);
   </script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
