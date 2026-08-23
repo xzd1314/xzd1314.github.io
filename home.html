@@ -122,6 +122,9 @@
     .project-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;padding:10px 20px;border-radius:100px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);cursor:pointer;transition:all .25s ease;white-space:nowrap}
     .project-btn:hover{background:var(--text);color:var(--bg);border-color:var(--text);transform:translateY(-1px)}
     .project-btn svg{width:15px;height:15px}
+    .project-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .project-btn-ios{opacity:0.7}
+    .project-btn-ios:hover{opacity:1}
     #contact{justify-content:center;text-align:center}
     #contact .section-inner{max-width:700px}
     .contact-cta{font-size:56px;font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:48px;color:var(--text)}
@@ -470,15 +473,21 @@
         <div class="project-item reveal reveal-delay-1">
           <span class="project-num">02</span>
           <div class="project-info">
-            <h3><span class="zh">猪来了 nextbotV4</span><span class="en">Zhulaile nextbotV4</span></h3>
-            <p><span class="zh">何意味游戏</span><span class="en">What does it mean game</span></p>
+            <h3><span class="zh">猪来了 nextbotV5</span><span class="en">Zhulaile nextbotV5</span></h3>
+            <p><span class="zh">何意味游戏。目前可以局域网联机了，苹果自己签名安装。</span><span class="en">What does it mean game. LAN multiplayer available now, iOS requires self-signing.</span></p>
           </div>
           <div class="project-actions">
-            <span class="project-tag">Android</span>
-            <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/downloads/zhulaile-nextbot-v4.apk" download class="project-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span class="zh">下载</span><span class="en">Download</span>
-            </a>
+            <span class="project-tag">IOS/Android</span>
+            <div class="project-btns">
+              <a href="#" class="project-btn project-btn-ios" id="iosDownloadBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span class="zh">下载IPA（苹果）</span><span class="en">Download IPA (iOS)</span>
+              </a>
+              <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/downloads/zhulaile-nextbot-v5.apk" download class="project-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span class="zh">下载APK（安卓）</span><span class="en">Download APK (Android)</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -662,6 +671,7 @@
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
+    var pendingIosDownload=false;
     var linkVerifyPoller=null;
     var linkWidgetId=null;
     function renderLinkTurnstile(){
@@ -703,6 +713,7 @@
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
+      pendingIosDownload=false;
       linkWidgetId=null;
       // Reset button states
       var turnstileEl=document.getElementById('linkTurnstile');
@@ -715,6 +726,15 @@
     }
     function onLinkVerifySuccess(token){
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
+      // iOS download: show "not available" popup instead of downloading
+      if(pendingIosDownload){
+        pendingIosDownload=false;
+        setTimeout(function(){
+          closeLinkVerifyModal();
+          showIosNotAvailablePopup();
+        },300);
+        return;
+      }
       if(pendingLinkUrl){
         if(pendingLinkIsDownload){
           // Download: auto-trigger (no popup blocker issue)
@@ -836,6 +856,34 @@
       var popup=document.getElementById('replyPopup');
       if(overlay){overlay.classList.remove('show');}
       if(popup){popup.classList.remove('show');}
+      // Reset to reply mode after closing
+      setTimeout(function(){
+        var titleEl=document.querySelector('#replyPopup .reply-title');
+        var userMsg=document.querySelector('#replyPopup .reply-user-msg');
+        var arrow=document.querySelector('#replyPopup .reply-arrow');
+        var adminLabel=document.querySelector('#replyPopup .reply-admin-label');
+        if(titleEl){titleEl.innerHTML='<span class="zh">收到回复</span><span class="en">New Reply</span>';}
+        if(userMsg){userMsg.style.display='';}
+        if(arrow){arrow.style.display='';}
+        if(adminLabel){adminLabel.style.display='';}
+      },400);
+    }
+    // Show iOS not available popup (reuses reply popup styling)
+    function showIosNotAvailablePopup(){
+      var overlay=document.getElementById('replyOverlay');
+      var popup=document.getElementById('replyPopup');
+      var titleEl=document.querySelector('#replyPopup .reply-title');
+      var userMsg=document.querySelector('#replyPopup .reply-user-msg');
+      var arrow=document.querySelector('#replyPopup .reply-arrow');
+      var adminLabel=document.querySelector('#replyPopup .reply-admin-label');
+      var contentEl=document.getElementById('replyContent');
+      if(titleEl){titleEl.innerHTML='<span class="zh">暂不可用</span><span class="en">Not Available</span>';}
+      if(userMsg){userMsg.style.display='none';}
+      if(arrow){arrow.style.display='none';}
+      if(adminLabel){adminLabel.style.display='none';}
+      if(contentEl){contentEl.textContent='开发者未上传该内容，请等待上传或联系开发者。';}
+      if(overlay){overlay.classList.add('show');}
+      if(popup){popup.classList.add('show');}
     }
     // Bind link verification events immediately (script is at end of body, DOM is ready)
     (function(){
@@ -872,6 +920,15 @@
           openLinkVerifyModal(link.href,true);
         });
       });
+      // iOS download button - show "not available" popup after verification
+      var iosBtn=document.getElementById('iosDownloadBtn');
+      if(iosBtn){
+        iosBtn.addEventListener('click',function(e){
+          e.preventDefault();
+          pendingIosDownload=true;
+          openLinkVerifyModal('ios-placeholder',true);
+        });
+      }
     })();
 
     // ---------- Feedback System Events ----------
