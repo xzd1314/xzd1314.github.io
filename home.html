@@ -1269,12 +1269,7 @@
       var uid=getUserId();
       var lastRead=parseInt(localStorage.getItem('feedback_last_read_id')||'0',10);
       console.log('[Feedback] checkReplies, uid='+uid+', lastRead='+lastRead);
-      supabaseClient.from('feedback')
-        .select('id,reply,content,created_at')
-        .eq('user_id',uid)
-        .not('reply','is',null)
-        .order('created_at',{ascending:false})
-        .limit(1)
+      supabaseClient.rpc('get_my_replies',{p_user_id:uid})
         .then(function(result){
           if(result.error){
             console.error('[Feedback] query error:',result.error);
