@@ -1421,15 +1421,6 @@
     }
     function onLinkVerifySuccess(token){
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
-      // iOS download: show "not available" popup instead of downloading
-      if(pendingIosDownload){
-        pendingIosDownload=false;
-        setTimeout(function(){
-          closeLinkVerifyModal();
-          showIosNotAvailablePopup();
-        },300);
-        return;
-      }
       if(pendingLinkUrl){
         if(pendingLinkIsDownload){
           // Download: auto-trigger (no popup blocker issue)
@@ -1457,9 +1448,14 @@
     var SUPABASE_URL='https://bvtcdknbvpyeyqvotmrk.supabase.co';
     var SUPABASE_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
     var supabaseClient=null;
-    if(window.supabase){
-      supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    function initSupabase(){
+      if(window.supabase){
+        supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+      }else{
+        setTimeout(initSupabase,100);
+      }
     }
+    initSupabase();
 
     // Get or create user ID (stored in localStorage)
     function getUserId(){
