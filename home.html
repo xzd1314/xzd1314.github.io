@@ -10,14 +10,38 @@
   <meta property="og:title" content="xzd1314 — 个人网站" />
   <meta property="og:description" content="xzd1314 的个人网站与项目作品集" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://xzd1314.github.io/" />
+  <meta property="og:url" content="https://xzd1314.github.io/home.html" />
+  <meta property="og:image" content="https://xzd1314.github.io/assets/avatar.jpg" />
+  <meta property="og:site_name" content="xzd1314" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="xzd1314 — 个人网站" />
+  <meta name="twitter:description" content="xzd1314 的个人网站与项目作品集" />
+  <meta name="twitter:image" content="https://xzd1314.github.io/assets/avatar.jpg" />
+  <link rel="canonical" href="https://xzd1314.github.io/home.html" />
+  <link rel="preconnect" href="https://challenges.cloudflare.com" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "xzd1314",
+    "url": "https://xzd1314.github.io/home.html",
+    "image": "https://xzd1314.github.io/assets/avatar.jpg",
+    "description": "xzd1314 的个人网站 - 前端开发、Roblox 开发、Python 项目作品集。",
+    "sameAs": [
+      "https://github.com/xzd1314",
+      "https://www.roblox.com/users/4112496357",
+      "https://space.bilibili.com/3546384332491100"
+    ]
+  }
+  </script>
   <title>xzd1314 — 个人网站</title>
   <link rel="icon" type="image/jpeg" href="assets/avatar.jpg" />
   <link rel="apple-touch-icon" href="assets/avatar.jpg" />
   <style>
     @font-face {
       font-family: 'ChuangZhongHei';
-      src: url('assets/fonts/chuangzhonghei.ttf') format('truetype');
+      src: url('assets/fonts/chuangzhonghei.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
@@ -451,7 +475,7 @@
     }
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
 <body data-theme="dark" data-lang="zh">
   <!-- Scroll Progress Bar -->
@@ -1274,7 +1298,7 @@
       var overlay=document.getElementById('turnstileOverlay');
       if(overlay){overlay.classList.add('hidden');setTimeout(function(){overlay.style.display='none';},500);}
     }
-    // ---------- Turnstile overlay: bot bypass + timeout fallback ----------
+    // ---------- Turnstile overlay: already-verified skip + bot bypass + timeout fallback ----------
     (function(){
       var overlay=document.getElementById('turnstileOverlay');
       if(!overlay)return;
@@ -1570,7 +1594,7 @@
       }
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.addEventListener('click',function(e){if(e.target===modal)closeLinkVerifyModal();});}
-      // Intercept external links
+      // Intercept external links (require human verification on every external link)
       var links=document.querySelectorAll('a[target="_blank"]');
       links.forEach(function(link){
         link.addEventListener('click',function(e){
@@ -1578,7 +1602,7 @@
           openLinkVerifyModal(link.href,false);
         });
       });
-      // Intercept download links
+      // Intercept download links (require human verification on every download)
       var dlLinks=document.querySelectorAll('a[download]');
       dlLinks.forEach(function(link){
         link.addEventListener('click',function(e){
@@ -1629,8 +1653,11 @@
       var effective=getEffectiveTheme();
       document.body.setAttribute('data-theme',effective);
       updateThemeButton();
+      // 同步所有 Turnstile 控件的主题（遮罩层 + 下载验证弹窗）
       var overlayTurnstile=document.querySelector('#turnstileOverlay .cf-turnstile');
       if(overlayTurnstile)overlayTurnstile.setAttribute('data-theme',effective);
+      var linkTurnstile=document.querySelector('#linkVerifyModal #linkTurnstile');
+      if(linkTurnstile)linkTurnstile.setAttribute('data-theme',effective);
     }
     themeBtn.addEventListener('click',function(){
       var current=getThemePreference();
