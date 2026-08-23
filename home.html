@@ -558,22 +558,49 @@
     .bgm-list-remove{width:24px;height:24px;border-radius:50%;background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;line-height:1;transition:color .2s,background .2s}
     .bgm-list-remove:hover{color:#ef4444;background:rgba(239,68,68,0.1)}
     @media(max-width:600px){.bgm-fab{width:48px;height:48px;top:72px;right:14px}.bgm-panel{right:12px;left:12px;width:auto;top:130px;max-height:65vh}}
-    /* ---------- Weird Mode (Konami) ---------- */
-    body.weird-mode{animation:weirdHue 4s linear infinite}
-    body.weird-mode .section-title{animation:weirdGlitch .25s infinite;filter:hue-rotate(180deg) saturate(2.5)}
-    body.weird-mode .nav-logo{animation:weirdGlitch .2s infinite;color:#ff00ff!important}
-    body.weird-mode .project-card,body.weird-mode .skill-card{animation:weirdShake .4s infinite;filter:invert(1) hue-rotate(90deg) saturate(1.5)}
-    body.weird-mode .bg-canvas{filter:hue-rotate(270deg) saturate(4) contrast(1.6)}
-    body.weird-mode p,body.weird-mode h1,body.weird-mode h2,body.weird-mode h3,body.weird-mode a{animation:weirdWobble .35s infinite}
-    body.weird-mode .avatar-link img{animation:weirdSpin 2s linear infinite;border-radius:50%!important}
-    body.weird-mode::after{content:'WEIRD';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:140px;font-weight:900;color:rgba(255,0,255,0.04);pointer-events:none;z-index:99999;animation:weirdSpin 4s linear infinite;letter-spacing:-0.05em}
-    body.weird-mode .scroll-progress{background:linear-gradient(90deg,#ff00ff,#00ffff,#ffff00,#ff00ff)!important;background-size:300% 100%!important;animation:weirdGradient 1s linear infinite}
-    @keyframes weirdHue{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
-    @keyframes weirdGlitch{0%,100%{transform:translate(0);text-shadow:none}25%{transform:translate(-3px,1px);text-shadow:2px 0 #ff00ff,-2px 0 #00ffff}50%{transform:translate(3px,-1px);text-shadow:-2px 0 #ff00ff,2px 0 #00ffff}75%{transform:translate(-1px,2px)}}
-    @keyframes weirdShake{0%,100%{transform:rotate(0deg) translateX(0)}25%{transform:rotate(0.8deg) translateX(1px)}75%{transform:rotate(-0.8deg) translateX(-1px)}}
-    @keyframes weirdWobble{0%,100%{transform:skewX(0deg)}50%{transform:skewX(3deg) translateY(-1px)}}
+    /* ---------- Weird Mode (Konami) — 强制猎奇主题，无视深浅色 ---------- */
+    body.weird-mode{
+      --bg:#ff00ff!important;--text:#00ff00!important;--text-secondary:#ffff00!important;--text-muted:#00ffff!important;
+      --border:#ff0000!important;--card-bg:rgba(0,255,255,0.15)!important;--card-hover:rgba(255,255,0,0.25)!important;
+      --accent:#00ff00!important;--accent-hover:#ffff00!important;--accent-2:#ff00ff!important;
+      --nav-bg:rgba(255,0,255,0.85)!important;--hero-bg:linear-gradient(135deg,#ff00ff,#00ffff,#ffff00)!important;
+      --projects-bg:linear-gradient(180deg,#ff00ff,#00ff00)!important;
+      background:#ff00ff!important;
+      animation:weirdBg 2s steps(4) infinite;
+    }
+    body.weird-mode .nav{background:rgba(255,0,255,0.85)!important;backdrop-filter:blur(0)!important;-webkit-backdrop-filter:blur(0)!important;border-bottom:3px dashed #00ff00!important}
+    body.weird-mode .nav-logo{animation:weirdGlitch .15s infinite;color:#ffff00!important;text-shadow:3px 0 #00ffff,-3px 0 #ff0000!important}
+    body.weird-mode .nav a,body.weird-mode .nav-btn{color:#00ff00!important;animation:weirdWobble .3s infinite}
+    body.weird-mode .section-title{animation:weirdGlitch .2s infinite;color:#ffff00!important;text-shadow:4px 0 #ff00ff,-4px 0 #00ffff}
+    body.weird-mode .hero-title{animation:weirdGlitch .15s infinite;color:#00ff00!important;text-shadow:5px 0 #ff0000,-5px 0 #00ffff}
+    body.weird-mode .project-card,body.weird-mode .skill-card{animation:weirdShake .3s infinite;background:rgba(0,255,255,0.15)!important;border:2px solid #00ff00!important}
+    body.weird-mode .project-item:hover::before{background:rgba(255,255,0,0.3)!important}
+    body.weird-mode .project-btn{background:#00ff00!important;color:#ff00ff!important;border-color:#ffff00!important;animation:weirdPulse .5s infinite}
+    body.weird-mode .bg-canvas{filter:hue-rotate(180deg) saturate(3) contrast(1.5)!important;opacity:0.6!important}
+    body.weird-mode p,body.weird-mode h1,body.weird-mode h2,body.weird-mode h3,body.weird-mode a{animation:weirdWobble .25s infinite}
+    body.weird-mode .avatar-link img{animation:weirdSpin 1s linear infinite;border-radius:50%!important;border:4px solid #00ff00!important}
+    body.weird-mode::after{content:'WEIRD MODE';position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:120px;font-weight:900;color:rgba(0,255,0,0.08);pointer-events:none;z-index:99999;animation:weirdSpin 3s linear infinite;letter-spacing:-0.05em}
+    body.weird-mode .scroll-progress{background:linear-gradient(90deg,#ff0000,#00ff00,#0000ff,#ffff00,#ff00ff,#00ffff)!important;background-size:600% 100%!important;animation:weirdGradient .5s linear infinite;height:5px!important}
+    body.weird-mode .bgm-fab{background:#00ff00!important;border-color:#ff00ff!important;box-shadow:0 0 30px #ff00ff!important;animation:weirdPulse .4s infinite}
+    body.weird-mode .bgm-panel{background:rgba(255,0,255,0.95)!important;border-color:#00ff00!important}
+    body.weird-mode .bgm-result-item.active{background:rgba(0,255,0,0.3)!important}
+    body.weird-mode .back-to-top{background:#ffff00!important;color:#ff00ff!important}
+    body.weird-mode .section-label{color:#00ffff!important;animation:weirdGlitch .3s infinite}
+    body.weird-mode .contact-cta{color:#ffff00!important;animation:weirdGlitch .2s infinite}
+    body.weird-mode .contact-link{background:rgba(0,255,0,0.2)!important;border-color:#ff00ff!important;color:#00ff00!important}
+    body.weird-mode .skill-card h3{color:#ffff00!important}
+    body.weird-mode .project-num{color:#00ffff!important}
+    body.weird-mode .project-tag{background:rgba(255,255,0,0.3)!important;color:#ff00ff!important;border-color:#00ff00!important}
+    body.weird-mode footer{color:#00ff00!important;border-top:2px dashed #ffff00!important}
+    body.weird-mode .turnstile-overlay{background:rgba(255,0,255,0.9)!important}
+    body.weird-mode .verify-modal-box{background:#ff00ff!important;border:3px solid #00ff00!important}
+    @keyframes weirdBg{0%{background:#ff00ff}25%{background:#00ff00}50%{background:#00ffff}75%{background:#ffff00}100%{background:#ff00ff}}
+    @keyframes weirdGlitch{0%,100%{transform:translate(0);text-shadow:none}20%{transform:translate(-4px,2px);text-shadow:3px 0 #ff00ff,-3px 0 #00ffff}40%{transform:translate(4px,-2px);text-shadow:-3px 0 #ff0000,3px 0 #00ff00}60%{transform:translate(-2px,-1px);text-shadow:2px 0 #ffff00,-2px 0 #ff00ff}80%{transform:translate(2px,1px)}}
+    @keyframes weirdShake{0%,100%{transform:rotate(0deg) translateX(0)}25%{transform:rotate(1.5deg) translateX(2px)}50%{transform:rotate(-1deg) translateX(-1px)}75%{transform:rotate(1deg) translateX(1px)}}
+    @keyframes weirdWobble{0%,100%{transform:skewX(0deg)}50%{transform:skewX(5deg) translateY(-2px)}}
     @keyframes weirdSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-    @keyframes weirdGradient{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+    @keyframes weirdGradient{0%{background-position:0% 50%}100%{background-position:600% 50%}}
+    @keyframes weirdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -800,10 +827,16 @@
           </div>
           <div class="project-actions">
             <span class="project-tag">React / Vite</span>
-            <button class="project-btn" onclick="openLinkVerifyModal('https://xzd1314.github.io/ueg-admin/',false)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-              <span class="zh">进入</span><span class="en">Enter</span>
-            </button>
+            <div class="project-btns">
+              <button class="project-btn" onclick="openLinkVerifyModal('https://xzd1314.github.io/ueg-admin/',false)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                <span class="zh">进入</span><span class="en">Enter</span>
+              </button>
+              <a href="https://github.com/xzd1314/ueg-admin" target="_blank" rel="noopener" class="project-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                <span class="zh">源码</span><span class="en">Source</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -1616,6 +1649,11 @@
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
       if(pendingLinkUrl){
         if(pendingLinkIsDownload){
+          if(pendingLinkUrl==='music-download'&&window.bgmDoDownload){
+            window.bgmDoDownload();
+            window.pendingMusicDownload=false;
+            setTimeout(closeLinkVerifyModal,500);
+          }else{
           // Download: auto-trigger (no popup blocker issue)
           var a=document.createElement('a');
           a.href=pendingLinkUrl;a.download='';a.style.display='none';
@@ -1623,6 +1661,7 @@
           a.click();
           setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
           setTimeout(closeLinkVerifyModal,500);
+          }
         }else{
           // External link: show "click to continue" button (user click in sync stack = no popup blocker)
           var turnstileEl=document.getElementById('linkTurnstile');
@@ -1965,6 +2004,7 @@
       var ICON_PLAY='<polygon points="5,3 19,12 5,21"/>';
       var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
       var STORAGE_KEY='xzd1314_bgm';
+      var DEFAULT_SONG={FileHash:'13BE659F13C6E5A376A7D558E3871DCC',SongName:'Never Gonna Give You Up',SingerName:'Rick Astley',Image:'http://singerimg.kugou.com/uploadpic/softhead/{size}/20231024/20231024171920789.jpg'};
       var I18N={
         zh:{searchPlaceholder:'搜索歌曲...',searching:'搜索中...',noResult:'搜索失败或无结果',searchError:'搜索失败，请稍后重试',loading:'加载中...',tryingSource:'正在尝试其他音源...',vipRestricted:'该歌曲需要VIP或版权限制',playError:'播放失败，请稍后重试',queueEmpty:'队列为空',noFavorites:'暂无收藏',noLyrics:'暂无歌词',playFailed:'播放失败',download:'下载'},
         en:{searchPlaceholder:'Search songs...',searching:'Searching...',noResult:'No results found',searchError:'Search failed, please retry',loading:'Loading...',tryingSource:'Trying other source...',vipRestricted:'VIP or copyright restricted',playError:'Playback failed, please retry',queueEmpty:'Queue is empty',noFavorites:'No favorites',noLyrics:'No lyrics',playFailed:'Playback failed',download:'Download'}
@@ -1983,7 +2023,15 @@
       function loadState(){
         try{
           var raw=localStorage.getItem(STORAGE_KEY);
-          if(!raw)return;
+          if(!raw){
+            // 第一次访问：默认放 Rick Astley - Never Gonna Give You Up
+            currentSong=DEFAULT_SONG;
+            npName.textContent=DEFAULT_SONG.SongName;
+            npArtist.textContent=DEFAULT_SONG.SingerName;
+            updateCover(DEFAULT_SONG.Image);
+            updateNpFavBtn();
+            return;
+          }
           var d=JSON.parse(raw);
           if(Array.isArray(d.queue))queue=d.queue;
           if(Array.isArray(d.favorites))favorites=d.favorites;
@@ -2290,7 +2338,7 @@
       prevBtn.addEventListener('click',function(){audio.currentTime=0;audio.play();});
       nextBtn.addEventListener('click',playNext);
       npFav.addEventListener('click',function(){if(currentSong)toggleFav(currentSong);});
-      downloadBtn.addEventListener('click',function(){
+      function doMusicDownload(){
         if(!audio.src||!currentSong)return;
         var filename=(currentSong.SongName||'song').replace(/[<>:"/\\|?*]/g,'_')+'.mp3';
         fetch(audio.src).then(function(r){return r.blob();}).then(function(blob){
@@ -2303,6 +2351,12 @@
           document.body.appendChild(a);a.click();
           setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
         });
+      }
+      window.bgmDoDownload=doMusicDownload;
+      downloadBtn.addEventListener('click',function(){
+        if(!audio.src||!currentSong)return;
+        window.pendingMusicDownload=true;
+        openLinkVerifyModal('music-download',true);
       });
       audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');});
       audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();});
