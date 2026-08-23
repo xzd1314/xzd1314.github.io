@@ -476,56 +476,88 @@
     /* ---------- BGM Player ---------- */
     .bgm-fab{position:fixed;top:80px;right:24px;z-index:90;width:56px;height:56px;border-radius:50%;background:var(--card-bg,#1a1a2e);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform .3s ease,box-shadow .3s ease;overflow:hidden;padding:0}
     .bgm-fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(139,92,246,0.4)}
-    .bgm-disc{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#2a2a4a,#0a0a1a);display:flex;align-items:center;justify-content:center;position:relative}
-    .bgm-disc::before{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(255,255,255,0.08)}
-    .bgm-disc::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#3b82f6);z-index:2;box-shadow:0 0 8px rgba(139,92,246,0.6)}
+    .bgm-disc{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#2a2a4a,#0a0a1a);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .bgm-disc::before{content:'';position:absolute;inset:4px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);z-index:1;pointer-events:none}
+    .bgm-disc-cover{width:64%;height:64%;border-radius:50%;object-fit:cover;position:relative;z-index:0;display:none}
+    .bgm-disc-cover.show{display:block}
+    .bgm-disc-default{width:22px;height:22px;color:rgba(255,255,255,0.7);position:relative;z-index:0;flex-shrink:0}
+    .bgm-disc-center{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--card-bg,#1a1a2e);z-index:2;box-shadow:0 0 0 2px rgba(139,92,246,0.3)}
     .bgm-fab.playing .bgm-disc{animation:bgmSpin 3s linear infinite}
-    .bgm-disc svg{width:22px;height:22px;color:rgba(255,255,255,0.7);position:relative;z-index:1}
     @keyframes bgmSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-    .bgm-panel{position:fixed;top:150px;right:24px;z-index:89;width:320px;max-height:65vh;background:var(--card-bg,#1a1a2e);border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);display:flex;flex-direction:column;overflow:hidden;transform:translateX(120%);opacity:0;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s ease;pointer-events:none}
+    .bgm-panel{position:fixed;top:150px;right:24px;z-index:89;width:340px;max-height:72vh;background:var(--card-bg,#1a1a2e);border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);display:flex;flex-direction:column;overflow:hidden;transform:translateX(120%);opacity:0;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s ease;pointer-events:none}
     .bgm-panel.show{transform:translateX(0);opacity:1;pointer-events:auto}
     .bgm-panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
     .bgm-panel-title{font-size:15px;font-weight:700}
     .bgm-panel-close{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:22px;padding:2px 8px;border-radius:6px;line-height:1;transition:background .2s}
     .bgm-panel-close:hover{background:var(--border)}
-    .bgm-search{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border)}
+    .bgm-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+    .bgm-tab-btn{flex:1;padding:10px 2px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;font-weight:600;transition:color .2s;position:relative}
+    .bgm-tab-btn:hover{color:var(--text)}
+    .bgm-tab-btn.active{color:#8b5cf6}
+    .bgm-tab-btn.active::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2px;background:#8b5cf6;border-radius:1px}
+    .bgm-tab-pane{flex:1;overflow-y:auto;display:none;flex-direction:column;min-height:0}
+    .bgm-tab-pane.active{display:flex}
+    .bgm-search{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
     .bgm-search input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
     .bgm-search input:focus{border-color:#8b5cf6}
     .bgm-search button{padding:8px 14px;border:none;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-size:13px;cursor:pointer;font-weight:600;transition:opacity .2s}
     .bgm-search button:hover{opacity:0.85}
     .bgm-results{flex:1;overflow-y:auto;padding:6px 0}
-    .bgm-result-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;transition:background .2s}
+    .bgm-result-item{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;transition:background .2s}
     .bgm-result-item:hover{background:rgba(139,92,246,0.08)}
     .bgm-result-item.active{background:rgba(139,92,246,0.15)}
-    .bgm-result-index{width:22px;text-align:center;color:var(--text-muted);font-size:12px;flex-shrink:0}
+    .bgm-result-index{width:20px;text-align:center;color:var(--text-muted);font-size:12px;flex-shrink:0}
     .bgm-result-info{flex:1;min-width:0}
     .bgm-result-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .bgm-result-artist{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-    .bgm-result-play{width:26px;height:26px;border-radius:50%;background:rgba(139,92,246,0.15);color:#8b5cf6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px}
-    .bgm-now-playing{padding:12px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.15)}
+    .bgm-result-actions{display:flex;gap:4px;flex-shrink:0}
+    .bgm-action-btn{width:26px;height:26px;border-radius:50%;background:rgba(139,92,246,0.1);color:#8b5cf6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;transition:background .2s,transform .15s,color .2s}
+    .bgm-action-btn:hover{background:rgba(139,92,246,0.25);transform:scale(1.1)}
+    .bgm-action-btn.faved{color:#ef4444;background:rgba(239,68,68,0.12)}
+    .bgm-action-btn.faved:hover{background:rgba(239,68,68,0.22)}
+    .bgm-now-playing{padding:12px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.15);flex-shrink:0}
     .bgm-np-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .bgm-np-cover{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .bgm-np-cover{width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .bgm-np-cover img{width:100%;height:100%;object-fit:cover}
     .bgm-np-text{flex:1;min-width:0}
     .bgm-np-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .bgm-np-artist{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+    .bgm-np-fav{width:30px;height:30px;border-radius:50%;background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:color .2s,background .2s}
+    .bgm-np-fav:hover{background:var(--border)}
+    .bgm-np-fav.faved{color:#ef4444}
     .bgm-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
     .bgm-time{font-size:10px;color:var(--text-muted);min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
     .bgm-progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;cursor:pointer;position:relative}
     .bgm-progress-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#3b82f6);border-radius:2px;width:0%;transition:width .1s linear}
-    .bgm-controls{display:flex;align-items:center;justify-content:center;gap:14px}
+    .bgm-controls{display:flex;align-items:center;justify-content:center;gap:10px}
     .bgm-ctrl-btn{background:none;border:none;color:var(--text);cursor:pointer;padding:6px;border-radius:6px;transition:background .2s;display:flex;align-items:center;justify-content:center}
     .bgm-ctrl-btn:hover{background:var(--border)}
     .bgm-ctrl-btn svg{width:18px;height:18px}
-    .bgm-volume{display:flex;align-items:center;gap:6px}
-    .bgm-volume input{width:55px;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+    .bgm-ctrl-btn:disabled{opacity:0.3;cursor:not-allowed}
+    .bgm-volume{display:flex;align-items:center;gap:6px;margin-left:4px}
+    .bgm-volume input{width:50px;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
     .bgm-volume input::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#8b5cf6;cursor:pointer}
     .bgm-volume input::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#8b5cf6;border:none;cursor:pointer}
     .bgm-loading,.bgm-error,.bgm-empty{text-align:center;padding:24px 16px;font-size:13px}
     .bgm-loading{color:var(--text-muted)}
     .bgm-error{color:#ef4444}
     .bgm-empty{color:var(--text-muted)}
-    @media(max-width:600px){.bgm-fab{width:48px;height:48px;top:72px;right:14px}.bgm-panel{right:12px;left:12px;width:auto;top:130px;max-height:60vh}}
+    /* 歌词 */
+    .bgm-lyric-wrap{flex:1;overflow-y:auto;padding:30px 16px;text-align:center;scroll-behavior:smooth;mask-image:linear-gradient(to bottom,transparent,black 12%,black 88%,transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,black 12%,black 88%,transparent)}
+    .bgm-lyric-line{padding:7px 0;font-size:13px;color:var(--text-muted);transition:color .3s,font-size .3s;line-height:1.6}
+    .bgm-lyric-line.active{color:var(--text);font-size:15px;font-weight:600}
+    /* 队列/收藏列表 */
+    .bgm-list-item{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;transition:background .2s;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .bgm-list-item:hover{background:rgba(139,92,246,0.08)}
+    .bgm-list-item.active{background:rgba(139,92,246,0.12)}
+    .bgm-list-cover{width:36px;height:36px;border-radius:6px;background:linear-gradient(135deg,#8b5cf6,#3b82f6);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .bgm-list-cover img{width:100%;height:100%;object-fit:cover}
+    .bgm-list-info{flex:1;min-width:0}
+    .bgm-list-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bgm-list-artist{font-size:10px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+    .bgm-list-remove{width:24px;height:24px;border-radius:50%;background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;line-height:1;transition:color .2s,background .2s}
+    .bgm-list-remove:hover{color:#ef4444;background:rgba(239,68,68,0.1)}
+    @media(max-width:600px){.bgm-fab{width:48px;height:48px;top:72px;right:14px}.bgm-panel{right:12px;left:12px;width:auto;top:130px;max-height:65vh}}
     /* ---------- Weird Mode (Konami) ---------- */
     body.weird-mode{animation:weirdHue 4s linear infinite}
     body.weird-mode .section-title{animation:weirdGlitch .25s infinite;filter:hue-rotate(180deg) saturate(2.5)}
@@ -557,7 +589,9 @@
   <!-- BGM Player -->
   <button class="bgm-fab" id="bgmFab" aria-label="音乐播放器">
     <div class="bgm-disc" id="bgmDisc">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <img class="bgm-disc-cover" id="bgmDiscCover" alt="">
+      <svg class="bgm-disc-default" id="bgmDiscDefault" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <div class="bgm-disc-center"></div>
     </div>
   </button>
   <div class="bgm-panel" id="bgmPanel">
@@ -565,12 +599,35 @@
       <span class="bgm-panel-title">🎵 BGM</span>
       <button class="bgm-panel-close" id="bgmClose">×</button>
     </div>
-    <div class="bgm-search">
-      <input type="text" id="bgmSearchInput" placeholder="搜索歌曲..." maxlength="50">
-      <button id="bgmSearchBtn">搜索</button>
+    <div class="bgm-tabs">
+      <button class="bgm-tab-btn active" data-tab="search">搜索</button>
+      <button class="bgm-tab-btn" data-tab="queue">队列</button>
+      <button class="bgm-tab-btn" data-tab="fav">收藏</button>
+      <button class="bgm-tab-btn" data-tab="lyric">歌词</button>
     </div>
-    <div class="bgm-results" id="bgmResults">
-      <div class="bgm-empty">搜索歌曲开始播放</div>
+    <div class="bgm-tab-pane active" id="bgmTabSearch">
+      <div class="bgm-search">
+        <input type="text" id="bgmSearchInput" placeholder="搜索歌曲..." maxlength="50">
+        <button id="bgmSearchBtn">搜索</button>
+      </div>
+      <div class="bgm-results" id="bgmResults">
+        <div class="bgm-empty">搜索歌曲开始播放</div>
+      </div>
+    </div>
+    <div class="bgm-tab-pane" id="bgmTabQueue">
+      <div class="bgm-results" id="bgmQueueList">
+        <div class="bgm-empty">队列为空</div>
+      </div>
+    </div>
+    <div class="bgm-tab-pane" id="bgmTabFav">
+      <div class="bgm-results" id="bgmFavList">
+        <div class="bgm-empty">暂无收藏</div>
+      </div>
+    </div>
+    <div class="bgm-tab-pane" id="bgmTabLyric">
+      <div class="bgm-lyric-wrap" id="bgmLyricWrap">
+        <div class="bgm-empty">暂无歌词</div>
+      </div>
     </div>
     <div class="bgm-now-playing">
       <div class="bgm-np-info">
@@ -581,6 +638,9 @@
           <div class="bgm-np-name" id="bgmNpName">未播放</div>
           <div class="bgm-np-artist" id="bgmNpArtist">选择一首歌</div>
         </div>
+        <button class="bgm-np-fav" id="bgmNpFav" aria-label="收藏">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
       </div>
       <div class="bgm-progress-row">
         <span class="bgm-time" id="bgmCurTime">0:00</span>
@@ -590,8 +650,14 @@
         <span class="bgm-time" id="bgmDurTime">0:00</span>
       </div>
       <div class="bgm-controls">
+        <button class="bgm-ctrl-btn" id="bgmPrevBtn" aria-label="上一首">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2" height="16"/></svg>
+        </button>
         <button class="bgm-ctrl-btn" id="bgmPlayBtn" aria-label="播放/暂停">
           <svg id="bgmPlayIcon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <button class="bgm-ctrl-btn" id="bgmNextBtn" aria-label="下一首">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,4 15,12 5,20"/><rect x="17" y="4" width="2" height="16"/></svg>
         </button>
         <div class="bgm-volume">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;color:var(--text-muted)"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
@@ -1853,13 +1919,20 @@
     // ---------- BGM Player ----------
     (function(){
       var fab=document.getElementById('bgmFab');
+      var discCover=document.getElementById('bgmDiscCover');
+      var discDefault=document.getElementById('bgmDiscDefault');
       var panel=document.getElementById('bgmPanel');
       var closeBtn=document.getElementById('bgmClose');
       var searchInput=document.getElementById('bgmSearchInput');
       var searchBtn=document.getElementById('bgmSearchBtn');
       var resultsEl=document.getElementById('bgmResults');
+      var queueListEl=document.getElementById('bgmQueueList');
+      var favListEl=document.getElementById('bgmFavList');
+      var lyricWrap=document.getElementById('bgmLyricWrap');
       var audio=document.getElementById('bgmAudio');
       var playBtn=document.getElementById('bgmPlayBtn');
+      var prevBtn=document.getElementById('bgmPrevBtn');
+      var nextBtn=document.getElementById('bgmNextBtn');
       var playIcon=document.getElementById('bgmPlayIcon');
       var progressBar=document.getElementById('bgmProgressBar');
       var progressFill=document.getElementById('bgmProgressFill');
@@ -1869,14 +1942,81 @@
       var npName=document.getElementById('bgmNpName');
       var npArtist=document.getElementById('bgmNpArtist');
       var npCover=document.getElementById('bgmNpCover');
+      var npFav=document.getElementById('bgmNpFav');
       var ICON_PLAY='<polygon points="5,3 19,12 5,21"/>';
       var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
-      var currentSongId=null;
+      var STORAGE_KEY='xzd1314_bgm';
+      var currentSong=null;
+      var queue=[];
+      var favorites=[];
+      var lyrics=[];
+      var currentLyricIdx=-1;
+      var resumeTime=0;
+      var saveTimer=null;
 
-      // 酷狗音乐：搜索JSONP + 播放API JSONP（全链路绕过CORS，无需代理）
-      var jsonpSeq=0;
+      // ===== 持久化 =====
+      function loadState(){
+        try{
+          var raw=localStorage.getItem(STORAGE_KEY);
+          if(!raw)return;
+          var d=JSON.parse(raw);
+          if(Array.isArray(d.queue))queue=d.queue;
+          if(Array.isArray(d.favorites))favorites=d.favorites;
+          if(d.volume!=null){volumeSlider.value=d.volume;audio.volume=d.volume/100;}
+          if(d.currentTime)resumeTime=d.currentTime;
+          if(d.currentSong){
+            currentSong=d.currentSong;
+            npName.textContent=currentSong.SongName;
+            npArtist.textContent=currentSong.SingerName;
+            updateCover(currentSong.Image);
+            updateNpFavBtn();
+          }
+        }catch(e){}
+      }
+      function saveState(){
+        try{
+          localStorage.setItem(STORAGE_KEY,JSON.stringify({
+            queue:queue,favorites:favorites,
+            volume:parseInt(volumeSlider.value),
+            currentSong:currentSong,
+            currentTime:audio.currentTime||0
+          }));
+        }catch(e){}
+      }
+      function scheduleSave(){
+        clearTimeout(saveTimer);
+        saveTimer=setTimeout(saveState,800);
+      }
+
+      // ===== 工具 =====
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
+      function songKey(s){return s.FileHash||(s.SongName+'|'+s.SingerName);}
+      function isFav(s){return favorites.some(function(f){return songKey(f)===songKey(s);});}
+      function updateCover(pic){
+        var url=pic?pic.replace('{size}','400'):'';
+        if(url){
+          npCover.innerHTML='<img src="'+url+'" alt="cover">';
+          discCover.src=url;discCover.classList.add('show');
+          discDefault.style.display='none';
+        }else{
+          npCover.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+          discCover.classList.remove('show');discCover.src='';
+          discDefault.style.display='';
+        }
+      }
+      function updateNpFavBtn(){
+        if(currentSong&&isFav(currentSong)){
+          npFav.classList.add('faved');
+          npFav.querySelector('svg').setAttribute('fill','currentColor');
+        }else{
+          npFav.classList.remove('faved');
+          npFav.querySelector('svg').setAttribute('fill','none');
+        }
+      }
+
+      // ===== JSONP =====
+      var jsonpSeq=0;
       function jsonpReq(url,timeout){
         return new Promise(function(resolve,reject){
           var cbName='bgm_jp_'+(++jsonpSeq);
@@ -1891,6 +2031,21 @@
         });
       }
 
+      // ===== 标签页 =====
+      document.querySelectorAll('.bgm-tab-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var tab=btn.dataset.tab;
+          document.querySelectorAll('.bgm-tab-btn').forEach(function(b){b.classList.remove('active');});
+          document.querySelectorAll('.bgm-tab-pane').forEach(function(p){p.classList.remove('active');});
+          btn.classList.add('active');
+          document.getElementById('bgmTab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+          if(tab==='queue')renderQueue();
+          if(tab==='fav')renderFavorites();
+          if(tab==='lyric')scrollToLyric();
+        });
+      });
+
+      // ===== 搜索 =====
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">搜索中...</div>';
@@ -1901,31 +2056,40 @@
             resultsEl.innerHTML='';
             list.forEach(function(song,i){
               var item=document.createElement('div');
-              item.className='bgm-result-item'+(song.FileHash===currentSongId?' active':'');
+              item.className='bgm-result-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
+              var faved=isFav(song);
               item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
                 '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-result-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
-                '<button class="bgm-result-play">▶</button>';
-              item.addEventListener('click',function(){playSong(song);});
+                '<div class="bgm-result-actions">'+
+                  '<button class="bgm-action-btn bgm-fav-btn'+(faved?' faved':'')+'" title="收藏">'+(faved?'♥':'♡')+'</button>'+
+                  '<button class="bgm-action-btn" title="加入队列">+</button>'+
+                '</div>';
+              item.addEventListener('click',function(e){
+                if(e.target.closest('.bgm-action-btn'))return;
+                playSong(song);
+              });
+              item.querySelector('.bgm-fav-btn').addEventListener('click',function(e){
+                e.stopPropagation();toggleFav(song);
+                this.classList.toggle('faved');this.textContent=isFav(song)?'♥':'♡';
+              });
+              item.querySelector('.bgm-action-btn:last-child').addEventListener('click',function(e){
+                e.stopPropagation();addToQueue(song);
+              });
               resultsEl.appendChild(item);
             });
           })
           .catch(function(){resultsEl.innerHTML='<div class="bgm-error">搜索失败，请稍后重试</div>';});
       }
 
+      // ===== 播放 =====
       function playSong(song){
-        currentSongId=song.FileHash;
-        npName.textContent=song.SongName;
-        npArtist.textContent=song.SingerName;
-        var pic=song.Image?song.Image.replace('{size}','400'):'';
-        npCover.innerHTML=pic?'<img src="'+pic+'" alt="cover">':'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" style="width:20px;height:20px"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
-        // 高亮当前歌曲
-        document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
-        document.querySelectorAll('.bgm-result-item').forEach(function(el){
-          var nameEl=el.querySelector('.bgm-result-name');
-          if(nameEl&&nameEl.textContent===song.SongName){el.classList.add('active');}
-        });
+        currentSong=song;
         npName.textContent='加载中...';
-        // 先试酷狗源
+        npArtist.textContent=song.SingerName;
+        updateCover(song.Image);
+        updateNpFavBtn();
+        lyrics=[];currentLyricIdx=-1;renderLyrics();
+        document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
         jsonpReq('https://m.kugou.com/app/i/getSongInfo.php?hash='+song.FileHash+'&cmd=playInfo&format=jsonp')
           .then(function(data){
             if(!data.error&&data.url){
@@ -1933,14 +2097,12 @@
               npArtist.textContent=data.author_name||song.SingerName;
               audio.src=data.url;
               audio.play().catch(function(){tryQQMusic(song);});
-            }else{
-              tryQQMusic(song);
-            }
+              fetchLyrics(song);
+            }else{tryQQMusic(song);}
           })
           .catch(function(){tryQQMusic(song);});
+        scheduleSave();
       }
-
-      // 酷狗源失败时，尝试QQ音乐源（Meting API）
       function tryQQMusic(song){
         npName.textContent='正在尝试其他音源...';
         var script=document.createElement('script');
@@ -1951,18 +2113,16 @@
           if(list&&list.length>0){
             var qq=list[0];
             var artists=(qq.singer||[]).map(function(s){return s.name;}).join(' / ');
-            npName.textContent=qq.songname;
-            npArtist.textContent=artists;
+            npName.textContent=qq.songname;npArtist.textContent=artists;
             var qpic=qq.albummid?'https://api.injahow.cn/meting/?server=tencent&type=pic&id='+qq.albummid:'';
-            if(qpic)npCover.innerHTML='<img src="'+qpic+'" alt="cover">';
+            if(qpic)updateCover(qpic);
             audio.src='https://api.injahow.cn/meting/?server=tencent&type=url&id='+qq.songmid;
             audio.play().catch(function(){
-              npName.textContent=song.SongName;
-              npArtist.textContent='该歌曲需要VIP或版权限制';
+              npName.textContent=song.SongName;npArtist.textContent='该歌曲需要VIP或版权限制';
             });
+            fetchLyricsByMid(qq.songmid);
           }else{
-            npName.textContent=song.SongName;
-            npArtist.textContent='该歌曲需要VIP或版权限制';
+            npName.textContent=song.SongName;npArtist.textContent='该歌曲需要VIP或版权限制';
           }
         };
         script.onerror=function(){cleanup();npName.textContent=song.SongName;npArtist.textContent='播放失败，请稍后重试';};
@@ -1970,20 +2130,166 @@
         document.head.appendChild(script);
       }
 
+      // ===== 队列 =====
+      function addToQueue(song){
+        if(queue.some(function(s){return songKey(s)===songKey(song);}))return;
+        queue.push({FileHash:song.FileHash,SongName:song.SongName,SingerName:song.SingerName,Image:song.Image});
+        scheduleSave();renderQueue();
+      }
+      function removeFromQueue(idx){queue.splice(idx,1);scheduleSave();renderQueue();}
+      function renderQueue(){
+        if(queue.length===0){queueListEl.innerHTML='<div class="bgm-empty">队列为空</div>';return;}
+        queueListEl.innerHTML='';
+        queue.forEach(function(song,i){
+          var item=document.createElement('div');
+          item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
+          var pic=song.Image?song.Image.replace('{size}','200'):'';
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'">':'')+'</div>'+
+            '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
+            '<button class="bgm-list-remove" title="移除">×</button>';
+          item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
+          item.querySelector('.bgm-list-remove').addEventListener('click',function(e){e.stopPropagation();removeFromQueue(i);});
+          queueListEl.appendChild(item);
+        });
+      }
+      function playNext(){
+        if(queue.length>0){var next=queue.shift();scheduleSave();renderQueue();playSong(next);}
+      }
+
+      // ===== 收藏 =====
+      function toggleFav(song){
+        var idx=favorites.findIndex(function(f){return songKey(f)===songKey(song);});
+        if(idx>=0)favorites.splice(idx,1);
+        else favorites.push({FileHash:song.FileHash,SongName:song.SongName,SingerName:song.SingerName,Image:song.Image});
+        scheduleSave();updateNpFavBtn();renderFavorites();
+      }
+      function removeFav(idx){favorites.splice(idx,1);scheduleSave();renderFavorites();updateNpFavBtn();}
+      function renderFavorites(){
+        if(favorites.length===0){favListEl.innerHTML='<div class="bgm-empty">暂无收藏</div>';return;}
+        favListEl.innerHTML='';
+        favorites.forEach(function(song,i){
+          var item=document.createElement('div');
+          item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
+          var pic=song.Image?song.Image.replace('{size}','200'):'';
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'">':'')+'</div>'+
+            '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
+            '<button class="bgm-list-remove" title="取消收藏">×</button>';
+          item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
+          item.querySelector('.bgm-list-remove').addEventListener('click',function(e){e.stopPropagation();removeFav(i);});
+          favListEl.appendChild(item);
+        });
+      }
+
+      // ===== 歌词 =====
+      function fetchLyrics(song){
+        // 用QQ音乐搜索获取songmid，再用Meting API获取歌词
+        var script=document.createElement('script');
+        function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);}
+        window.callback=function(data){
+          cleanup();
+          var list=data&&data.data&&data.data.song&&data.data.song.list;
+          if(list&&list.length>0)fetchLyricsByMid(list[0].songmid);
+          else{lyrics=[];renderLyrics();}
+        };
+        script.onerror=function(){cleanup();lyrics=[];renderLyrics();};
+        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(song.SongName+' '+song.SingerName)+'&format=jsonp&callback=callback&p=1&n=3';
+        document.head.appendChild(script);
+      }
+      function fetchLyricsByMid(mid){
+        fetch('https://api.injahow.cn/meting/?server=tencent&type=lrc&id='+mid)
+          .then(function(r){return r.text();})
+          .then(function(text){parseLyrics(text);})
+          .catch(function(){lyrics=[];renderLyrics();});
+      }
+      function parseLyrics(lrc){
+        lyrics=[];
+        var lines=lrc.split('\n');
+        var timeReg=/\[(\d+):(\d+)(?:\.(\d+))?\]/g;
+        lines.forEach(function(line){
+          var matches=[...line.matchAll(timeReg)];
+          var text=line.replace(timeReg,'').trim();
+          if(!text)return;
+          matches.forEach(function(m){
+            var t=parseInt(m[1])*60+parseInt(m[2])+(m[3]?parseInt(m[3].padEnd(3,'0'))/1000:0);
+            lyrics.push({time:t,text:text});
+          });
+        });
+        lyrics.sort(function(a,b){return a.time-b.time;});
+        renderLyrics();
+      }
+      function renderLyrics(){
+        if(lyrics.length===0){lyricWrap.innerHTML='<div class="bgm-empty">暂无歌词</div>';return;}
+        lyricWrap.innerHTML='';
+        lyrics.forEach(function(l,i){
+          var div=document.createElement('div');
+          div.className='bgm-lyric-line'+(i===currentLyricIdx?' active':'');
+          div.textContent=l.text;
+          lyricWrap.appendChild(div);
+        });
+      }
+      function updateLyric(ct){
+        if(lyrics.length===0)return;
+        var idx=-1;
+        for(var i=0;i<lyrics.length;i++){if(lyrics[i].time<=ct)idx=i;else break;}
+        if(idx!==currentLyricIdx){
+          currentLyricIdx=idx;
+          var lines=lyricWrap.querySelectorAll('.bgm-lyric-line');
+          lines.forEach(function(el){el.classList.remove('active');});
+          if(lines[idx]){
+            lines[idx].classList.add('active');
+            if(document.getElementById('bgmTabLyric').classList.contains('active'))scrollToLyric();
+          }
+        }
+      }
+      function scrollToLyric(){
+        var active=lyricWrap.querySelector('.bgm-lyric-line.active');
+        if(active){
+          var wr=lyricWrap.getBoundingClientRect(),ar=active.getBoundingClientRect();
+          lyricWrap.scrollTop+=ar.top-wr.top-wr.height/2+ar.height/2;
+        }
+      }
+
+      // ===== 事件 =====
       fab.addEventListener('click',function(){panel.classList.toggle('show');});
       closeBtn.addEventListener('click',function(){panel.classList.remove('show');});
       searchBtn.addEventListener('click',function(){searchSongs(searchInput.value);});
       searchInput.addEventListener('keydown',function(e){if(e.key==='Enter')searchSongs(searchInput.value);});
-      playBtn.addEventListener('click',function(){if(audio.paused){if(audio.src)audio.play();}else{audio.pause();}});
+      playBtn.addEventListener('click',function(){
+        if(audio.paused){
+          if(audio.src)audio.play();
+          else if(currentSong)playSong(currentSong);
+        }else audio.pause();
+      });
+      prevBtn.addEventListener('click',function(){audio.currentTime=0;audio.play();});
+      nextBtn.addEventListener('click',playNext);
+      npFav.addEventListener('click',function(){if(currentSong)toggleFav(currentSong);});
       audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');});
-      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');});
-      audio.addEventListener('timeupdate',function(){if(audio.duration){progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';curTimeEl.textContent=fmtTime(audio.currentTime);}});
-      audio.addEventListener('loadedmetadata',function(){durTimeEl.textContent=fmtTime(audio.duration);});
-      audio.addEventListener('ended',function(){fab.classList.remove('playing');playIcon.innerHTML=ICON_PLAY;});
+      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();});
+      audio.addEventListener('timeupdate',function(){
+        if(audio.duration){
+          progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';
+          curTimeEl.textContent=fmtTime(audio.currentTime);
+          updateLyric(audio.currentTime);
+        }
+        scheduleSave();
+      });
+      audio.addEventListener('loadedmetadata',function(){
+        durTimeEl.textContent=fmtTime(audio.duration);
+        if(resumeTime>0&&resumeTime<audio.duration){
+          audio.currentTime=resumeTime;resumeTime=0;
+        }
+      });
+      audio.addEventListener('ended',function(){fab.classList.remove('playing');playIcon.innerHTML=ICON_PLAY;playNext();});
       audio.addEventListener('error',function(){npName.textContent='播放失败';fab.classList.remove('playing');});
-      progressBar.addEventListener('click',function(e){if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}});
-      volumeSlider.addEventListener('input',function(){audio.volume=this.value/100;});
+      progressBar.addEventListener('click',function(e){
+        if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}
+      });
+      volumeSlider.addEventListener('input',function(){audio.volume=this.value/100;scheduleSave();});
+      window.addEventListener('beforeunload',saveState);
+
+      // ===== 初始化 =====
       audio.volume=0.7;
+      loadState();
     })();
 
     // ---------- Konami Code: 上上下下左右左右BABA ----------
