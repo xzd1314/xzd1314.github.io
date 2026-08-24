@@ -110,6 +110,8 @@
     .nav-links a:hover{color:var(--text)}
     .nav-links a::after{content:'';position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--text);transition:width .3s ease}
     .nav-links a:hover::after{width:100%}
+    .nav-links a.active{color:var(--accent)}
+    .nav-links a.active::after{width:100%}
     .nav-right{display:flex;align-items:center;gap:10px}
     .nav-btn{background:var(--card-bg);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;padding:8px 14px;border-radius:100px;font-size:13px;font-weight:600;font-family:inherit;transition:all .25s ease;display:inline-flex;align-items:center;gap:6px}
     .nav-btn:hover{background:var(--card-hover);border-color:var(--border-hover);color:var(--text)}
@@ -164,6 +166,18 @@
     .project-btn:hover{background:var(--text);color:var(--bg);border-color:var(--text);transform:translateY(-1px)}
     .project-btn svg{width:15px;height:15px}
     .project-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .project-cover{grid-column:1/-1;height:200px;border-radius:12px;overflow:hidden;position:relative;margin-bottom:8px;background:var(--card-bg);cursor:pointer}
+    .project-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+    .project-cover:hover img{transform:scale(1.03)}
+    .project-cover-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;backdrop-filter:blur(4px);z-index:2}
+    .project-cover:hover .project-cover-nav{opacity:1}
+    @media(hover:none){.project-cover-nav{opacity:1}.project-cover-dots{opacity:1}}
+    .project-cover-nav.prev{left:10px}.project-cover-nav.next{right:10px}
+    .project-cover-nav svg{width:18px;height:18px}
+    .project-cover-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+    .project-cover-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all .25s ease;border:none;padding:0}
+    .project-cover-dot.active{background:#fff;width:20px;border-radius:4px}
+    .project-license{display:inline-block;margin-top:8px;font-size:13px;color:var(--text-secondary)}
     #contact{justify-content:center;text-align:center}
     #contact .section-inner{max-width:700px}
     .contact-cta{font-size:56px;font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:48px;color:var(--text)}
@@ -336,8 +350,12 @@
       .section{padding:80px 24px;min-height:auto}#hero{min-height:100vh}.avatar-wrap{width:120px;height:120px}
       .skill-cards{grid-template-columns:1fr}
       .project-item{grid-template-columns:40px 1fr;gap:20px}
+      .project-cover{height:140px;border-radius:10px}
       .project-actions{grid-column:2;justify-content:flex-start;margin-top:8px}
       .project-info h3{font-size:22px}
+      .project-btn{padding:10px 16px;min-height:40px}
+      .bgm-ctrl-btn{padding:10px;min-width:40px;min-height:40px}
+      .bgm-ctrl-btn svg{width:20px;height:20px}
       .footer{flex-direction:column;gap:12px;padding:32px 24px;text-align:center}
       #memorial{padding:80px 24px}
       #memorial .section-inner{grid-template-columns:1fr;gap:40px}
@@ -346,7 +364,7 @@
       .cookie-banner{padding:24px 20px 20px;max-height:60vh}
       .cookie-btn{padding:9px 22px;font-size:13px}
     }
-    @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:8px 14px;font-size:13px}}
+    @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:10px 14px;font-size:13px;min-height:42px}.project-cover{height:120px}.project-cover-nav{width:36px;height:36px}}
     /* ---------- Back to Top ---------- */
     .back-to-top{
       position:fixed;bottom:28px;right:28px;z-index:90;
@@ -526,6 +544,7 @@
     .bgm-np-fav:hover{background:var(--border)}
     .bgm-np-fav.faved{color:#ef4444}
     .bgm-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .bgm-visualizer{width:100%;height:36px;display:block;margin-bottom:6px}
     .bgm-time{font-size:10px;color:var(--text-muted);min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
     .bgm-progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;cursor:pointer;position:relative}
     .bgm-progress-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#3b82f6);border-radius:2px;width:0%;transition:width .1s linear}
@@ -672,6 +691,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
       </div>
+      <canvas class="bgm-visualizer" id="bgmVisualizer" width="300" height="36"></canvas>
       <div class="bgm-progress-row">
         <span class="bgm-time" id="bgmCurTime">0:00</span>
         <div class="bgm-progress-bar" id="bgmProgressBar">
@@ -680,6 +700,9 @@
         <span class="bgm-time" id="bgmDurTime">0:00</span>
       </div>
       <div class="bgm-controls">
+        <button class="bgm-ctrl-btn" id="bgmModeBtn" aria-label="播放模式" title="播放模式">
+          <svg id="bgmModeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </button>
         <button class="bgm-ctrl-btn" id="bgmPrevBtn" aria-label="上一首">
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2" height="16"/></svg>
         </button>
@@ -789,10 +812,14 @@
       </div>
       <div class="project-list">
         <div class="project-item project-card reveal">
+          <div class="project-cover">
+            <img src="assets/projects/project1-forge.png" alt="Mishanguc Forge Port" loading="lazy">
+          </div>
           <span class="project-num">01</span>
           <div class="project-info">
             <h3><span class="zh">迷上城建 Forge 移植</span><span class="en">Mishanguc Forge Port</span></h3>
             <p><span class="zh">Mishanguc mod for Forge 1.19.4 — 迷上城建模组 Forge 版本移植</span><span class="en">Mishanguc mod for Forge 1.19.4 — Mishanguc modeling team Forge version port</span></p>
+            <p class="project-license"><strong><em><span class="zh">本项目遵循 GNU Lesser General Public License version 3 许可协议</span><span class="en">Licensed under GNU Lesser General Public License version 3</span></em></strong></p>
           </div>
           <div class="project-actions">
             <span class="project-tag">Java / Forge</span>
@@ -803,6 +830,12 @@
           </div>
         </div>
         <div class="project-item project-card reveal reveal-delay-1">
+          <div class="project-cover" data-cover>
+            <img src="assets/projects/project2-zhulaile-1.png" alt="Zhulaile nextbot" loading="lazy">
+            <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <div class="project-cover-dots"><button class="project-cover-dot active" data-idx="0"></button><button class="project-cover-dot" data-idx="1"></button></div>
+          </div>
           <span class="project-num">02</span>
           <div class="project-info">
             <h3><span class="zh">猪来了 nextbot V8</span><span class="en">Zhulaile nextbot V8</span></h3>
@@ -823,6 +856,12 @@
           </div>
         </div>
         <div class="project-item project-card reveal reveal-delay-2">
+          <div class="project-cover" data-cover>
+            <img src="assets/projects/project3-ueg-1.png" alt="UEG Administration Console" loading="lazy">
+            <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <div class="project-cover-dots"><button class="project-cover-dot active" data-idx="0"></button><button class="project-cover-dot" data-idx="1"></button></div>
+          </div>
           <span class="project-num">03</span>
           <div class="project-info">
             <h3><span class="zh">UEG 行政管理中心</span><span class="en">UEG Administration Console</span></h3>
@@ -1914,6 +1953,55 @@
       if(window.scrollY>50){nav.classList.add('scrolled')}else{nav.classList.remove('scrolled')}
     });
 
+    // ---------- Project cover carousel ----------
+    (function(){
+      var covers=document.querySelectorAll('.project-cover[data-cover]');
+      var imgMap={
+        0:['assets/projects/project2-zhulaile-1.png','assets/projects/project2-zhulaile-2.png'],
+        1:['assets/projects/project3-ueg-1.png','assets/projects/project3-ueg-2.png']
+      };
+      covers.forEach(function(cover,idx){
+        var images=imgMap[idx]||[];
+        var cur=0;
+        var img=cover.querySelector('img');
+        var dots=cover.querySelectorAll('.project-cover-dot');
+        function show(i){
+          cur=(i+images.length)%images.length;
+          img.src=images[cur];
+          dots.forEach(function(d,j){d.classList.toggle('active',j===cur);});
+        }
+        cover.querySelector('.prev').addEventListener('click',function(e){e.stopPropagation();show(cur-1);});
+        cover.querySelector('.next').addEventListener('click',function(e){e.stopPropagation();show(cur+1);});
+        cover.addEventListener('click',function(){if(images.length>1)show(cur+1);});
+        dots.forEach(function(d){d.addEventListener('click',function(e){e.stopPropagation();show(parseInt(d.dataset.idx));});});
+      });
+    })();
+
+    // ---------- Scroll Spy (nav highlight) ----------
+    (function(){
+      var sections=['hero','about','skills','projects','contact','links','memorial'];
+      var navLinks={};
+      document.querySelectorAll('.nav-links a').forEach(function(a){
+        var id=a.getAttribute('href').replace('#','');
+        navLinks[id]=a;
+      });
+      if('IntersectionObserver' in window){
+        var observer=new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting){
+              var id=entry.target.id;
+              Object.values(navLinks).forEach(function(a){a.classList.remove('active');});
+              if(navLinks[id])navLinks[id].classList.add('active');
+            }
+          });
+        },{rootMargin:'-40% 0px -55% 0px',threshold:0});
+        sections.forEach(function(id){
+          var el=document.getElementById(id);
+          if(el)observer.observe(el);
+        });
+      }
+    })();
+
     // ---------- Mobile nav toggle ----------
     var navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
     navToggle.addEventListener('click',function(){navToggle.classList.toggle('active');navLinks.classList.toggle('open')});
@@ -1994,6 +2082,15 @@
       var prevBtn=document.getElementById('bgmPrevBtn');
       var nextBtn=document.getElementById('bgmNextBtn');
       var downloadBtn=document.getElementById('bgmDownloadBtn');
+      var modeBtn=document.getElementById('bgmModeBtn');
+      var modeIcon=document.getElementById('bgmModeIcon');
+      var visCanvas=document.getElementById('bgmVisualizer');
+      var visCtx=visCanvas?visCanvas.getContext('2d'):null;
+      var audioCtx=null,analyser=null,visRAF=null,visData=null;
+      var playMode=0; // 0=顺序 1=随机 2=单曲循环
+      var ICON_ORDER='<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>';
+      var ICON_SHUFFLE='<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>';
+      var ICON_REPEAT_ONE='<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><text x="12" y="15" text-anchor="middle" font-size="8" fill="currentColor" stroke="none">1</text>';
       var playIcon=document.getElementById('bgmPlayIcon');
       var progressBar=document.getElementById('bgmProgressBar');
       var progressFill=document.getElementById('bgmProgressFill');
@@ -2039,6 +2136,7 @@
           if(Array.isArray(d.queue))queue=d.queue;
           if(Array.isArray(d.favorites))favorites=d.favorites;
           if(d.volume!=null){volumeSlider.value=d.volume;audio.volume=d.volume/100;}
+          if(d.playMode!=null){playMode=d.playMode;}
           if(d.currentTime)resumeTime=d.currentTime;
           if(d.currentSong){
             currentSong=d.currentSong;
@@ -2054,6 +2152,7 @@
           localStorage.setItem(STORAGE_KEY,JSON.stringify({
             queue:queue,favorites:favorites,
             volume:parseInt(volumeSlider.value),
+            playMode:playMode,
             currentSong:currentSong,
             currentTime:audio.currentTime||0
           }));
@@ -2231,7 +2330,57 @@
         });
       }
       function playNext(){
+        if(playMode===2&&currentSong){audio.currentTime=0;audio.play();return;}
+        if(playMode===1&&favorites.length>0){var ri=Math.floor(Math.random()*favorites.length);playSong(favorites[ri]);return;}
         if(queue.length>0){var next=queue.shift();scheduleSave();renderQueue();playSong(next);}
+      }
+
+      // ===== 音频可视化 =====
+      function initVisualizer(){
+        if(audioCtx||!visCtx)return;
+        try{
+          audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+          var src=audioCtx.createMediaElementSource(audio);
+          analyser=audioCtx.createAnalyser();
+          analyser.fftSize=128;
+          visData=new Uint8Array(analyser.frequencyBinCount);
+          src.connect(analyser);
+          analyser.connect(audioCtx.destination);
+        }catch(e){audioCtx=null;analyser=null;}
+      }
+      function startVisualizer(){if(!visRAF)drawVisualizer();}
+      function stopVisualizer(){if(visRAF){cancelAnimationFrame(visRAF);visRAF=null;}if(visCtx){visCtx.clearRect(0,0,visCanvas.width,visCanvas.height);}}
+      function drawVisualizer(){
+        visRAF=requestAnimationFrame(drawVisualizer);
+        var w=visCanvas.width,h=visCanvas.height;
+        visCtx.clearRect(0,0,w,h);
+        var bars=32,barW=w/bars;
+        if(analyser&&!audio.paused){
+          analyser.getByteFrequencyData(visData);
+          var allZero=true;
+          for(var i=0;i<visData.length;i++){if(visData[i]>0){allZero=false;break;}}
+          if(allZero){
+            // CORS限制无法分析时，用假动画
+            var t=Date.now()/300;
+            for(var j=0;j<bars;j++){
+              var bh=(Math.sin(t+j*0.3)*0.3+0.5+Math.random()*0.2)*h*0.7;
+              var grad=visCtx.createLinearGradient(0,h-bh,0,h);
+              grad.addColorStop(0,'#8b5cf6');grad.addColorStop(1,'#3b82f6');
+              visCtx.fillStyle=grad;
+              visCtx.fillRect(j*barW+1,h-bh,barW-2,bh);
+            }
+          }else{
+            var step=Math.floor(visData.length/bars);
+            for(var k=0;k<bars;k++){
+              var v=visData[k*step]/255;
+              var bh2=v*h*0.9;
+              var grad2=visCtx.createLinearGradient(0,h-bh2,0,h);
+              grad2.addColorStop(0,'#8b5cf6');grad2.addColorStop(1,'#3b82f6');
+              visCtx.fillStyle=grad2;
+              visCtx.fillRect(k*barW+1,h-bh2,barW-2,bh2);
+            }
+          }
+        }
       }
 
       // ===== 收藏 =====
@@ -2340,6 +2489,13 @@
       });
       prevBtn.addEventListener('click',function(){audio.currentTime=0;audio.play();});
       nextBtn.addEventListener('click',playNext);
+      modeBtn.addEventListener('click',function(){
+        playMode=(playMode+1)%3;
+        if(playMode===0){modeIcon.innerHTML=ICON_ORDER;modeBtn.title='顺序播放';}
+        else if(playMode===1){modeIcon.innerHTML=ICON_SHUFFLE;modeBtn.title='随机播放';}
+        else{modeIcon.innerHTML=ICON_REPEAT_ONE;modeBtn.title='单曲循环';}
+        scheduleSave();
+      });
       npFav.addEventListener('click',function(){if(currentSong)toggleFav(currentSong);});
       function doMusicDownload(){
         if(!audio.src||!currentSong)return;
@@ -2361,8 +2517,8 @@
         window.pendingMusicDownload=true;
         openLinkVerifyModal('music-download',true);
       });
-      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');});
-      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();});
+      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');initVisualizer();startVisualizer();});
+      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();stopVisualizer();});
       audio.addEventListener('timeupdate',function(){
         if(audio.duration){
           progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';
@@ -2402,8 +2558,23 @@
       // ===== 初始化 =====
       audio.volume=0.7;
       loadState();
+      // 恢复播放模式图标
+      if(playMode===1)modeIcon.innerHTML=ICON_SHUFFLE;
+      else if(playMode===2)modeIcon.innerHTML=ICON_REPEAT_ONE;
       updateBgmLang();
       window.updateBgmLang=updateBgmLang;
+
+      // ===== 全局快捷键 =====
+      document.addEventListener('keydown',function(e){
+        var t=e.target;
+        if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
+        if(!currentSong)return;
+        if(e.code==='Space'){e.preventDefault();if(audio.paused)audio.play();else audio.pause();}
+        else if(e.code==='ArrowRight'){e.preventDefault();playNext();}
+        else if(e.code==='ArrowLeft'){e.preventDefault();audio.currentTime=0;audio.play();}
+        else if(e.code==='ArrowUp'){e.preventDefault();var v=Math.min(100,parseInt(volumeSlider.value)+10);volumeSlider.value=v;audio.volume=v/100;scheduleSave();}
+        else if(e.code==='ArrowDown'){e.preventDefault();var v=Math.max(0,parseInt(volumeSlider.value)-10);volumeSlider.value=v;audio.volume=v/100;scheduleSave();}
+      });
     })();
 
     // ---------- Konami Code: 上上下下左右左右BABA ----------
