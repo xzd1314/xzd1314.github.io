@@ -535,9 +535,11 @@
     .bgm-ctrl-btn svg{width:18px;height:18px}
     .bgm-ctrl-btn:disabled{opacity:0.3;cursor:not-allowed}
     .bgm-volume{display:flex;align-items:center;gap:6px;margin-left:4px}
-    .bgm-volume input{width:50px;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
-    .bgm-volume input::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#8b5cf6;cursor:pointer}
-    .bgm-volume input::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#8b5cf6;border:none;cursor:pointer}
+    .bgm-volume input{width:50px;height:20px;-webkit-appearance:none;appearance:none;background:transparent;border-radius:2px;outline:none;cursor:pointer;touch-action:none;padding:0}
+    .bgm-volume input::-webkit-slider-runnable-track{height:4px;background:var(--border);border-radius:2px}
+    .bgm-volume input::-moz-range-track{height:4px;background:var(--border);border-radius:2px}
+    .bgm-volume input::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#8b5cf6;cursor:pointer;margin-top:-5px}
+    .bgm-volume input::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#8b5cf6;border:none;cursor:pointer}
     .bgm-loading,.bgm-error,.bgm-empty{text-align:center;padding:24px 16px;font-size:13px}
     .bgm-loading{color:var(--text-muted)}
     .bgm-error{color:#ef4444}
@@ -2383,6 +2385,18 @@
       function setVol(){var v=parseInt(volumeSlider.value)||0;if(v<0)v=0;if(v>100)v=100;audio.volume=v/100;scheduleSave();}
       volumeSlider.addEventListener('input',setVol);
       volumeSlider.addEventListener('change',setVol);
+      // 触屏手动处理：range input在部分触屏设备上默认行为被全局touch事件干扰
+      var volTouchRect=null;
+      function volFromTouch(t){
+        if(!volTouchRect)return;
+        var pct=(t.clientX-volTouchRect.left)/volTouchRect.width;
+        if(pct<0)pct=0;if(pct>1)pct=1;
+        volumeSlider.value=Math.round(pct*100);
+        audio.volume=pct;
+      }
+      volumeSlider.addEventListener('touchstart',function(e){volTouchRect=volumeSlider.getBoundingClientRect();volFromTouch(e.touches[0]);},{passive:true});
+      volumeSlider.addEventListener('touchmove',function(e){volFromTouch(e.touches[0]);},{passive:true});
+      volumeSlider.addEventListener('touchend',function(){volTouchRect=null;scheduleSave();});
       window.addEventListener('beforeunload',saveState);
 
       // ===== 初始化 =====
