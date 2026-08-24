@@ -2380,7 +2380,9 @@
       progressBar.addEventListener('click',function(e){
         if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}
       });
-      volumeSlider.addEventListener('input',function(){audio.volume=this.value/100;scheduleSave();});
+      function setVol(){var v=parseInt(volumeSlider.value)||0;if(v<0)v=0;if(v>100)v=100;audio.volume=v/100;scheduleSave();}
+      volumeSlider.addEventListener('input',setVol);
+      volumeSlider.addEventListener('change',setVol);
       window.addEventListener('beforeunload',saveState);
 
       // ===== 初始化 =====
