@@ -181,9 +181,10 @@
     .project-license{display:inline-block;margin-top:8px;font-size:13px;color:var(--text-secondary)}
     .license-link{color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
     .license-link:hover{opacity:0.8}
-    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:10000;display:none;align-items:center;justify-content:center;padding:40px}
-    .lightbox.show{display:flex}
-    .lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:10000;display:flex;align-items:center;justify-content:center;padding:40px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
+    .lightbox.show{opacity:1;visibility:visible;pointer-events:auto}
+    .lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);transform:scale(0.92);transition:transform .35s cubic-bezier(.22,1,.36,1),opacity .25s ease;opacity:0}
+    .lightbox.show .lightbox-img{transform:scale(1);opacity:1}
     .lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:36px;cursor:pointer;line-height:1;padding:8px 14px;border-radius:50%;transition:background .2s}
     .lightbox-close:hover{background:rgba(255,255,255,0.15)}
     .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:2}
@@ -744,7 +745,7 @@
       <div class="turnstile-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
-      <h2 class="turnstile-title"><span class="zh">证明你是人类</span><span class="en">Prove You're Human</span></h2>
+      <h2 class="turnstile-title"><span class="zh">证明您是人类</span><span class="en">Prove You're Human</span></h2>
       <p class="turnstile-desc"><span class="zh">请完成下方验证以继续访问网站</span><span class="en">Please complete the verification below to continue</span></p>
       <div class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onTurnstileSuccess" data-theme="dark"></div>
     </div>
@@ -952,6 +953,10 @@
         <textarea class="feedback-input" id="feedbackInput" placeholder="说点什么... / Say something..." rows="3" maxlength="500"></textarea>
         <button class="feedback-submit" id="feedbackSubmit"><span class="zh">提交</span><span class="en">Submit</span></button>
         <p class="feedback-status" id="feedbackStatus"></p>
+        <p class="feedback-note" style="margin-top:16px;font-size:12px;color:var(--text-muted);line-height:1.6;max-width:400px;margin-left:auto;margin-right:auto">
+          <span class="zh">当您给我发送留言/反馈时，在我回复之后，您刷新网页即可看到我的回复，这一切的前提是您不能更换浏览器以及重置系统。</span>
+          <span class="en">When you send me a message/feedback, after I reply, refresh the page to see my response. This requires that you do not change browsers or reset your system.</span>
+        </p>
       </div>
     </div>
   </section>
@@ -1023,7 +1028,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
       <h3 class="verify-modal-title"><span class="zh">需要验证</span><span class="en">Verification Required</span></h3>
-      <p class="verify-modal-desc"><span class="zh">请证明你是人类以继续</span><span class="en">Please prove you're human to continue</span></p>
+      <p class="verify-modal-desc"><span class="zh">请证明您是人类以继续</span><span class="en">Please prove you're human to continue</span></p>
       <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
       <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
       <button class="verify-modal-continue" id="linkVerifyContinue" style="display:none"><span class="zh">点击继续</span><span class="en">Click to continue</span></button>
@@ -1038,7 +1043,7 @@
       <div class="reply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
       <p class="reply-title"><span class="zh">收到回复</span><span class="en">New Reply</span></p>
       <div class="reply-user-msg">
-        <p class="reply-user-label"><span class="zh">你的留言</span><span class="en">Your message</span></p>
+        <p class="reply-user-label"><span class="zh">您的留言</span><span class="en">Your message</span></p>
         <p class="reply-user-content" id="replyUserContent"></p>
       </div>
       <div class="reply-arrow">
@@ -2038,17 +2043,26 @@
         document.body.style.overflow='hidden';
       }
       function closeLightbox(){lightbox.classList.remove('show');document.body.style.overflow='';}
-      function updateLightbox(){
+      function updateLightbox(animate){
         var st=coverStates[lbCurCover];
         if(!st)return;
-        lightboxImg.src=st.images[lbCurImg];
-        var hasMultiple=st.images.length>1;
-        document.getElementById('lightboxPrev').style.display=hasMultiple?'flex':'none';
-        document.getElementById('lightboxNext').style.display=hasMultiple?'flex':'none';
-        if(lbCounter)lbCounter.textContent=(lbCurImg+1)+' / '+st.images.length;
+        var doUpdate=function(){
+          lightboxImg.src=st.images[lbCurImg];
+          lightboxImg.style.opacity='1';
+          var hasMultiple=st.images.length>1;
+          document.getElementById('lightboxPrev').style.display=hasMultiple?'flex':'none';
+          document.getElementById('lightboxNext').style.display=hasMultiple?'flex':'none';
+          if(lbCounter)lbCounter.textContent=(lbCurImg+1)+' / '+st.images.length;
+        };
+        if(animate){
+          lightboxImg.style.opacity='0';
+          setTimeout(doUpdate,200);
+        }else{
+          doUpdate();
+        }
       }
-      function lbPrev(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg-1+st.images.length)%st.images.length;updateLightbox();}
-      function lbNext(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg+1)%st.images.length;updateLightbox();}
+      function lbPrev(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg-1+st.images.length)%st.images.length;updateLightbox(true);}
+      function lbNext(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg+1)%st.images.length;updateLightbox(true);}
       document.getElementById('lightboxClose').addEventListener('click',closeLightbox);
       document.getElementById('lightboxPrev').addEventListener('click',lbPrev);
       document.getElementById('lightboxNext').addEventListener('click',lbNext);
@@ -2511,7 +2525,18 @@
       }
 
       // ===== 事件 =====
-      fab.addEventListener('click',function(){if(!fabDragged)panel.classList.toggle('show');});
+      fab.addEventListener('click',function(){
+        if(!fabDragged){
+          // 如果fab被拖动过，面板跟随fab位置
+          if(fab.style.left){
+            var rect=fab.getBoundingClientRect();
+            panel.style.right='auto';
+            panel.style.left=rect.left+'px';
+            panel.style.top=(rect.bottom+8)+'px';
+          }
+          panel.classList.toggle('show');
+        }
+      });
 
       // ===== 唱片图标拖动（鼠标+触屏，不保存位置，刷新回默认）=====
       var fabDragging=false,fabDragged=false,fabStartX=0,fabStartY=0,fabOrigX=0,fabOrigY=0;
@@ -2540,6 +2565,10 @@
         ny=Math.max(0,Math.min(maxY,ny));
         fab.style.left=nx+'px';
         fab.style.top=ny+'px';
+        // 面板跟随fab移动，在fab下方
+        panel.style.right='auto';
+        panel.style.left=nx+'px';
+        panel.style.top=(ny+fab.offsetHeight+8)+'px';
         if(e.touches)e.preventDefault();
       }
       function fabEndDrag(){
