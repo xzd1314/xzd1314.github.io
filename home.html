@@ -557,7 +557,6 @@
     .bgm-np-fav:hover{background:var(--border)}
     .bgm-np-fav.faved{color:#ef4444}
     .bgm-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .bgm-visualizer{width:100%;height:36px;display:block;margin-bottom:6px}
     .bgm-time{font-size:10px;color:var(--text-muted);min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
     .bgm-progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;cursor:pointer;position:relative}
     .bgm-progress-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#3b82f6);border-radius:2px;width:0%;transition:width .1s linear}
@@ -704,7 +703,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
       </div>
-      <canvas class="bgm-visualizer" id="bgmVisualizer" width="300" height="36"></canvas>
       <div class="bgm-progress-row">
         <span class="bgm-time" id="bgmCurTime">0:00</span>
         <div class="bgm-progress-bar" id="bgmProgressBar">
@@ -2151,11 +2149,6 @@
       var downloadBtn=document.getElementById('bgmDownloadBtn');
       var modeBtn=document.getElementById('bgmModeBtn');
       var modeIcon=document.getElementById('bgmModeIcon');
-      var visCanvas=document.getElementById('bgmVisualizer');
-      var visCtx=visCanvas?visCanvas.getContext('2d'):null;
-      var audioCtx=null,analyser=null,visRAF=null,visData=null;
-      // 注意：不使用createMediaElementSource，因为酷狗音频跨域无CORS头拿不到真实频谱，
-      // 且连接AudioContext会改变音频路由导致静音。只用平滑伪频谱动画。
       var playMode=0; // 0=顺序 1=随机 2=单曲循环
       var ICON_ORDER='<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>';
       var ICON_SHUFFLE='<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>';
@@ -2405,34 +2398,6 @@
       }
 
       // ===== 音频可视化 =====
-      function initVisualizer(){/* 不再创建AudioContext，避免影响音频路由 */}
-      function startVisualizer(){if(!visRAF)drawVisualizer();}
-      function stopVisualizer(){if(visRAF){cancelAnimationFrame(visRAF);visRAF=null;}if(visCtx){visCtx.clearRect(0,0,visCanvas.width,visCanvas.height);}}
-      // fallback平滑动画的柱子高度缓存
-      var fbHeights=new Array(32).fill(0);
-      function drawVisualizer(){
-        visRAF=requestAnimationFrame(drawVisualizer);
-        var w=visCanvas.width,h=visCanvas.height;
-        visCtx.clearRect(0,0,w,h);
-        var bars=32,barW=w/bars;
-        if(!audio.paused&&currentSong){
-          // 用平滑的伪频谱（基于时间的多频正弦叠加，模拟音乐节奏）
-          var t=Date.now()/1000;
-          for(var j=0;j<bars;j++){
-            var freq=j<bars/4?1.5:(j<bars*3/4?3:5);
-            var phase=j*0.4;
-            var target=(Math.sin(t*freq+phase)*0.3+0.5)*h*0.6;
-            if(j<bars/4)target+=Math.max(0,Math.sin(t*2))*h*0.3;
-            fbHeights[j]+=(target-fbHeights[j])*0.15;
-            var bh=Math.max(2,fbHeights[j]);
-            var grad=visCtx.createLinearGradient(0,h-bh,0,h);
-            grad.addColorStop(0,'#8b5cf6');grad.addColorStop(1,'#3b82f6');
-            visCtx.fillStyle=grad;
-            visCtx.fillRect(j*barW+1,h-bh,barW-2,bh);
-          }
-        }
-      }
-
       // ===== 收藏 =====
       function toggleFav(song){
         var idx=favorites.findIndex(function(f){return songKey(f)===songKey(song);});
@@ -2567,8 +2532,8 @@
         window.pendingMusicDownload=true;
         openLinkVerifyModal('music-download',true);
       });
-      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');startVisualizer();});
-      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();stopVisualizer();});
+      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');});
+      audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();});
       audio.addEventListener('timeupdate',function(){
         if(audio.duration){
           progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';
