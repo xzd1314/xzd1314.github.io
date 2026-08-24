@@ -2525,25 +2525,25 @@
         }
       }
 
-      // ===== 事件 =====
-      fab.addEventListener('click',function(){
-        if(!fabDragged){
-          // 面板右对齐fab，避免超出屏幕
-          var rect=fab.getBoundingClientRect();
-          panel.style.left='auto';
-          panel.style.right=(window.innerWidth-rect.right)+'px';
-          panel.style.top=(rect.bottom+8)+'px';
-          panel.classList.toggle('show');
-        }
-      });
-
       // ===== 唱片图标拖动（鼠标+触屏，不保存位置，刷新回默认）=====
-      var fabDragging=false,fabDragged=false,fabStartX=0,fabStartY=0,fabOrigX=0,fabOrigY=0;
+      var fabDragging=false,fabDragged=false,fabStartX=0,fabStartY=0,fabOrigX=0,fabOrigY=0,fabMoved=false;
+
+      // ===== 事件 =====
+      function togglePanel(){
+        var rect=fab.getBoundingClientRect();
+        panel.style.left='auto';
+        panel.style.right=(window.innerWidth-rect.right)+'px';
+        panel.style.top=(rect.bottom+8)+'px';
+        panel.classList.toggle('show');
+      }
+      fab.addEventListener('click',function(e){
+        if(!fabMoved)togglePanel();
+      });
       function fabGetX(e){return e.touches?e.touches[0].clientX:e.clientX;}
       function fabGetY(e){return e.touches?e.touches[0].clientY:e.clientY;}
       function fabStartDrag(e){
         if(e.button!==undefined&&e.button!==0)return;
-        fabDragging=true;fabDragged=false;
+        fabDragging=true;fabDragged=false;fabMoved=false;
         fabStartX=fabGetX(e);fabStartY=fabGetY(e);
         var rect=fab.getBoundingClientRect();
         fabOrigX=rect.left;fabOrigY=rect.top;
@@ -2551,13 +2551,15 @@
         fab.style.right='auto';
         fab.style.left=fabOrigX+'px';
         fab.style.top=fabOrigY+'px';
-        fab.classList.add('dragging');
-        if(e.touches)e.preventDefault();
       }
       function fabMoveDrag(e){
         if(!fabDragging)return;
         var dx=fabGetX(e)-fabStartX,dy=fabGetY(e)-fabStartY;
-        if(Math.abs(dx)>5||Math.abs(dy)>5)fabDragged=true;
+        if(Math.abs(dx)>5||Math.abs(dy)>5){
+          fabDragged=true;fabMoved=true;
+          fab.classList.add('dragging');
+        }
+        if(!fabMoved)return;
         var nx=fabOrigX+dx,ny=fabOrigY+dy;
         var maxX=window.innerWidth-fab.offsetWidth,maxY=window.innerHeight-fab.offsetHeight;
         nx=Math.max(0,Math.min(maxX,nx));
@@ -2575,7 +2577,7 @@
         fabDragging=false;
         fab.classList.remove('dragging');
         fab.style.transition='';
-        setTimeout(function(){fabDragged=false;},50);
+        setTimeout(function(){fabMoved=false;fabDragged=false;},50);
       }
       fab.addEventListener('mousedown',fabStartDrag);
       window.addEventListener('mousemove',fabMoveDrag);
