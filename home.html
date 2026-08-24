@@ -2410,27 +2410,42 @@
           var src=audioCtx.createMediaElementSource(audio);
           analyser=audioCtx.createAnalyser();
           analyser.fftSize=128;
+          analyser.smoothingTimeConstant=0.8;
           visData=new Uint8Array(analyser.frequencyBinCount);
           src.connect(analyser);
           analyser.connect(audioCtx.destination);
+          if(audioCtx.state==='suspended')audioCtx.resume();
         }catch(e){audioCtx=null;analyser=null;}
       }
       function startVisualizer(){if(!visRAF)drawVisualizer();}
       function stopVisualizer(){if(visRAF){cancelAnimationFrame(visRAF);visRAF=null;}if(visCtx){visCtx.clearRect(0,0,visCanvas.width,visCanvas.height);}}
+      // fallback平滑动画的柱子高度缓存
+      var fbHeights=new Array(32).fill(0);
       function drawVisualizer(){
         visRAF=requestAnimationFrame(drawVisualizer);
         var w=visCanvas.width,h=visCanvas.height;
         visCtx.clearRect(0,0,w,h);
         var bars=32,barW=w/bars;
         if(analyser&&!audio.paused){
+          if(audioCtx.state==='suspended')audioCtx.resume();
           analyser.getByteFrequencyData(visData);
           var allZero=true;
           for(var i=0;i<visData.length;i++){if(visData[i]>0){allZero=false;break;}}
           if(allZero){
-            // CORS限制无法分析时，用假动画
-            var t=Date.now()/300;
+            // CORS限制无法分析时，用平滑的伪频谱（基于时间的多频正弦叠加，模拟音乐节奏）
+            var t=Date.now()/1000;
             for(var j=0;j<bars;j++){
-              var bh=(Math.sin(t+j*0.3)*0.3+0.5+Math.random()*0.2)*h*0.7;
+              // 低频区（前8根）模拟鼓点，节奏慢
+              // 中频区（中间）模拟旋律
+              // 高频区（后8根）模拟细节
+              var freq=j<bars/4?1.5:(j<bars*3/4?3:5);
+              var phase=j*0.4;
+              var target=(Math.sin(t*freq+phase)*0.3+0.5)*h*0.6;
+              // 鼓点冲击
+              if(j<bars/4)target+=Math.max(0,Math.sin(t*2))*h*0.3;
+              // 平滑趋近目标
+              fbHeights[j]+=(target-fbHeights[j])*0.15;
+              var bh=Math.max(2,fbHeights[j]);
               var grad=visCtx.createLinearGradient(0,h-bh,0,h);
               grad.addColorStop(0,'#8b5cf6');grad.addColorStop(1,'#3b82f6');
               visCtx.fillStyle=grad;
@@ -2440,7 +2455,7 @@
             var step=Math.floor(visData.length/bars);
             for(var k=0;k<bars;k++){
               var v=visData[k*step]/255;
-              var bh2=v*h*0.9;
+              var bh2=Math.max(2,v*h*0.9);
               var grad2=visCtx.createLinearGradient(0,h-bh2,0,h);
               grad2.addColorStop(0,'#8b5cf6');grad2.addColorStop(1,'#3b82f6');
               visCtx.fillStyle=grad2;
@@ -2584,7 +2599,7 @@
         window.pendingMusicDownload=true;
         openLinkVerifyModal('music-download',true);
       });
-      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');initVisualizer();startVisualizer();});
+      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');initVisualizer();if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();startVisualizer();});
       audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();stopVisualizer();});
       audio.addEventListener('timeupdate',function(){
         if(audio.duration){
