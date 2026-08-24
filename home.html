@@ -2529,11 +2529,21 @@
       var fabDragging=false,fabDragged=false,fabStartX=0,fabStartY=0,fabOrigX=0,fabOrigY=0,fabMoved=false;
 
       // ===== 事件 =====
-      function togglePanel(){
+      function positionPanel(){
         var rect=fab.getBoundingClientRect();
-        panel.style.left='auto';
-        panel.style.right=(window.innerWidth-rect.right)+'px';
+        var panelW=panel.offsetWidth||340;
+        // 如果左对齐不超出右边缘，就左对齐；否则右对齐
+        if(rect.left+panelW<=window.innerWidth-8){
+          panel.style.right='auto';
+          panel.style.left=rect.left+'px';
+        }else{
+          panel.style.left='auto';
+          panel.style.right=(window.innerWidth-rect.right)+'px';
+        }
         panel.style.top=(rect.bottom+8)+'px';
+      }
+      function togglePanel(){
+        positionPanel();
         panel.classList.toggle('show');
       }
       fab.addEventListener('click',function(e){
@@ -2566,9 +2576,15 @@
         ny=Math.max(0,Math.min(maxY,ny));
         fab.style.left=nx+'px';
         fab.style.top=ny+'px';
-        // 面板跟随fab移动，右对齐
-        panel.style.left='auto';
-        panel.style.right=(window.innerWidth-(nx+fab.offsetWidth))+'px';
+        // 面板跟随fab移动，智能对齐
+        var panelW=panel.offsetWidth||340;
+        if(nx+panelW<=window.innerWidth-8){
+          panel.style.right='auto';
+          panel.style.left=nx+'px';
+        }else{
+          panel.style.left='auto';
+          panel.style.right=(window.innerWidth-(nx+fab.offsetWidth))+'px';
+        }
         panel.style.top=(ny+fab.offsetHeight+8)+'px';
         if(e.touches)e.preventDefault();
       }
