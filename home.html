@@ -169,7 +169,8 @@
     .project-cover{grid-column:1/-1;height:200px;border-radius:12px;overflow:hidden;position:relative;margin-bottom:8px;background:var(--card-bg);cursor:zoom-in}
     .project-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;cursor:zoom-in}
     .project-cover:hover img{transform:scale(1.03)}
-    .project-cover-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;backdrop-filter:blur(4px);z-index:2}
+    .project-cover-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;backdrop-filter:blur(4px);z-index:2}
+    .project-cover-nav svg{width:20px;height:20px}
     .project-cover:hover .project-cover-nav{opacity:1}
     @media(hover:none){.project-cover-nav{opacity:1}.project-cover-dots{opacity:1}}
     .project-cover-nav.prev{left:10px}.project-cover-nav.next{right:10px}
@@ -185,12 +186,13 @@
     .lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
     .lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:36px;cursor:pointer;line-height:1;padding:8px 14px;border-radius:50%;transition:background .2s}
     .lightbox-close:hover{background:rgba(255,255,255,0.15)}
-    .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+    .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:2}
     .lightbox-nav:hover{background:rgba(255,255,255,0.3)}
-    .lightbox-nav svg{width:24px;height:24px}
+    .lightbox-nav svg{width:28px;height:28px}
     .lightbox-prev{left:24px}
     .lightbox-next{right:24px}
-    @media(max-width:600px){.lightbox{padding:20px}.lightbox-close{top:12px;right:12px;font-size:28px}.lightbox-nav{width:40px;height:40px}.lightbox-prev{left:8px}.lightbox-next{right:8px}}
+    .lightbox-counter{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:#fff;font-size:15px;font-weight:600;background:rgba(0,0,0,0.5);padding:8px 20px;border-radius:20px;backdrop-filter:blur(4px);letter-spacing:.05em}
+    @media(max-width:600px){.lightbox{padding:20px}.lightbox-close{top:12px;right:12px;font-size:28px}.lightbox-nav{width:44px;height:44px}.lightbox-nav svg{width:22px;height:22px}.lightbox-prev{left:8px}.lightbox-next{right:8px}.lightbox-counter{bottom:16px;font-size:13px;padding:6px 14px}}
     #contact{justify-content:center;text-align:center}
     #contact .section-inner{max-width:700px}
     .contact-cta{font-size:56px;font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:48px;color:var(--text)}
@@ -753,6 +755,7 @@
     <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
     <img class="lightbox-img" id="lightboxImg" src="" alt="">
     <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
   </div>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
@@ -795,7 +798,7 @@
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
       <h2 class="section-title reveal reveal-delay-1"><span class="zh">学生，初三，喜欢公共交通</span><span class="en">Student, Grade 9, public transit enthusiast</span></h2>
       <p class="section-desc reveal reveal-delay-2" style="margin-top:16px;max-width:600px"><span class="zh">相片可能有点糊，我没有那么多钱买相机请见谅。</span><span class="en">Photos may be a bit blurry, sorry I can't afford a nice camera.</span></p>
-      <div class="project-cover reveal reveal-delay-2" data-cover style="margin-top:32px;max-width:800px;height:280px">
+      <div class="project-cover reveal reveal-delay-2" data-cover data-images='["assets/about/transit-1.jpg","assets/about/transit-2.jpg","assets/about/transit-3.jpg","assets/about/transit-4.jpg","assets/about/transit-5.jpg"]' style="margin-top:32px;max-width:800px;height:280px">
         <img src="assets/about/transit-1.jpg" alt="公共交通" loading="lazy">
         <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
         <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -863,7 +866,7 @@
           </div>
         </div>
         <div class="project-item project-card reveal reveal-delay-1">
-          <div class="project-cover" data-cover>
+          <div class="project-cover" data-cover data-images='["assets/projects/project2-zhulaile-1.png","assets/projects/project2-zhulaile-2.png"]'>
             <img src="assets/projects/project2-zhulaile-1.png" alt="Zhulaile nextbot" loading="lazy">
             <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
             <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -889,7 +892,7 @@
           </div>
         </div>
         <div class="project-item project-card reveal reveal-delay-2">
-          <div class="project-cover" data-cover>
+          <div class="project-cover" data-cover data-images='["assets/projects/project3-ueg-1.png","assets/projects/project3-ueg-2.png"]'>
             <img src="assets/projects/project3-ueg-1.png" alt="UEG Administration Console" loading="lazy">
             <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
             <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -1998,19 +2001,17 @@
 
     // ---------- Project cover carousel + lightbox ----------
     (function(){
-      var allCovers=document.querySelectorAll('.project-cover');
-      var imgMap={
-        1:['assets/projects/project2-zhulaile-1.png','assets/projects/project2-zhulaile-2.png'],
-        2:['assets/projects/project3-ueg-1.png','assets/projects/project3-ueg-2.png'],
-        3:['assets/about/transit-1.jpg','assets/about/transit-2.jpg','assets/about/transit-3.jpg','assets/about/transit-4.jpg','assets/about/transit-5.jpg']
-      };
+      var allCovers=document.querySelectorAll('.project-cover[data-cover]');
       var coverStates=[];
-      allCovers.forEach(function(cover,idx){
-        var images=imgMap[idx]||[cover.querySelector('img').getAttribute('src')];
+      allCovers.forEach(function(cover){
+        var images=[];
+        try{images=JSON.parse(cover.getAttribute('data-images')||'[]');}catch(e){}
+        if(images.length===0){images=[cover.querySelector('img').getAttribute('src')];}
         var cur=0;
         var img=cover.querySelector('img');
         var dots=cover.querySelectorAll('.project-cover-dot');
-        coverStates.push({images:images,getCur:function(){return cur;},setCur:function(i){cur=i;}});
+        var state={images:images,getCur:function(){return cur;},setCur:function(i){cur=i;}};
+        coverStates.push(state);
         function show(i){
           cur=(i+images.length)%images.length;
           img.src=images[cur];
@@ -2018,17 +2019,17 @@
         }
         var prevBtn=cover.querySelector('.prev');
         var nextBtn=cover.querySelector('.next');
-        if(prevBtn)prevBtn.addEventListener('click',function(e){e.stopPropagation();show(cur-1);});
-        if(nextBtn)nextBtn.addEventListener('click',function(e){e.stopPropagation();show(cur+1);});
-        dots.forEach(function(d){d.addEventListener('click',function(e){e.stopPropagation();show(parseInt(d.dataset.idx));});});
+        if(prevBtn){prevBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();show(cur-1);});prevBtn.addEventListener('touchend',function(e){e.stopPropagation();e.preventDefault();show(cur-1);});}
+        if(nextBtn){nextBtn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();show(cur+1);});nextBtn.addEventListener('touchend',function(e){e.stopPropagation();e.preventDefault();show(cur+1);});}
+        dots.forEach(function(d){d.addEventListener('click',function(e){e.stopPropagation();show(parseInt(d.dataset.idx));});d.addEventListener('touchend',function(e){e.stopPropagation();show(parseInt(d.dataset.idx));});});
         // 点击图片打开lightbox
-        img.addEventListener('click',function(e){e.stopPropagation();openLightbox(idx,cur);});
-        cover.addEventListener('click',function(e){if(e.target===cover||e.target===img)openLightbox(idx,cur);});
+        img.addEventListener('click',function(e){e.stopPropagation();openLightbox(coverStates.indexOf(state),cur);});
       });
 
       // Lightbox
       var lightbox=document.getElementById('imgLightbox');
       var lightboxImg=document.getElementById('lightboxImg');
+      var lbCounter=document.getElementById('lightboxCounter');
       var lbCurCover=0,lbCurImg=0;
       function openLightbox(coverIdx,imgIdx){
         lbCurCover=coverIdx;lbCurImg=imgIdx;
@@ -2041,8 +2042,10 @@
         var st=coverStates[lbCurCover];
         if(!st)return;
         lightboxImg.src=st.images[lbCurImg];
-        document.getElementById('lightboxPrev').style.display=st.images.length>1?'flex':'none';
-        document.getElementById('lightboxNext').style.display=st.images.length>1?'flex':'none';
+        var hasMultiple=st.images.length>1;
+        document.getElementById('lightboxPrev').style.display=hasMultiple?'flex':'none';
+        document.getElementById('lightboxNext').style.display=hasMultiple?'flex':'none';
+        if(lbCounter)lbCounter.textContent=(lbCurImg+1)+' / '+st.images.length;
       }
       function lbPrev(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg-1+st.images.length)%st.images.length;updateLightbox();}
       function lbNext(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg+1)%st.images.length;updateLightbox();}
