@@ -2528,13 +2528,11 @@
       // ===== 事件 =====
       fab.addEventListener('click',function(){
         if(!fabDragged){
-          // 如果fab被拖动过，面板跟随fab位置
-          if(fab.style.left){
-            var rect=fab.getBoundingClientRect();
-            panel.style.right='auto';
-            panel.style.left=rect.left+'px';
-            panel.style.top=(rect.bottom+8)+'px';
-          }
+          // 面板右对齐fab，避免超出屏幕
+          var rect=fab.getBoundingClientRect();
+          panel.style.left='auto';
+          panel.style.right=(window.innerWidth-rect.right)+'px';
+          panel.style.top=(rect.bottom+8)+'px';
           panel.classList.toggle('show');
         }
       });
@@ -2566,9 +2564,9 @@
         ny=Math.max(0,Math.min(maxY,ny));
         fab.style.left=nx+'px';
         fab.style.top=ny+'px';
-        // 面板跟随fab移动，在fab下方
-        panel.style.right='auto';
-        panel.style.left=nx+'px';
+        // 面板跟随fab移动，右对齐
+        panel.style.left='auto';
+        panel.style.right=(window.innerWidth-(nx+fab.offsetWidth))+'px';
         panel.style.top=(ny+fab.offsetHeight+8)+'px';
         if(e.touches)e.preventDefault();
       }
