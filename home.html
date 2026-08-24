@@ -507,6 +507,8 @@
     /* ---------- BGM Player ---------- */
     .bgm-fab{position:fixed;top:80px;right:24px;z-index:90;width:56px;height:56px;border-radius:50%;background:var(--card-bg,#1a1a2e);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:transform .3s ease,box-shadow .3s ease;overflow:hidden;padding:0}
     .bgm-fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(139,92,246,0.4)}
+    .bgm-fab.dragging{cursor:grabbing;transform:scale(1.15);box-shadow:0 8px 32px rgba(139,92,246,0.5);z-index:95}
+    .bgm-fab.dragging:hover{transform:scale(1.15)}
     .bgm-disc{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#2a2a4a,#0a0a1a);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
     .bgm-disc::before{content:'';position:absolute;inset:4px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);z-index:1;pointer-events:none}
     .bgm-disc-cover{width:64%;height:64%;border-radius:50%;object-fit:cover;position:relative;z-index:0;display:none}
@@ -2492,7 +2494,50 @@
       }
 
       // ===== 事件 =====
-      fab.addEventListener('click',function(){panel.classList.toggle('show');});
+      fab.addEventListener('click',function(){if(!fabDragged)panel.classList.toggle('show');});
+
+      // ===== 唱片图标拖动（鼠标+触屏，不保存位置，刷新回默认）=====
+      var fabDragging=false,fabDragged=false,fabStartX=0,fabStartY=0,fabOrigX=0,fabOrigY=0;
+      function fabGetX(e){return e.touches?e.touches[0].clientX:e.clientX;}
+      function fabGetY(e){return e.touches?e.touches[0].clientY:e.clientY;}
+      function fabStartDrag(e){
+        if(e.button!==undefined&&e.button!==0)return;
+        fabDragging=true;fabDragged=false;
+        fabStartX=fabGetX(e);fabStartY=fabGetY(e);
+        var rect=fab.getBoundingClientRect();
+        fabOrigX=rect.left;fabOrigY=rect.top;
+        fab.style.transition='none';
+        fab.style.right='auto';
+        fab.style.left=fabOrigX+'px';
+        fab.style.top=fabOrigY+'px';
+        fab.classList.add('dragging');
+        if(e.touches)e.preventDefault();
+      }
+      function fabMoveDrag(e){
+        if(!fabDragging)return;
+        var dx=fabGetX(e)-fabStartX,dy=fabGetY(e)-fabStartY;
+        if(Math.abs(dx)>5||Math.abs(dy)>5)fabDragged=true;
+        var nx=fabOrigX+dx,ny=fabOrigY+dy;
+        var maxX=window.innerWidth-fab.offsetWidth,maxY=window.innerHeight-fab.offsetHeight;
+        nx=Math.max(0,Math.min(maxX,nx));
+        ny=Math.max(0,Math.min(maxY,ny));
+        fab.style.left=nx+'px';
+        fab.style.top=ny+'px';
+        if(e.touches)e.preventDefault();
+      }
+      function fabEndDrag(){
+        if(!fabDragging)return;
+        fabDragging=false;
+        fab.classList.remove('dragging');
+        fab.style.transition='';
+        setTimeout(function(){fabDragged=false;},50);
+      }
+      fab.addEventListener('mousedown',fabStartDrag);
+      window.addEventListener('mousemove',fabMoveDrag);
+      window.addEventListener('mouseup',fabEndDrag);
+      fab.addEventListener('touchstart',fabStartDrag,{passive:false});
+      window.addEventListener('touchmove',fabMoveDrag,{passive:false});
+      window.addEventListener('touchend',fabEndDrag);
       closeBtn.addEventListener('click',function(){panel.classList.remove('show');});
       searchBtn.addEventListener('click',function(){searchSongs(searchInput.value);});
       searchInput.addEventListener('keydown',function(e){if(e.key==='Enter')searchSongs(searchInput.value);});
