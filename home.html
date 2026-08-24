@@ -100,7 +100,8 @@
     html{scroll-behavior:smooth}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:background .4s ease,color .4s ease}
     a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
-    .en{display:none}[data-lang="en"] .zh{display:none}[data-lang="en"] .en{display:inline}
+    body[data-lang="zh"] .en{display:none !important}
+    body[data-lang="en"] .zh{display:none !important}
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
     .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
