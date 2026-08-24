@@ -793,7 +793,20 @@
   <section class="section" id="about">
     <div class="section-inner">
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
-      <h2 class="section-title reveal reveal-delay-1"><span class="zh">这里什么都没有</span><span class="en">There is nothing here</span></h2>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">学生，初三，喜欢公共交通</span><span class="en">Student, Grade 9, public transit enthusiast</span></h2>
+      <p class="section-desc reveal reveal-delay-2" style="margin-top:16px;max-width:600px"><span class="zh">相片可能有点糊，我没有那么多钱买相机请见谅。</span><span class="en">Photos may be a bit blurry, sorry I can't afford a nice camera.</span></p>
+      <div class="project-cover reveal reveal-delay-2" data-cover style="margin-top:32px;max-width:800px;height:280px">
+        <img src="assets/about/transit-1.jpg" alt="公共交通" loading="lazy">
+        <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="project-cover-dots">
+          <button class="project-cover-dot active" data-idx="0"></button>
+          <button class="project-cover-dot" data-idx="1"></button>
+          <button class="project-cover-dot" data-idx="2"></button>
+          <button class="project-cover-dot" data-idx="3"></button>
+          <button class="project-cover-dot" data-idx="4"></button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1988,7 +2001,8 @@
       var allCovers=document.querySelectorAll('.project-cover');
       var imgMap={
         1:['assets/projects/project2-zhulaile-1.png','assets/projects/project2-zhulaile-2.png'],
-        2:['assets/projects/project3-ueg-1.png','assets/projects/project3-ueg-2.png']
+        2:['assets/projects/project3-ueg-1.png','assets/projects/project3-ueg-2.png'],
+        3:['assets/about/transit-1.jpg','assets/about/transit-2.jpg','assets/about/transit-3.jpg','assets/about/transit-4.jpg','assets/about/transit-5.jpg']
       };
       var coverStates=[];
       allCovers.forEach(function(cover,idx){
