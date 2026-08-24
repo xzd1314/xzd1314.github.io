@@ -166,8 +166,8 @@
     .project-btn:hover{background:var(--text);color:var(--bg);border-color:var(--text);transform:translateY(-1px)}
     .project-btn svg{width:15px;height:15px}
     .project-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .project-cover{grid-column:1/-1;height:200px;border-radius:12px;overflow:hidden;position:relative;margin-bottom:8px;background:var(--card-bg);cursor:pointer}
-    .project-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+    .project-cover{grid-column:1/-1;height:200px;border-radius:12px;overflow:hidden;position:relative;margin-bottom:8px;background:var(--card-bg);cursor:zoom-in}
+    .project-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;cursor:zoom-in}
     .project-cover:hover img{transform:scale(1.03)}
     .project-cover-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;backdrop-filter:blur(4px);z-index:2}
     .project-cover:hover .project-cover-nav{opacity:1}
@@ -178,6 +178,19 @@
     .project-cover-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all .25s ease;border:none;padding:0}
     .project-cover-dot.active{background:#fff;width:20px;border-radius:4px}
     .project-license{display:inline-block;margin-top:8px;font-size:13px;color:var(--text-secondary)}
+    .license-link{color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+    .license-link:hover{opacity:0.8}
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:10000;display:none;align-items:center;justify-content:center;padding:40px}
+    .lightbox.show{display:flex}
+    .lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+    .lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:36px;cursor:pointer;line-height:1;padding:8px 14px;border-radius:50%;transition:background .2s}
+    .lightbox-close:hover{background:rgba(255,255,255,0.15)}
+    .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+    .lightbox-nav:hover{background:rgba(255,255,255,0.3)}
+    .lightbox-nav svg{width:24px;height:24px}
+    .lightbox-prev{left:24px}
+    .lightbox-next{right:24px}
+    @media(max-width:600px){.lightbox{padding:20px}.lightbox-close{top:12px;right:12px;font-size:28px}.lightbox-nav{width:40px;height:40px}.lightbox-prev{left:8px}.lightbox-next{right:8px}}
     #contact{justify-content:center;text-align:center}
     #contact .section-inner{max-width:700px}
     .contact-cta{font-size:56px;font-size:clamp(40px,6vw,72px);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:48px;color:var(--text)}
@@ -734,6 +747,13 @@
       <div class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onTurnstileSuccess" data-theme="dark"></div>
     </div>
   </div>
+  <!-- Project Image Lightbox -->
+  <div class="lightbox" id="imgLightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="关闭">&times;</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
     <ul class="nav-links" id="navLinks">
@@ -819,7 +839,7 @@
           <div class="project-info">
             <h3><span class="zh">迷上城建 Forge 移植</span><span class="en">Mishanguc Forge Port</span></h3>
             <p><span class="zh">Mishanguc mod for Forge 1.19.4 — 迷上城建模组 Forge 版本移植</span><span class="en">Mishanguc mod for Forge 1.19.4 — Mishanguc modeling team Forge version port</span></p>
-            <p class="project-license"><strong><em><span class="zh">本项目遵循 GNU Lesser General Public License version 3 许可协议</span><span class="en">Licensed under GNU Lesser General Public License version 3</span></em></strong></p>
+            <p class="project-license"><strong><em><a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank" rel="noopener" class="license-link"><span class="zh">本项目遵循 GNU Lesser General Public License version 3 许可协议</span><span class="en">Licensed under GNU Lesser General Public License version 3</span></a></em></strong></p>
           </div>
           <div class="project-actions">
             <span class="project-tag">Java / Forge</span>
@@ -932,6 +952,16 @@
           <div class="link-info">
             <h3>45的小站</h3>
             <p>Majority doesn't exist</p>
+          </div>
+          <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+        <a href="https://scrhub.org" target="_blank" rel="noopener" class="link-card project-card reveal reveal-delay-2">
+          <div class="link-avatar">
+            <img src="assets/projects/scrhub-favicon.png" alt="SCR Hub" />
+          </div>
+          <div class="link-info">
+            <h3>SCR Hub</h3>
+            <p>SCRHub官方网站。（感谢45.206Mhz）</p>
           </div>
           <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
         </a>
@@ -1953,27 +1983,64 @@
       if(window.scrollY>50){nav.classList.add('scrolled')}else{nav.classList.remove('scrolled')}
     });
 
-    // ---------- Project cover carousel ----------
+    // ---------- Project cover carousel + lightbox ----------
     (function(){
-      var covers=document.querySelectorAll('.project-cover[data-cover]');
+      var allCovers=document.querySelectorAll('.project-cover');
       var imgMap={
-        0:['assets/projects/project2-zhulaile-1.png','assets/projects/project2-zhulaile-2.png'],
-        1:['assets/projects/project3-ueg-1.png','assets/projects/project3-ueg-2.png']
+        1:['assets/projects/project2-zhulaile-1.png','assets/projects/project2-zhulaile-2.png'],
+        2:['assets/projects/project3-ueg-1.png','assets/projects/project3-ueg-2.png']
       };
-      covers.forEach(function(cover,idx){
-        var images=imgMap[idx]||[];
+      var coverStates=[];
+      allCovers.forEach(function(cover,idx){
+        var images=imgMap[idx]||[cover.querySelector('img').getAttribute('src')];
         var cur=0;
         var img=cover.querySelector('img');
         var dots=cover.querySelectorAll('.project-cover-dot');
+        coverStates.push({images:images,getCur:function(){return cur;},setCur:function(i){cur=i;}});
         function show(i){
           cur=(i+images.length)%images.length;
           img.src=images[cur];
           dots.forEach(function(d,j){d.classList.toggle('active',j===cur);});
         }
-        cover.querySelector('.prev').addEventListener('click',function(e){e.stopPropagation();show(cur-1);});
-        cover.querySelector('.next').addEventListener('click',function(e){e.stopPropagation();show(cur+1);});
-        cover.addEventListener('click',function(){if(images.length>1)show(cur+1);});
+        var prevBtn=cover.querySelector('.prev');
+        var nextBtn=cover.querySelector('.next');
+        if(prevBtn)prevBtn.addEventListener('click',function(e){e.stopPropagation();show(cur-1);});
+        if(nextBtn)nextBtn.addEventListener('click',function(e){e.stopPropagation();show(cur+1);});
         dots.forEach(function(d){d.addEventListener('click',function(e){e.stopPropagation();show(parseInt(d.dataset.idx));});});
+        // 点击图片打开lightbox
+        img.addEventListener('click',function(e){e.stopPropagation();openLightbox(idx,cur);});
+        cover.addEventListener('click',function(e){if(e.target===cover||e.target===img)openLightbox(idx,cur);});
+      });
+
+      // Lightbox
+      var lightbox=document.getElementById('imgLightbox');
+      var lightboxImg=document.getElementById('lightboxImg');
+      var lbCurCover=0,lbCurImg=0;
+      function openLightbox(coverIdx,imgIdx){
+        lbCurCover=coverIdx;lbCurImg=imgIdx;
+        updateLightbox();
+        lightbox.classList.add('show');
+        document.body.style.overflow='hidden';
+      }
+      function closeLightbox(){lightbox.classList.remove('show');document.body.style.overflow='';}
+      function updateLightbox(){
+        var st=coverStates[lbCurCover];
+        if(!st)return;
+        lightboxImg.src=st.images[lbCurImg];
+        document.getElementById('lightboxPrev').style.display=st.images.length>1?'flex':'none';
+        document.getElementById('lightboxNext').style.display=st.images.length>1?'flex':'none';
+      }
+      function lbPrev(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg-1+st.images.length)%st.images.length;updateLightbox();}
+      function lbNext(){var st=coverStates[lbCurCover];lbCurImg=(lbCurImg+1)%st.images.length;updateLightbox();}
+      document.getElementById('lightboxClose').addEventListener('click',closeLightbox);
+      document.getElementById('lightboxPrev').addEventListener('click',lbPrev);
+      document.getElementById('lightboxNext').addEventListener('click',lbNext);
+      lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightbox();});
+      document.addEventListener('keydown',function(e){
+        if(!lightbox.classList.contains('show'))return;
+        if(e.key==='Escape')closeLightbox();
+        else if(e.key==='ArrowLeft')lbPrev();
+        else if(e.key==='ArrowRight')lbNext();
       });
     })();
 
