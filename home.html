@@ -950,7 +950,7 @@
             <img src="https://45.206MHz.com/images/avatar.webp" alt="45的小站" />
           </div>
           <div class="link-info">
-            <h3>45的小站</h3>
+            <h3><span class="zh">45的小站</span><span class="en">45's Site</span></h3>
             <p>Majority doesn't exist</p>
           </div>
           <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
@@ -961,7 +961,7 @@
           </div>
           <div class="link-info">
             <h3>SCR Hub</h3>
-            <p>SCRHub官方网站。（感谢45.206Mhz）</p>
+            <p><span class="zh">SCRHub官方网站。（感谢45.206Mhz）</span><span class="en">SCRHub official website. (Thanks to 45.206MHz)</span></p>
           </div>
           <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
         </a>
@@ -2154,6 +2154,8 @@
       var visCanvas=document.getElementById('bgmVisualizer');
       var visCtx=visCanvas?visCanvas.getContext('2d'):null;
       var audioCtx=null,analyser=null,visRAF=null,visData=null;
+      // 注意：不使用createMediaElementSource，因为酷狗音频跨域无CORS头拿不到真实频谱，
+      // 且连接AudioContext会改变音频路由导致静音。只用平滑伪频谱动画。
       var playMode=0; // 0=顺序 1=随机 2=单曲循环
       var ICON_ORDER='<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>';
       var ICON_SHUFFLE='<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>';
@@ -2403,20 +2405,7 @@
       }
 
       // ===== 音频可视化 =====
-      function initVisualizer(){
-        if(audioCtx||!visCtx)return;
-        try{
-          audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-          var src=audioCtx.createMediaElementSource(audio);
-          analyser=audioCtx.createAnalyser();
-          analyser.fftSize=128;
-          analyser.smoothingTimeConstant=0.8;
-          visData=new Uint8Array(analyser.frequencyBinCount);
-          src.connect(analyser);
-          analyser.connect(audioCtx.destination);
-          if(audioCtx.state==='suspended')audioCtx.resume();
-        }catch(e){audioCtx=null;analyser=null;}
-      }
+      function initVisualizer(){/* 不再创建AudioContext，避免影响音频路由 */}
       function startVisualizer(){if(!visRAF)drawVisualizer();}
       function stopVisualizer(){if(visRAF){cancelAnimationFrame(visRAF);visRAF=null;}if(visCtx){visCtx.clearRect(0,0,visCanvas.width,visCanvas.height);}}
       // fallback平滑动画的柱子高度缓存
@@ -2426,41 +2415,20 @@
         var w=visCanvas.width,h=visCanvas.height;
         visCtx.clearRect(0,0,w,h);
         var bars=32,barW=w/bars;
-        if(analyser&&!audio.paused){
-          if(audioCtx.state==='suspended')audioCtx.resume();
-          analyser.getByteFrequencyData(visData);
-          var allZero=true;
-          for(var i=0;i<visData.length;i++){if(visData[i]>0){allZero=false;break;}}
-          if(allZero){
-            // CORS限制无法分析时，用平滑的伪频谱（基于时间的多频正弦叠加，模拟音乐节奏）
-            var t=Date.now()/1000;
-            for(var j=0;j<bars;j++){
-              // 低频区（前8根）模拟鼓点，节奏慢
-              // 中频区（中间）模拟旋律
-              // 高频区（后8根）模拟细节
-              var freq=j<bars/4?1.5:(j<bars*3/4?3:5);
-              var phase=j*0.4;
-              var target=(Math.sin(t*freq+phase)*0.3+0.5)*h*0.6;
-              // 鼓点冲击
-              if(j<bars/4)target+=Math.max(0,Math.sin(t*2))*h*0.3;
-              // 平滑趋近目标
-              fbHeights[j]+=(target-fbHeights[j])*0.15;
-              var bh=Math.max(2,fbHeights[j]);
-              var grad=visCtx.createLinearGradient(0,h-bh,0,h);
-              grad.addColorStop(0,'#8b5cf6');grad.addColorStop(1,'#3b82f6');
-              visCtx.fillStyle=grad;
-              visCtx.fillRect(j*barW+1,h-bh,barW-2,bh);
-            }
-          }else{
-            var step=Math.floor(visData.length/bars);
-            for(var k=0;k<bars;k++){
-              var v=visData[k*step]/255;
-              var bh2=Math.max(2,v*h*0.9);
-              var grad2=visCtx.createLinearGradient(0,h-bh2,0,h);
-              grad2.addColorStop(0,'#8b5cf6');grad2.addColorStop(1,'#3b82f6');
-              visCtx.fillStyle=grad2;
-              visCtx.fillRect(k*barW+1,h-bh2,barW-2,bh2);
-            }
+        if(!audio.paused&&currentSong){
+          // 用平滑的伪频谱（基于时间的多频正弦叠加，模拟音乐节奏）
+          var t=Date.now()/1000;
+          for(var j=0;j<bars;j++){
+            var freq=j<bars/4?1.5:(j<bars*3/4?3:5);
+            var phase=j*0.4;
+            var target=(Math.sin(t*freq+phase)*0.3+0.5)*h*0.6;
+            if(j<bars/4)target+=Math.max(0,Math.sin(t*2))*h*0.3;
+            fbHeights[j]+=(target-fbHeights[j])*0.15;
+            var bh=Math.max(2,fbHeights[j]);
+            var grad=visCtx.createLinearGradient(0,h-bh,0,h);
+            grad.addColorStop(0,'#8b5cf6');grad.addColorStop(1,'#3b82f6');
+            visCtx.fillStyle=grad;
+            visCtx.fillRect(j*barW+1,h-bh,barW-2,bh);
           }
         }
       }
@@ -2599,7 +2567,7 @@
         window.pendingMusicDownload=true;
         openLinkVerifyModal('music-download',true);
       });
-      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');initVisualizer();if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();startVisualizer();});
+      audio.addEventListener('play',function(){playIcon.innerHTML=ICON_PAUSE;fab.classList.add('playing');startVisualizer();});
       audio.addEventListener('pause',function(){playIcon.innerHTML=ICON_PLAY;fab.classList.remove('playing');scheduleSave();stopVisualizer();});
       audio.addEventListener('timeupdate',function(){
         if(audio.duration){
