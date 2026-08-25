@@ -2784,5 +2784,14 @@
     },3000);
   })();
   </script>
+
+  <!-- Service Worker 离线缓存 -->
+  <script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('sw.js').catch(function(e){console.log('SW注册失败:',e);});
+    });
+  }
+  </script>
 </body>
 </html>
