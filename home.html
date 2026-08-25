@@ -1635,13 +1635,7 @@
         setTimeout(function(){overlay.style.display='none';},500);
         return;
       }
-      // Fallback: if Turnstile fails to load within 8s, let user in anyway
-      setTimeout(function(){
-        if(!overlay.classList.contains('hidden')){
-          overlay.classList.add('hidden');
-          setTimeout(function(){overlay.style.display='none';},500);
-        }
-      },8000);
+      // 不自动放行，验证不过就一直卡着
     })();
     // ---------- Bot Detection (allow search engines) ----------
     function isBot(){
