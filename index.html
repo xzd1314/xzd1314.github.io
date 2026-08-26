@@ -102,7 +102,7 @@
     };
     (function(){
       var ua=navigator.userAgent.toLowerCase();
-      var bots=['bingbot','bingpreview','googlebot','google-inspectiontool','google-extended','baiduspider','yandexbot','duckduckbot','slurp','msnbot','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider'];
+      var bots=['bingbot','bingpreview','adidxbot','msnbot','googlebot','google-inspectiontool','google-extended','mediapartners-google','adsbot-google','baiduspider','baiduspider-render','yandexbot','yandexaccessibilitybot','duckduckbot','duckduckgo-favicons-bot','slurp','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider','dotbot','rogerbot','seznambot','sogou','360spider','haosouspider','ia_archiver','archive.org_bot','waybackmachine'];
       for(var i=0;i<bots.length;i++){
         if(ua.indexOf(bots[i])!==-1){
           try{sessionStorage.setItem('index_verified','1');}catch(e){}
@@ -111,6 +111,15 @@
       }
     })();
   </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=home.html">
+    <style>.verify-state{display:none!important}</style>
+    <div style="padding:48px 24px;max-width:680px;margin:0 auto">
+      <h1 style="font-size:24px;margin-bottom:12px">xzd1314 — 个人网站</h1>
+      <p style="font-size:14px;color:#666;margin-bottom:24px">前端开发、Roblox开发、Python项目作品集。迷上城建Forge移植、猪来了nextbot等项目展示。</p>
+      <a href="home.html" style="color:#0066cc;text-decoration:underline">进入网站 / Enter site</a>
+    </div>
+  </noscript>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body data-theme="light" data-lang="zh">
