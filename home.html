@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -2425,7 +2425,7 @@
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
           var pic=song.Image?song.Image.replace('{size}','200'):'';
-          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'">':'')+'</div>'+
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
             '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
             '<button class="bgm-list-remove" title="移除">×</button>';
           item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
@@ -2455,7 +2455,7 @@
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
           var pic=song.Image?song.Image.replace('{size}','200'):'';
-          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'">':'')+'</div>'+
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
             '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
             '<button class="bgm-list-remove" title="取消收藏">×</button>';
           item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
@@ -2789,3 +2789,4 @@
   </script>
 </body>
 </html>
+
