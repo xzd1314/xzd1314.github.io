@@ -18,7 +18,6 @@
   <meta name="twitter:image" content="https://xzd1314.top/assets/avatar.jpg" />
   <link rel="canonical" href="https://xzd1314.top/home.html" />
   <link rel="preconnect" href="https://challenges.cloudflare.com" />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -35,19 +34,19 @@
   }
   </script>
   <title>xzd1314 — 个人网站</title>
-  <link rel="icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/avatar.jpg" />
-  <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/avatar.jpg" />
+  <link rel="icon" type="image/jpeg" href="/assets/avatar.jpg" />
+  <link rel="apple-touch-icon" href="/assets/avatar.jpg" />
   <style>
     @font-face {
       font-family: 'ChuangZhongHei';
-      src: url('https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/fonts/chuangzhonghei.woff2') format('woff2');
+      src: url('/assets/fonts/chuangzhonghei.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
     }
     @font-face {
       font-family: 'Cascadia Mono';
-      src: url('https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/fonts/cascadia-mono-700-italic.woff2') format('woff2');
+      src: url('/assets/fonts/cascadia-mono-700-italic.woff2') format('woff2');
       font-weight: 700;
       font-style: italic;
       font-display: swap;
@@ -477,13 +476,13 @@
     }
     /* ---------- Custom Cursor (ASUS) ---------- */
     *{
-      cursor: url('https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/cursors/normal-select.cur'), auto !important;
+      cursor: url('/assets/cursors/normal-select.cur'), auto !important;
     }
     a, button, .project-card, .skill-card, .hero-title, .nav-logo, .nav-btn, .lang-btn, .back-to-top, .project-btn, .contact-link, .verify-modal-cancel, .verify-modal-continue, .cookie-btn, .reply-close, input[type="submit"], input[type="button"]{
-      cursor: url('https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/cursors/link-select.cur'), pointer !important;
+      cursor: url('/assets/cursors/link-select.cur'), pointer !important;
     }
     input, textarea, [contenteditable]{
-      cursor: url('https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/cursors/text-select.cur'), text !important;
+      cursor: url('/assets/cursors/text-select.cur'), text !important;
     }
     .custom-cursor{display:none!important}
     .cursor-trail{
@@ -656,7 +655,7 @@
   <!-- BGM Player -->
   <button class="bgm-fab" id="bgmFab" aria-label="音乐播放器">
     <div class="bgm-disc" id="bgmDisc">
-      <img class="bgm-disc-cover" id="bgmDiscCover" alt="">
+      <img loading="lazy" class="bgm-disc-cover" id="bgmDiscCover" alt="">
       <svg class="bgm-disc-default" id="bgmDiscDefault" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
       <div class="bgm-disc-center"></div>
     </div>
@@ -743,7 +742,7 @@
   <div class="lightbox" id="imgLightbox">
     <button class="lightbox-close" id="lightboxClose" aria-label="关闭">&times;</button>
     <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <img loading="lazy" class="lightbox-img" id="lightboxImg" src="" alt="">
     <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
     <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
   </div>
@@ -775,7 +774,7 @@
   <section class="section" id="hero">
     <div class="section-inner">
       <a href="https://github.com/xzd1314" target="_blank" rel="noopener" class="avatar-link reveal">
-        <div class="avatar-wrap"><img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/avatar.jpg" alt="xzd1314 avatar"/></div>
+        <div class="avatar-wrap"><img src="/assets/avatar.jpg" alt="xzd1314 avatar"/></div>
       </a>
       <h1 class="hero-title reveal reveal-delay-1">xzd1314.</h1>
       <p class="hero-slogan reveal reveal-delay-2"><span class="zh">用代码构建数字世界</span><span class="en">Use code to build the digital world</span></p>
@@ -788,8 +787,8 @@
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
       <h2 class="section-title reveal reveal-delay-1"><span class="zh">学生，初三，喜欢公共交通</span><span class="en">Student, Grade 9, public transit enthusiast</span></h2>
       <p class="section-desc reveal reveal-delay-2" style="margin-top:16px;max-width:600px"><span class="zh">相片可能有点糊，我没有那么多钱买相机请见谅。</span><span class="en">Photos may be a bit blurry, sorry I can't afford a nice camera.</span></p>
-      <div class="project-cover reveal reveal-delay-2" data-cover data-images='["https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/about/transit-1.webp","https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/about/transit-2.webp","https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/about/transit-3.webp","https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/about/transit-4.webp","https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/about/transit-5.webp"]' style="margin-top:32px;max-width:800px;height:280px">
-        <img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/about/transit-1.webp" alt="公共交通" loading="lazy">
+      <div class="project-cover reveal reveal-delay-2" data-cover data-images='["/assets/about/transit-1.webp","/assets/about/transit-2.webp","/assets/about/transit-3.webp","/assets/about/transit-4.webp","/assets/about/transit-5.webp"]' style="margin-top:32px;max-width:800px;height:280px">
+        <img src="/assets/about/transit-1.webp" alt="公共交通" loading="lazy">
         <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
         <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
         <div class="project-cover-dots">
@@ -839,7 +838,7 @@
       <div class="project-list">
         <div class="project-item project-card reveal">
           <div class="project-cover">
-            <img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project1-forge.webp" alt="Mishanguc Forge Port" loading="lazy">
+            <img src="/assets/projects/project1-forge.webp" alt="Mishanguc Forge Port" loading="lazy">
           </div>
           <span class="project-num">01</span>
           <div class="project-info">
@@ -856,8 +855,8 @@
           </div>
         </div>
         <div class="project-item project-card reveal reveal-delay-1">
-          <div class="project-cover" data-cover data-images='["https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project2-zhulaile-1.webp","https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project2-zhulaile-2.webp"]'>
-            <img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project2-zhulaile-1.webp" alt="Zhulaile nextbot" loading="lazy">
+          <div class="project-cover" data-cover data-images='["/assets/projects/project2-zhulaile-1.webp","/assets/projects/project2-zhulaile-2.webp"]'>
+            <img src="/assets/projects/project2-zhulaile-1.webp" alt="Zhulaile nextbot" loading="lazy">
             <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
             <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
             <div class="project-cover-dots"><button class="project-cover-dot active" data-idx="0"></button><button class="project-cover-dot" data-idx="1"></button></div>
@@ -870,11 +869,11 @@
           <div class="project-actions">
             <span class="project-tag">IOS/Android</span>
             <div class="project-btns">
-              <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@1d156094/downloads/zhulaile-nextbot-v11.ipa" download class="project-btn project-btn-ios">
+              <a href="https://ghproxy.com/https://github.com/xzd1314/xzd1314.github.io/raw/main/downloads/zhulaile-nextbot-v11.ipa?v=1d156094" download class="project-btn project-btn-ios">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span class="zh">下载IPA（苹果）</span><span class="en">Download IPA (iOS)</span>
               </a>
-              <a href="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@1d156094/downloads/zhulaile-nextbot-v11.apk" download class="project-btn">
+              <a href="https://ghproxy.com/https://github.com/xzd1314/xzd1314.github.io/raw/main/downloads/zhulaile-nextbot-v11.apk?v=1d156094" download class="project-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span class="zh">下载APK（安卓）</span><span class="en">Download APK (Android)</span>
               </a>
@@ -882,8 +881,8 @@
           </div>
         </div>
         <div class="project-item project-card reveal reveal-delay-2">
-          <div class="project-cover" data-cover data-images='["https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project3-ueg-1.webp","https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project3-ueg-2.webp"]'>
-            <img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/project3-ueg-1.webp" alt="UEG Administration Console" loading="lazy">
+          <div class="project-cover" data-cover data-images='["/assets/projects/project3-ueg-1.webp","/assets/projects/project3-ueg-2.webp"]'>
+            <img src="/assets/projects/project3-ueg-1.webp" alt="UEG Administration Console" loading="lazy">
             <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
             <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
             <div class="project-cover-dots"><button class="project-cover-dot active" data-idx="0"></button><button class="project-cover-dot" data-idx="1"></button></div>
@@ -957,7 +956,7 @@
       <div class="link-cards">
         <a href="https://45.206MHz.com" target="_blank" rel="noopener" class="link-card project-card reveal reveal-delay-1">
           <div class="link-avatar">
-            <img src="https://45.206MHz.com/images/avatar.webp" alt="45的小站" loading="lazy" />
+            <img src="/assets/avatar-external.webp" alt="45的小站" loading="lazy" />
           </div>
           <div class="link-info">
             <h3><span class="zh">45的小站</span><span class="en">45's Site</span></h3>
@@ -967,7 +966,7 @@
         </a>
         <a href="https://scrhub.org" target="_blank" rel="noopener" class="link-card project-card reveal reveal-delay-2">
           <div class="link-avatar">
-            <img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/projects/scrhub-favicon.png" alt="SCR Hub" loading="lazy" />
+            <img src="/assets/projects/scrhub-favicon.png" alt="SCR Hub" loading="lazy" />
           </div>
           <div class="link-info">
             <h3>SCR Hub</h3>
@@ -982,7 +981,7 @@
   <section class="section" id="memorial">
     <div class="section-inner">
       <div class="memorial-photo reveal">
-        <img src="https://cdn.jsdelivr.net/gh/xzd1314/xzd1314.github.io@main/assets/mao-memorial.jpg" alt="毛泽东同志" loading="lazy"/>
+        <img src="/assets/mao-memorial.jpg" alt="毛泽东同志" loading="lazy"/>
       </div>
       <div class="memorial-content">
         <p class="memorial-label reveal">特别纪念 / Memorial</p>
@@ -2245,7 +2244,7 @@
       function updateCover(pic){
         var url=pic?pic.replace('{size}','400'):'';
         if(url){
-          npCover.innerHTML='<img src="'+url+'" alt="cover">';
+          npCover.innerHTML='<img loading="lazy" src="'+url+'" alt="cover">';
           discCover.src=url;discCover.classList.add('show');
           discDefault.style.display='none';
         }else{
@@ -2395,7 +2394,7 @@
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
           var pic=song.Image?song.Image.replace('{size}','200'):'';
-          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
             '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
             '<button class="bgm-list-remove" title="移除">×</button>';
           item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
@@ -2425,7 +2424,7 @@
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
           var pic=song.Image?song.Image.replace('{size}','200'):'';
-          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
             '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
             '<button class="bgm-list-remove" title="取消收藏">×</button>';
           item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
