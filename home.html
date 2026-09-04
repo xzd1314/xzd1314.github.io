@@ -2177,7 +2177,7 @@
       var ICON_PLAY='<polygon points="5,3 19,12 5,21"/>';
       var ICON_PAUSE='<polygon points="6,4 10,4 10,20 6,20"/><polygon points="14,4 18,4 18,20 14,20"/>';
       var STORAGE_KEY='xzd1314_bgm';
-      var DEFAULT_SONG={FileHash:'13BE659F13C6E5A376A7D558E3871DCC',SongName:'Never Gonna Give You Up',SingerName:'Rick Astley',Image:'http://singerimg.kugou.com/uploadpic/softhead/{size}/20231024/20231024171920789.jpg'};
+      var DEFAULT_SONG={id:18520488,name:'Never Gonna Give You Up',singer:'Rick Astley',cover:'https://p3.music.126.net/kOOJVk0TQEEIWGPdJv_cHQ==/18180424766089296.jpg'};
       var I18N={
         zh:{searchPlaceholder:'搜索歌曲...',searching:'搜索中...',noResult:'搜索失败或无结果',searchError:'搜索失败，请稍后重试',loading:'加载中...',tryingSource:'正在尝试其他音源...',vipRestricted:'该歌曲需要VIP或版权限制',playError:'播放失败，请稍后重试',queueEmpty:'队列为空',noFavorites:'暂无收藏',noLyrics:'暂无歌词',playFailed:'播放失败',download:'下载'},
         en:{searchPlaceholder:'Search songs...',searching:'Searching...',noResult:'No results found',searchError:'Search failed, please retry',loading:'Loading...',tryingSource:'Trying other source...',vipRestricted:'VIP or copyright restricted',playError:'Playback failed, please retry',queueEmpty:'Queue is empty',noFavorites:'No favorites',noLyrics:'No lyrics',playFailed:'Playback failed',download:'Download'}
@@ -2199,9 +2199,9 @@
           if(!raw){
             // 第一次访问：默认放 Rick Astley - Never Gonna Give You Up
             currentSong=DEFAULT_SONG;
-            npName.textContent=DEFAULT_SONG.SongName;
-            npArtist.textContent=DEFAULT_SONG.SingerName;
-            updateCover(DEFAULT_SONG.Image);
+            npName.textContent=DEFAULT_SONG.name;
+            npArtist.textContent=DEFAULT_SONG.singer;
+            updateCover(DEFAULT_SONG.cover);
             updateNpFavBtn();
             return;
           }
@@ -2213,9 +2213,9 @@
           if(d.currentTime)resumeTime=d.currentTime;
           if(d.currentSong){
             currentSong=d.currentSong;
-            npName.textContent=currentSong.SongName;
-            npArtist.textContent=currentSong.SingerName;
-            updateCover(currentSong.Image);
+            npName.textContent=currentSong.name;
+            npArtist.textContent=currentSong.singer;
+            updateCover(currentSong.cover);
             updateNpFavBtn();
           }
         }catch(e){}
@@ -2239,10 +2239,10 @@
       // ===== 工具 =====
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
-      function songKey(s){return s.FileHash||(s.SongName+'|'+s.SingerName);}
+      function songKey(s){return s.id||(s.name+'|'+s.singer);}
       function isFav(s){return favorites.some(function(f){return songKey(f)===songKey(s);});}
       function updateCover(pic){
-        var url=pic?pic.replace('{size}','400'):'';
+        var url=pic||'';
         if(url){
           npCover.innerHTML='<img loading="lazy" src="'+url+'" alt="cover">';
           discCover.src=url;discCover.classList.add('show');
@@ -2263,22 +2263,6 @@
         }
       }
 
-      // ===== JSONP =====
-      var jsonpSeq=0;
-      function jsonpReq(url,timeout){
-        return new Promise(function(resolve,reject){
-          var cbName='bgm_jp_'+(++jsonpSeq);
-          var script=document.createElement('script');
-          var done=false;
-          var timer=setTimeout(function(){if(!done){done=true;cleanup();reject('timeout');}},timeout||10000);
-          function cleanup(){clearTimeout(timer);try{delete window[cbName];}catch(e){window[cbName]=null;}if(script.parentNode)script.parentNode.removeChild(script);}
-          window[cbName]=function(data){if(!done){done=true;cleanup();resolve(data);}};
-          script.onerror=function(){if(!done){done=true;cleanup();reject('error');}};
-          script.src=url+(url.indexOf('?')>-1?'&':'?')+'callback='+cbName;
-          document.head.appendChild(script);
-        });
-      }
-
       // ===== 标签页 =====
       document.querySelectorAll('.bgm-tab-btn').forEach(function(btn){
         btn.addEventListener('click',function(){
@@ -2294,12 +2278,14 @@
       });
 
       // ===== 搜索 =====
+      var API_BASE='/api/music';
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">'+bgmT('searching')+'</div>';
-        jsonpReq('https://songsearch.kugou.com/song_search_v2?keyword='+encodeURIComponent(kw)+'&page=1&pagesize=15&platform=WebFilter')
+        fetch(API_BASE+'/search?keyword='+encodeURIComponent(kw)+'&limit=15')
+          .then(function(r){return r.json();})
           .then(function(data){
-            var list=data&&data.data&&data.data.lists;
+            var list=data&&data.result;
             if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
             resultsEl.innerHTML='';
             list.forEach(function(song,i){
@@ -2307,7 +2293,7 @@
               item.className='bgm-result-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
               var faved=isFav(song);
               item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
-                '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-result-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
+                '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.name)+'</div><div class="bgm-result-artist">'+escapeHtml(song.singer)+'</div></div>'+
                 '<div class="bgm-result-actions">'+
                   '<button class="bgm-action-btn bgm-fav-btn'+(faved?' faved':'')+'" title="收藏">'+(faved?'♥':'♡')+'</button>'+
                   '<button class="bgm-action-btn" title="加入队列">+</button>'+
@@ -2328,62 +2314,41 @@
           })
           .catch(function(){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('searchError')+'</div>';});
       }
-
       // ===== 播放 =====
       function playSong(song){
         currentSong=song;
         npName.textContent=bgmT('loading');
-        npArtist.textContent=song.SingerName;
-        updateCover(song.Image);
+        npArtist.textContent=song.singer;
+        updateCover(song.cover);
         updateNpFavBtn();
         lyrics=[];currentLyricIdx=-1;renderLyrics();
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
-        jsonpReq('https://m.kugou.com/app/i/getSongInfo.php?hash='+song.FileHash+'&cmd=playInfo&format=jsonp')
+        // 获取播放地址
+        fetch(API_BASE+'/url?id='+song.id)
+          .then(function(r){return r.json();})
           .then(function(data){
-            if(!data.error&&data.url){
-              npName.textContent=data.songName||song.SongName;
-              npArtist.textContent=data.author_name||song.SingerName;
+            if(data&&data.ok&&data.url){
+              npName.textContent=song.name;
+              npArtist.textContent=song.singer;
               audio.src=data.url;
               downloadBtn.disabled=false;
-              audio.play().catch(function(){tryQQMusic(song);});
+              audio.play().catch(function(){
+                npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+              });
               fetchLyrics(song);
-            }else{tryQQMusic(song);}
+            }else{
+              npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+            }
           })
-          .catch(function(){tryQQMusic(song);});
+          .catch(function(){
+            npName.textContent=song.name;npArtist.textContent=bgmT('playError');downloadBtn.disabled=true;
+          });
         scheduleSave();
       }
-      function tryQQMusic(song){
-        npName.textContent=bgmT('tryingSource');
-        var script=document.createElement('script');
-        function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);}
-        window.callback=function(data){
-          cleanup();
-          var list=data&&data.data&&data.data.song&&data.data.song.list;
-          if(list&&list.length>0){
-            var qq=list[0];
-            var artists=(qq.singer||[]).map(function(s){return s.name;}).join(' / ');
-            npName.textContent=qq.songname;npArtist.textContent=artists;
-            var qpic=qq.albummid?'https://api.injahow.cn/meting/?server=tencent&type=pic&id='+qq.albummid:'';
-            if(qpic)updateCover(qpic);
-            audio.src='https://api.injahow.cn/meting/?server=tencent&type=url&id='+qq.songmid;
-            downloadBtn.disabled=false;
-            audio.play().catch(function(){
-              npName.textContent=song.SongName;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
-            });
-            fetchLyricsByMid(qq.songmid);
-          }else{
-            npName.textContent=song.SongName;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
-          }
-        };
-        script.onerror=function(){cleanup();npName.textContent=song.SongName;npArtist.textContent=bgmT('playError');downloadBtn.disabled=true;};
-        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(song.SongName+' '+song.SingerName)+'&format=jsonp&callback=callback&p=1&n=5';
-        document.head.appendChild(script);
-      }
-
       // ===== 队列 =====
       function addToQueue(song){
         if(queue.some(function(s){return songKey(s)===songKey(song);}))return;
-        queue.push({FileHash:song.FileHash,SongName:song.SongName,SingerName:song.SingerName,Image:song.Image});
+        queue.push({id:song.id,name:song.name,singer:song.singer,cover:song.cover});
         scheduleSave();renderQueue();
       }
       function removeFromQueue(idx){queue.splice(idx,1);scheduleSave();renderQueue();}
@@ -2393,9 +2358,9 @@
         queue.forEach(function(song,i){
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
-          var pic=song.Image?song.Image.replace('{size}','200'):'';
-          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
-            '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
+          var pic=song.cover||'';
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.name)+'">':'')+'</div>'+
+            '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.name)+'</div><div class="bgm-list-artist">'+escapeHtml(song.singer)+'</div></div>'+
             '<button class="bgm-list-remove" title="移除">×</button>';
           item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
           item.querySelector('.bgm-list-remove').addEventListener('click',function(e){e.stopPropagation();removeFromQueue(i);});
@@ -2413,7 +2378,7 @@
       function toggleFav(song){
         var idx=favorites.findIndex(function(f){return songKey(f)===songKey(song);});
         if(idx>=0)favorites.splice(idx,1);
-        else favorites.push({FileHash:song.FileHash,SongName:song.SongName,SingerName:song.SingerName,Image:song.Image});
+        else favorites.push({id:song.id,name:song.name,singer:song.singer,cover:song.cover});
         scheduleSave();updateNpFavBtn();renderFavorites();
       }
       function removeFav(idx){favorites.splice(idx,1);scheduleSave();renderFavorites();updateNpFavBtn();}
@@ -2423,9 +2388,9 @@
         favorites.forEach(function(song,i){
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
-          var pic=song.Image?song.Image.replace('{size}','200'):'';
-          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.SongName)+'">':'')+'</div>'+
-            '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.SongName)+'</div><div class="bgm-list-artist">'+escapeHtml(song.SingerName)+'</div></div>'+
+          var pic=song.cover||'';
+          item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.name)+'">':'')+'</div>'+
+            '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.name)+'</div><div class="bgm-list-artist">'+escapeHtml(song.singer)+'</div></div>'+
             '<button class="bgm-list-remove" title="取消收藏">×</button>';
           item.addEventListener('click',function(e){if(e.target.closest('.bgm-list-remove'))return;playSong(song);});
           item.querySelector('.bgm-list-remove').addEventListener('click',function(e){e.stopPropagation();removeFav(i);});
@@ -2435,23 +2400,13 @@
 
       // ===== 歌词 =====
       function fetchLyrics(song){
-        // 用QQ音乐搜索获取songmid，再用Meting API获取歌词
-        var script=document.createElement('script');
-        function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);}
-        window.callback=function(data){
-          cleanup();
-          var list=data&&data.data&&data.data.song&&data.data.song.list;
-          if(list&&list.length>0)fetchLyricsByMid(list[0].songmid);
-          else{lyrics=[];renderLyrics();}
-        };
-        script.onerror=function(){cleanup();lyrics=[];renderLyrics();};
-        script.src='https://c.y.qq.com/soso/fcgi-bin/client_search_cp?w='+encodeURIComponent(song.SongName+' '+song.SingerName)+'&format=jsonp&callback=callback&p=1&n=3';
-        document.head.appendChild(script);
-      }
-      function fetchLyricsByMid(mid){
-        fetch('https://api.injahow.cn/meting/?server=tencent&type=lrc&id='+mid)
-          .then(function(r){return r.text();})
-          .then(function(text){parseLyrics(text);})
+        fetch(API_BASE+'/lyric?id='+song.id)
+          .then(function(r){return r.json();})
+          .then(function(data){
+            var lrc=(data&&data.lyric)||'';
+            if(lrc)parseLyrics(lrc);
+            else{lyrics=[];renderLyrics();}
+          })
           .catch(function(){lyrics=[];renderLyrics();});
       }
       function parseLyrics(lrc){
@@ -2599,7 +2554,7 @@
       npFav.addEventListener('click',function(){if(currentSong)toggleFav(currentSong);});
       function doMusicDownload(){
         if(!audio.src||!currentSong)return;
-        var filename=(currentSong.SongName||'song').replace(/[<>:"/\\|?*]/g,'_')+'.mp3';
+        var filename=(currentSong.name||'song').replace(/[<>:"/\\|?*]/g,'_')+'.mp3';
         fetch(audio.src).then(function(r){return r.blob();}).then(function(blob){
           var url=URL.createObjectURL(blob);
           var a=document.createElement('a');a.href=url;a.download=filename;a.style.display='none';
