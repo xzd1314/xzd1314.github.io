@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://xzd1314.github.io/sitemap.xml
+Sitemap: https://xzd1314.top/sitemap.xml
