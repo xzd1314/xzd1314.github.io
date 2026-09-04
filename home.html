@@ -2238,8 +2238,8 @@
       var STORAGE_KEY='xzd1314_bgm';
       var DEFAULT_SONG={id:18520488,name:'Never Gonna Give You Up',singer:'Rick Astley',cover:'https://p3.music.126.net/kOOJVk0TQEEIWGPdJv_cHQ==/18180424766089296.jpg'};
       var I18N={
-        zh:{searchPlaceholder:'搜索歌曲...',searching:'搜索中...',noResult:'搜索失败或无结果',searchError:'搜索失败，请稍后重试',loading:'加载中...',tryingSource:'正在尝试其他音源...',vipRestricted:'该歌曲需要VIP或版权限制',playError:'播放失败，请稍后重试',queueEmpty:'队列为空',noFavorites:'暂无收藏',noLyrics:'暂无歌词',playFailed:'播放失败',download:'下载'},
-        en:{searchPlaceholder:'Search songs...',searching:'Searching...',noResult:'No results found',searchError:'Search failed, please retry',loading:'Loading...',tryingSource:'Trying other source...',vipRestricted:'VIP or copyright restricted',playError:'Playback failed, please retry',queueEmpty:'Queue is empty',noFavorites:'No favorites',noLyrics:'No lyrics',playFailed:'Playback failed',download:'Download'}
+        zh:{searchPlaceholder:'搜索歌曲...',searching:'搜索中...',noResult:'搜索失败或无结果',searchError:'搜索失败，请稍后重试',loading:'加载中...',tryingSource:'正在尝试其他音源...',vipRestricted:'该歌曲需要VIP或版权限制',networkError:'网络错误，请检查网络后重试',playError:'播放失败，请稍后重试',queueEmpty:'队列为空',noFavorites:'暂无收藏',noLyrics:'暂无歌词',playFailed:'播放失败',download:'下载'},
+        en:{searchPlaceholder:'Search songs...',searching:'Searching...',noResult:'No results found',searchError:'Search failed, please retry',loading:'Loading...',tryingSource:'Trying other source...',vipRestricted:'VIP or copyright restricted',networkError:'Network error, please retry',playError:'Playback failed, please retry',queueEmpty:'Queue is empty',noFavorites:'No favorites',noLyrics:'No lyrics',playFailed:'Playback failed',download:'Download'}
       };
       function bgmT(key){var lang=document.body.getAttribute('data-lang')||'zh';return(I18N[lang]&&I18N[lang][key])||I18N.zh[key]||key;}
       function updateBgmLang(){searchInput.placeholder=bgmT('searchPlaceholder');}
@@ -2384,7 +2384,7 @@
               resultsEl.appendChild(item);
             });
           })
-          .catch(function(){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('searchError')+'</div>';});
+          .catch(function(){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('networkError')+'</div>';});
       }
       // ===== 播放 =====
       function playSong(song){
