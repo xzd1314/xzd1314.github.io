@@ -1019,6 +1019,7 @@
       <h3 class="verify-modal-title"><span class="zh">需要验证</span><span class="en">Verification Required</span></h3>
       <p class="verify-modal-desc"><span class="zh">请证明您是人类以继续</span><span class="en">Please prove you're human to continue</span></p>
       <div class="cf-turnstile" id="linkTurnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onLinkVerifySuccess" data-theme="dark"></div>
+      <p class="verify-modal-fallback" id="linkVerifyFallback" style="display:none;color:#f59e0b;font-size:13px;margin:8px 0;"><span class="zh">验证组件加载失败，您可以直接继续</span><span class="en">Verification failed to load, you may continue directly</span></p>
       <button class="verify-modal-cancel" id="linkVerifyCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
       <button class="verify-modal-continue" id="linkVerifyContinue" style="display:none"><span class="zh">点击继续</span><span class="en">Click to continue</span></button>
     </div>
@@ -1682,10 +1683,15 @@
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
     var linkVerifyPoller=null;
+    var linkVerifyTimeout=null;
     var linkWidgetId=null;
     function renderLinkTurnstile(){
       var widget=document.getElementById('linkTurnstile');
       if(!widget)return;
+      // Turnstile loaded successfully, cancel timeout fallback
+      if(linkVerifyTimeout){clearTimeout(linkVerifyTimeout);linkVerifyTimeout=null;}
+      var fallbackHint=document.getElementById('linkVerifyFallback');
+      if(fallbackHint)fallbackHint.style.display='none';
       // Update theme attribute
       var theme=document.body.getAttribute('data-theme')==='light'?'light':'dark';
       widget.setAttribute('data-theme',theme);
@@ -1716,8 +1722,26 @@
       pendingLinkIsDownload=isDownload;
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
+      // 8s timeout fallback: if Turnstile fails to load, allow direct continue
+      if(linkVerifyTimeout)clearTimeout(linkVerifyTimeout);
+      linkVerifyTimeout=setTimeout(function(){
+        linkVerifyTimeout=null;
+        var turnstileEl=document.getElementById('linkTurnstile');
+        var continueBtn=document.getElementById('linkVerifyContinue');
+        var fallbackHint=document.getElementById('linkVerifyFallback');
+        if(turnstileEl)turnstileEl.style.display='none';
+        if(fallbackHint)fallbackHint.style.display='block';
+        if(pendingLinkIsDownload){
+          onLinkVerifySuccess('timeout-fallback');
+        }else{
+          if(continueBtn){
+            continueBtn.innerHTML='<span class="zh">验证加载失败，点击继续</span><span class="en">Verification failed, click to continue</span>';
+            continueBtn.style.display='inline-block';
+          }
+        }
+      },8000);
       if(window.turnstile){renderLinkTurnstile();}
-      else{var tries=0;var check=setInterval(function(){tries++;if(window.turnstile){clearInterval(check);renderLinkTurnstile();}if(tries>50)clearInterval(check);},100);}
+      else{var tries=0;var check=setInterval(function(){tries++;if(window.turnstile){clearInterval(check);renderLinkTurnstile();}if(tries>80)clearInterval(check);},100);}
       return false;
     }
     function closeLinkVerifyModal(){
@@ -1725,14 +1749,17 @@
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
       linkWidgetId=null;
+      if(linkVerifyTimeout){clearTimeout(linkVerifyTimeout);linkVerifyTimeout=null;}
+      if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
       // Reset button states
       var turnstileEl=document.getElementById('linkTurnstile');
       var cancelBtn=document.getElementById('linkVerifyCancel');
       var continueBtn=document.getElementById('linkVerifyContinue');
+      var fallbackHint=document.getElementById('linkVerifyFallback');
       if(turnstileEl)turnstileEl.style.display='';
       if(cancelBtn)cancelBtn.style.display='';
-      if(continueBtn)continueBtn.style.display='none';
-      if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
+      if(continueBtn){continueBtn.style.display='none';continueBtn.innerHTML='<span class="zh">点击继续</span><span class="en">Click to continue</span>';}
+      if(fallbackHint)fallbackHint.style.display='none';
     }
     function onLinkVerifySuccess(token){
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
