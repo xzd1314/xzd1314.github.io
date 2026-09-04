@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>正在进行安全验证... | xzd1314.github.io</title>
+  <title>正在进行安全验证... | xzd1314.top</title>
   <meta name="robots" content="noindex, nofollow" />
   <style>
     :root{
@@ -35,6 +35,13 @@
     .spinner.hidden{display:none}
     @keyframes spin{to{transform:rotate(360deg)}}
     .turnstile-wrap{margin-bottom:24px;min-height:65px}
+    .fallback{display:none;margin-top:8px}
+    .fallback.show{display:block}
+    .fallback p{font-size:14px;color:var(--text-secondary);margin-bottom:14px;line-height:1.6}
+    .fallback a{
+      display:inline-block;padding:10px 28px;background:var(--text);color:var(--bg);
+      text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;
+    }
     .faq{margin-top:32px;max-width:560px}
     .faq summary{
       font-size:16px;font-weight:600;cursor:pointer;padding:8px 0;list-style:none;
@@ -124,7 +131,7 @@
 </head>
 <body data-theme="light" data-lang="zh">
   <div class="wrap">
-    <div class="domain">xzd1314.github.io</div>
+    <div class="domain">xzd1314.top</div>
 
     <div id="verifyState" class="verify-state">
       <h1 class="title"><span class="zh">正在进行安全验证</span><span class="en">Checking your browser</span></h1>
@@ -137,6 +144,10 @@
         <div class="spinner" id="spinner"></div>
         <div class="turnstile-wrap">
           <div id="turnstileWidget" class="cf-turnstile" data-sitekey="0x4AAAAAAEYslAufS7xZQ-Jn" data-callback="onVerifySuccess" data-theme="light"></div>
+        </div>
+        <div id="fallback" class="fallback">
+          <p><span class="zh">验证组件加载较慢（国内网络可能无法连接 Cloudflare），你可以直接进入网站：</span><span class="en">Verification widget is loading slowly. You may enter directly:</span></p>
+          <a href="home.html"><span class="zh">直接进入网站</span><span class="en">Enter site directly</span></a>
         </div>
       </div>
 
@@ -179,7 +190,17 @@
         document.getElementById('spinner').classList.add('hidden');
       }
     },300);
-    setTimeout(function(){clearInterval(turnstileCheck);},12000);
+    // 8秒后如果 Turnstile 还没加载出来，显示降级入口
+    setTimeout(function(){
+      clearInterval(turnstileCheck);
+      var widget=document.querySelector('#turnstileWidget iframe');
+      var fb=document.getElementById('fallback');
+      var sp=document.getElementById('spinner');
+      if(!widget && fb){
+        if(sp)sp.classList.add('hidden');
+        fb.classList.add('show');
+      }
+    },8000);
     (function(){
       var theme=document.body.getAttribute('data-theme')||'light';
       var w=document.getElementById('turnstileWidget');
