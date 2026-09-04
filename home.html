@@ -2219,6 +2219,17 @@
             updateNpFavBtn();
           }
         }catch(e){}
+        // 数据迁移：旧格式（酷狗）转新格式（网易云）
+        function migrateSong(s){
+          if(!s)return s;
+          if(s.id!=null)return s; // 已经是新格式
+          return {id:s.FileHash||0,name:s.SongName||'',singer:s.SingerName||'',cover:s.Image||''};
+        }
+        if(currentSong)currentSong=migrateSong(currentSong);
+        queue=queue.map(migrateSong);
+        favorites=favorites.map(migrateSong);
+        // 如果迁移后 currentSong 没有 id（旧数据无法播放），重置为默认歌
+        if(currentSong&&!currentSong.id){currentSong=DEFAULT_SONG;}
       }
       function saveState(){
         try{
@@ -2237,12 +2248,15 @@
       }
 
       // ===== 工具 =====
+      var API_BASE='/api/music';
+      function proxyPic(url){return url?(API_BASE+'/pic?url='+encodeURIComponent(url)):'';}
+
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
       function songKey(s){return s.id||(s.name+'|'+s.singer);}
       function isFav(s){return favorites.some(function(f){return songKey(f)===songKey(s);});}
       function updateCover(pic){
-        var url=pic||'';
+        var url=proxyPic(pic);
         if(url){
           npCover.innerHTML='<img loading="lazy" src="'+url+'" alt="cover">';
           discCover.src=url;discCover.classList.add('show');
@@ -2278,7 +2292,6 @@
       });
 
       // ===== 搜索 =====
-      var API_BASE='/api/music';
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">'+bgmT('searching')+'</div>';
@@ -2337,13 +2350,42 @@
               });
               fetchLyrics(song);
             }else{
-              npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+              // 网易云无版权，尝试QQ音乐兜底
+              playQQFallback(song);
             }
+          })
+          .catch(function(){
+            // 网易云失败，尝试QQ音乐兜底
+            playQQFallback(song);
+          });
+        scheduleSave();
+      }
+      // QQ音乐兜底
+      function playQQFallback(song){
+        npName.textContent=bgmT('tryingSource');
+        fetch('https://api.injahow.cn/meting/?server=tencent&type=search&name='+encodeURIComponent(song.name+' '+song.singer))
+          .then(function(r){return r.json();})
+          .then(function(list){
+            if(!list||!list.length){npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;return;}
+            var qq=list[0];
+            npName.textContent=qq.name||song.name;
+            npArtist.textContent=qq.artist||song.singer;
+            if(qq.pic)updateCover(qq.pic);
+            var audioUrl='https://api.injahow.cn/meting/?server=tencent&type=url&id='+qq.url_id;
+            audio.src=audioUrl;
+            downloadBtn.disabled=false;
+            audio.play().catch(function(){
+              npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+            });
+            // QQ音乐歌词
+            fetch('https://api.injahow.cn/meting/?server=tencent&type=lrc&id='+qq.url_id)
+              .then(function(r){return r.text();})
+              .then(function(text){if(text)parseLyrics(text);})
+              .catch(function(){});
           })
           .catch(function(){
             npName.textContent=song.name;npArtist.textContent=bgmT('playError');downloadBtn.disabled=true;
           });
-        scheduleSave();
       }
       // ===== 队列 =====
       function addToQueue(song){
@@ -2358,7 +2400,7 @@
         queue.forEach(function(song,i){
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
-          var pic=song.cover||'';
+          var pic=proxyPic(song.cover);
           item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.name)+'">':'')+'</div>'+
             '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.name)+'</div><div class="bgm-list-artist">'+escapeHtml(song.singer)+'</div></div>'+
             '<button class="bgm-list-remove" title="移除">×</button>';
@@ -2388,7 +2430,7 @@
         favorites.forEach(function(song,i){
           var item=document.createElement('div');
           item.className='bgm-list-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
-          var pic=song.cover||'';
+          var pic=proxyPic(song.cover);
           item.innerHTML='<div class="bgm-list-cover">'+(pic?'<img loading="lazy" src="'+pic+'" alt="'+escapeHtml(song.name)+'">':'')+'</div>'+
             '<div class="bgm-list-info"><div class="bgm-list-name">'+escapeHtml(song.name)+'</div><div class="bgm-list-artist">'+escapeHtml(song.singer)+'</div></div>'+
             '<button class="bgm-list-remove" title="取消收藏">×</button>';
