@@ -2423,37 +2423,13 @@
             }
           })
           .catch(function(){
-            // 网易云失败，尝试QQ音乐兜底
-            playQQFallback(song);
+            npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
           });
         scheduleSave();
       }
-      // QQ音乐兜底
+      // QQ音乐兜底已停用（第三方API不稳定）
       function playQQFallback(song){
-        npName.textContent=bgmT('tryingSource');
-        fetch('https://api.injahow.cn/meting/?server=tencent&type=search&name='+encodeURIComponent(song.name+' '+song.singer))
-          .then(function(r){return r.json();})
-          .then(function(list){
-            if(!list||!list.length){npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;return;}
-            var qq=list[0];
-            npName.textContent=qq.name||song.name;
-            npArtist.textContent=qq.artist||song.singer;
-            if(qq.pic)updateCover(qq.pic);
-            var audioUrl='https://api.injahow.cn/meting/?server=tencent&type=url&id='+qq.url_id;
-            audio.src=audioUrl;
-            downloadBtn.disabled=false;
-            audio.play().catch(function(){
-              npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
-            });
-            // QQ音乐歌词
-            fetch('https://api.injahow.cn/meting/?server=tencent&type=lrc&id='+qq.url_id)
-              .then(function(r){return r.text();})
-              .then(function(text){if(text)parseLyrics(text);})
-              .catch(function(){});
-          })
-          .catch(function(){
-            npName.textContent=song.name;npArtist.textContent=bgmT('playError');downloadBtn.disabled=true;
-          });
+        npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
       }
       // ===== 队列 =====
       function addToQueue(song){
