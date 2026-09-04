@@ -2213,6 +2213,35 @@
       var favListEl=document.getElementById('bgmFavList');
       var lyricWrap=document.getElementById('bgmLyricWrap');
       var audio=document.getElementById('bgmAudio');
+      // 带重试的 fetch
+      function fetchWithRetry(url, retries, delay){
+        retries=retries||2; delay=delay||800;
+        return fetch(url).then(function(r){return r.json();}).then(function(data){
+          if(data&&data.result&&data.result.length===0&&retries>0){
+            return new Promise(function(resolve){setTimeout(function(){resolve(fetchWithRetry(url,retries-1,delay));},delay);});
+          }
+          return data;
+        }).catch(function(){
+          if(retries>0){
+            return new Promise(function(resolve){setTimeout(function(){resolve(fetchWithRetry(url,retries-1,delay));},delay);});
+          }
+          throw new Error('fetch failed');
+        });
+      }
+      function fetchPlayUrl(id, retries, delay){
+        retries=retries||2; delay=delay||800;
+        return fetch(API_BASE+'/url?id='+id).then(function(r){return r.json();}).then(function(data){
+          if((!data||!data.ok||!data.url)&&retries>0){
+            return new Promise(function(resolve){setTimeout(function(){resolve(fetchPlayUrl(id,retries-1,delay));},delay);});
+          }
+          return data;
+        }).catch(function(){
+          if(retries>0){
+            return new Promise(function(resolve){setTimeout(function(){resolve(fetchPlayUrl(id,retries-1,delay));},delay);});
+          }
+          throw new Error('play url failed');
+        });
+      }
       var playBtn=document.getElementById('bgmPlayBtn');
       var prevBtn=document.getElementById('bgmPrevBtn');
       var nextBtn=document.getElementById('bgmNextBtn');
@@ -2354,7 +2383,7 @@
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">'+bgmT('searching')+'</div>';
-        fetch(API_BASE+'/search?keyword='+encodeURIComponent(kw)+'&limit=15')
+        fetchWithRetry(API_BASE+'/search?keyword='+encodeURIComponent(kw)+'&limit=15', 2)
           .then(function(r){return r.json();})
           .then(function(data){
             var list=data&&data.result;
@@ -2405,8 +2434,7 @@
         lyrics=[];currentLyricIdx=-1;renderLyrics();
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
         // 获取播放地址
-        fetch(API_BASE+'/url?id='+song.id)
-          .then(function(r){return r.json();})
+        fetchPlayUrl(song.id, 2)
           .then(function(data){
             if(data&&data.ok&&data.url){
               npName.textContent=song.name;
