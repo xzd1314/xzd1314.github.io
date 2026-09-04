@@ -2248,7 +2248,7 @@
       }
 
       // ===== 工具 =====
-      var API_BASE='/api/music';
+      var API_BASE='https://xzd1314.top/api/music';
       function proxyPic(url){return url?(API_BASE+'/pic?url='+encodeURIComponent(url)):'';}
 
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
@@ -2334,6 +2334,15 @@
         npArtist.textContent=song.singer;
         updateCover(song.cover);
         updateNpFavBtn();
+        // 搜索结果没有封面，播放时补获取
+        if(!song.cover&&song.id){
+          fetch(API_BASE+'/song?id='+song.id)
+            .then(function(r){return r.json();})
+            .then(function(d){
+              if(d&&d.cover){song.cover=d.cover;currentSong.cover=d.cover;updateCover(d.cover);}
+            })
+            .catch(function(){});
+        }
         lyrics=[];currentLyricIdx=-1;renderLyrics();
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
         // 获取播放地址
