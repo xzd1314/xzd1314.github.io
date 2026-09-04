@@ -1069,23 +1069,6 @@
   </div>
 
   <script>
-    // ---------- First-time verification gate ----------
-    // Redirect to index.html if user hasn't passed first-layer verification (not a bot)
-    (function(){
-      function isBot(){
-        var ua=navigator.userAgent.toLowerCase();
-        var bots=['bingbot','bingpreview','adidxbot','msnbot','googlebot','google-inspectiontool','google-extended','mediapartners-google','adsbot-google','baiduspider','baiduspider-render','yandexbot','yandexaccessibilitybot','duckduckbot','duckduckgo-favicons-bot','slurp','facebookexternalhit','twitterbot','applebot','semrushbot','ahrefsbot','mj12bot','petalbot','bytespider','dotbot','rogerbot','seznambot','sogou','360spider','haosouspider','ia_archiver','archive.org_bot','waybackmachine'];
-        for(var i=0;i<bots.length;i++){if(ua.indexOf(bots[i])!==-1)return true;}
-        return false;
-      }
-      if(isBot())return;
-      try{
-        if(!sessionStorage.getItem('index_verified')){
-          window.location.replace('index.html');
-        }
-      }catch(e){}
-    })();
-
     // ========== Scroll Progress Bar ==========
     (function(){
       var bar=document.getElementById('scrollProgress');
