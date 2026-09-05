@@ -2316,7 +2316,7 @@
               audio.src=data.url;
               downloadBtn.disabled=false;
               audio.play().catch(function(){
-                npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+                tryNextSong(song);
               });
               fetchLyrics(song);
             }else{
