@@ -2093,9 +2093,9 @@
           throw new Error('fetch failed');
         });
       }
-      // 播放地址直接用 outer/url，请求从用户浏览器发出，不走被封的Worker IP
+      // 播放地址用 Meting API（支持CORS，稳定，下载也是mp3不是html）
       function fetchPlayUrl(id, retries, delay){
-        return Promise.resolve({ok:true, url:'https://music.163.com/song/media/outer/url?id='+id+'.mp3'});
+        return Promise.resolve({ok:true, url:METING_BASE+'&type=url&id='+id});
       }
       var playBtn=document.getElementById('bgmPlayBtn');
       var prevBtn=document.getElementById('bgmPrevBtn');
@@ -2192,18 +2192,22 @@
 
       // ===== 工具 =====
       var API_BASE='https://xzd1314.top/api/music';
+      var METING_BASE='https://api.injahow.cn/meting/?server=netease';
       var CORS_PROXY='https://api.allorigins.win/raw?url=';
-      // 封面直接用网易云图片URL，不走Worker（Worker IP被网易云封禁）
+      // 封面直接用图片URL
       function proxyPic(url){return url||'';}
-      // CORS代理fetch（带重试）
+      // CORS代理fetch（带3次重试，空响应也重试）
       function corsFetch(url, retries){
-        retries=retries||2;
+        retries=retries||3;
         return fetch(CORS_PROXY+encodeURIComponent(url)).then(function(r){
           if(!r.ok)throw new Error('cors fetch failed');
-          return r.json();
+          return r.text();
+        }).then(function(text){
+          if(!text)throw new Error('empty response');
+          return JSON.parse(text);
         }).catch(function(){
           if(retries>0){
-            return new Promise(function(resolve){setTimeout(function(){resolve(corsFetch(url,retries-1));},800);});
+            return new Promise(function(resolve){setTimeout(function(){resolve(corsFetch(url,retries-1));},600);});
           }
           throw new Error('cors fetch failed');
         });
@@ -2304,12 +2308,10 @@
         updateNpFavBtn();
         // 搜索结果没有封面，播放时补获取
         if(!song.cover&&song.id){
-          var detailUrl='https://music.163.com/api/song/detail/?id='+song.id+'&ids=%5B'+song.id+'%5D';
-          corsFetch(detailUrl, 1)
+          fetch(METING_BASE+'&type=song&id='+song.id)
+            .then(function(r){return r.json();})
             .then(function(d){
-              if(d&&d.songs&&d.songs[0]&&d.songs[0].album&&d.songs[0].album.picUrl){
-                song.cover=d.songs[0].album.picUrl;currentSong.cover=d.songs[0].album.picUrl;updateCover(d.songs[0].album.picUrl);
-              }
+              if(d&&d[0]&&d[0].pic){song.cover=d[0].pic;currentSong.cover=d[0].pic;updateCover(d[0].pic);}
             })
             .catch(function(){});
         }
@@ -2396,11 +2398,10 @@
 
       // ===== 歌词 =====
       function fetchLyrics(song){
-        var lyricUrl='https://music.163.com/api/song/lyric?id='+song.id+'&lv=1&kv=1&tv=-1';
-        corsFetch(lyricUrl, 1)
-          .then(function(data){
-            var lrc=(data&&data.lrc&&data.lrc.lyric)||'';
-            if(lrc)parseLyrics(lrc);
+        fetch(METING_BASE+'&type=lrc&id='+song.id)
+          .then(function(r){return r.text();})
+          .then(function(text){
+            if(text&&text.length>10){parseLyrics(text);}
             else{lyrics=[];renderLyrics();}
           })
           .catch(function(){lyrics=[];renderLyrics();});
