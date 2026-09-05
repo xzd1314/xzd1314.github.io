@@ -890,9 +890,9 @@
       <h2 class="contact-cta reveal reveal-delay-1"><span class="zh">想聊聊的话，随时找我</span><span class="en">If you want to chat, find me anytime</span></h2>
       <div class="contact-links">
         <div class="contact-link reveal reveal-delay-2" style="cursor:default;border-bottom:none;padding:0;">
-          <a href="mailto:me@xzd1314.top" style="display:inline-flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);transition:all .3s ease;" onmouseover="this.style.borderColor='var(--text)';this.style.color='var(--text)';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)';this.style.transform='none'">
+          <a href="/cdn-cgi/l/email-protection#92fff7d2eae8f6a3a1a3a6bce6fde2" style="display:inline-flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);transition:all .3s ease;" onmouseover="this.style.borderColor='var(--text)';this.style.color='var(--text)';this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)';this.style.transform='none'">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:18px;height:18px;opacity:.6;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            me@xzd1314.top
+            <span class="__cf_email__" data-cfemail="91fcf4d1e9ebf5a0a2a0a5bfe5fee1">[email&#160;protected]</span>
           </a>
           <button onclick="copyEmail()" style="margin-left:10px;padding:4px 12px;border-radius:100px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s ease;" onmouseover="this.style.background='var(--card-hover)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--card-bg)';this.style.color='var(--text-secondary)'">
             <span class="zh">复制</span><span class="en">Copy</span>
@@ -1029,7 +1029,7 @@
     </div>
   </div>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // ========== Scroll Progress Bar ==========
     (function(){
       var bar=document.getElementById('scrollProgress');
@@ -2093,19 +2093,9 @@
           throw new Error('fetch failed');
         });
       }
+      // 播放地址直接用 outer/url，请求从用户浏览器发出，不走被封的Worker IP
       function fetchPlayUrl(id, retries, delay){
-        retries=retries||2; delay=delay||800;
-        return fetch(API_BASE+'/url?id='+id).then(function(r){return r.json();}).then(function(data){
-          if((!data||!data.ok||!data.url)&&retries>0){
-            return new Promise(function(resolve){setTimeout(function(){resolve(fetchPlayUrl(id,retries-1,delay));},delay);});
-          }
-          return data;
-        }).catch(function(){
-          if(retries>0){
-            return new Promise(function(resolve){setTimeout(function(){resolve(fetchPlayUrl(id,retries-1,delay));},delay);});
-          }
-          throw new Error('play url failed');
-        });
+        return Promise.resolve({ok:true, url:'https://music.163.com/song/media/outer/url?id='+id+'.mp3'});
       }
       var playBtn=document.getElementById('bgmPlayBtn');
       var prevBtn=document.getElementById('bgmPrevBtn');
@@ -2202,7 +2192,22 @@
 
       // ===== 工具 =====
       var API_BASE='https://xzd1314.top/api/music';
-      function proxyPic(url){return url?(API_BASE+'/pic?url='+encodeURIComponent(url)):'';}
+      var CORS_PROXY='https://api.allorigins.win/raw?url=';
+      // 封面直接用网易云图片URL，不走Worker（Worker IP被网易云封禁）
+      function proxyPic(url){return url||'';}
+      // CORS代理fetch（带重试）
+      function corsFetch(url, retries){
+        retries=retries||2;
+        return fetch(CORS_PROXY+encodeURIComponent(url)).then(function(r){
+          if(!r.ok)throw new Error('cors fetch failed');
+          return r.json();
+        }).catch(function(){
+          if(retries>0){
+            return new Promise(function(resolve){setTimeout(function(){resolve(corsFetch(url,retries-1));},800);});
+          }
+          throw new Error('cors fetch failed');
+        });
+      }
 
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
@@ -2248,11 +2253,21 @@
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">'+bgmT('searching')+'</div>';
-        fetchWithRetry(API_BASE+'/search?keyword='+encodeURIComponent(kw)+'&limit=15', 2)
-          .then(function(r){return r.json();})
+        var apiUrl='https://music.163.com/api/search/get?s='+encodeURIComponent(kw)+'&type=1&limit=15';
+        corsFetch(apiUrl, 2)
           .then(function(data){
-            var list=data&&data.result;
-            if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
+            var rawList=(data&&data.result&&data.result.songs)||[];
+            if(!rawList||rawList.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
+            // 转换为统一格式
+            var list=rawList.map(function(s){
+              return {
+                id:s.id, name:s.name,
+                singer:(s.artists&&s.artists.map(function(a){return a.name;}).join('/'))||'',
+                album:(s.album&&s.album.name)||'',
+                duration:s.duration,
+                cover:(s.album&&s.album.picUrl)||''
+              };
+            });
             resultsEl.innerHTML='';
             list.forEach(function(song,i){
               var item=document.createElement('div');
@@ -2289,10 +2304,12 @@
         updateNpFavBtn();
         // 搜索结果没有封面，播放时补获取
         if(!song.cover&&song.id){
-          fetch(API_BASE+'/song?id='+song.id)
-            .then(function(r){return r.json();})
+          var detailUrl='https://music.163.com/api/song/detail/?id='+song.id+'&ids=%5B'+song.id+'%5D';
+          corsFetch(detailUrl, 1)
             .then(function(d){
-              if(d&&d.cover){song.cover=d.cover;currentSong.cover=d.cover;updateCover(d.cover);}
+              if(d&&d.songs&&d.songs[0]&&d.songs[0].album&&d.songs[0].album.picUrl){
+                song.cover=d.songs[0].album.picUrl;currentSong.cover=d.songs[0].album.picUrl;updateCover(d.songs[0].album.picUrl);
+              }
             })
             .catch(function(){});
         }
@@ -2379,10 +2396,10 @@
 
       // ===== 歌词 =====
       function fetchLyrics(song){
-        fetch(API_BASE+'/lyric?id='+song.id)
-          .then(function(r){return r.json();})
+        var lyricUrl='https://music.163.com/api/song/lyric?id='+song.id+'&lv=1&kv=1&tv=-1';
+        corsFetch(lyricUrl, 1)
           .then(function(data){
-            var lrc=(data&&data.lyric)||'';
+            var lrc=(data&&data.lrc&&data.lrc.lyric)||'';
             if(lrc)parseLyrics(lrc);
             else{lyrics=[];renderLyrics();}
           })
