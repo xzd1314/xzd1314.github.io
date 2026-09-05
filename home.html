@@ -1657,13 +1657,23 @@
               window.pendingMusicDownload=false;
               setTimeout(closeLinkVerifyModal,500);
             }else{
-              var a=document.createElement('a');
               var dlFilename=pendingLinkUrl.split('/').pop();
-              a.href=pendingLinkUrl;a.download=dlFilename;a.style.display='none';
-              document.body.appendChild(a);
-              a.click();
-              setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
-              setTimeout(closeLinkVerifyModal,500);
+              // fetch+Blob方式下载，彻底解决Safari乱加.html后缀的问题
+              fetch(pendingLinkUrl).then(function(r){return r.blob();}).then(function(blob){
+                var objUrl=URL.createObjectURL(blob);
+                var a=document.createElement('a');
+                a.href=objUrl;a.download=dlFilename;a.style.display='none';
+                document.body.appendChild(a);a.click();
+                setTimeout(function(){try{document.body.removeChild(a);URL.revokeObjectURL(objUrl);}catch(e){}},100);
+                setTimeout(closeLinkVerifyModal,500);
+              }).catch(function(){
+                // 回退：fetch失败时用原方式
+                var a=document.createElement('a');
+                a.href=pendingLinkUrl;a.download=dlFilename;a.style.display='none';
+                document.body.appendChild(a);a.click();
+                setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
+                setTimeout(closeLinkVerifyModal,500);
+              });
             }
           }, 1500);
         }else{
