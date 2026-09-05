@@ -67,10 +67,6 @@
       --projects-bg: linear-gradient(180deg,#ebe8f0 0%,#e8efee 100%);
       --contact-bg: linear-gradient(180deg,#e8efee 0%,#ffffff 100%);
       --footer-bg: #ffffff;
-      --memorial-bg: linear-gradient(180deg,#f5f0e6 0%,#ebe3d4 40%,#e5dccb 100%);
-      --memorial-text: #3a2e1f;
-      --memorial-accent: #8b6914;
-      --memorial-border: rgba(139,105,20,0.25);
       --cookie-bg: rgba(255,255,255,0.95);
       --cookie-border: rgba(0,0,0,0.1);
     }
@@ -87,10 +83,6 @@
       --projects-bg: linear-gradient(180deg,#0c0612 0%,#060c0c 100%);
       --contact-bg: linear-gradient(180deg,#060c0c 0%,#000 100%);
       --footer-bg: #000;
-      --memorial-bg: linear-gradient(180deg,#1a0a0a 0%,#0d0606 40%,#050202 100%);
-      --memorial-text: #e8d8c8;
-      --memorial-accent: #c8a878;
-      --memorial-border: rgba(200,168,120,0.25);
       --cookie-bg: rgba(20,20,20,0.97);
       --cookie-border: rgba(255,255,255,0.1);
     }
@@ -127,7 +119,7 @@
     .section-label{font-size:13px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.15em;margin-bottom:28px}
     .section-title{font-weight:900;font-size:72px;font-size:clamp(48px,8vw,112px);line-height:1.05;letter-spacing:-.03em;margin-bottom:32px;color:var(--text)}
     .section-desc{font-size:17px;line-height:1.7;color:var(--text-secondary);max-width:620px}
-    #hero,#about,#skills,#projects,#contact,#links,#memorial{background:transparent}
+    #hero,#about,#skills,#projects,#contact,#links,
     #hero{justify-content:center;text-align:center}
     #hero .section-inner{display:flex;flex-direction:column;align-items:center;gap:40px}
     .avatar-link{display:inline-block;border-radius:50%;transition:transform .5s cubic-bezier(.22,1,.36,1)}
@@ -283,16 +275,6 @@
       .reply-user-content{font-size:12px}
     }
     .footer{padding:40px 48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--text-muted);font-size:13px;background:var(--footer-bg);transition:background .4s ease}
-    #memorial{min-height:100vh;display:flex;align-items:center;padding:120px 48px;position:relative;color:var(--memorial-text)}
-    #memorial .section-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:center;width:100%}
-    .memorial-photo{position:relative}
-    .memorial-photo img{width:100%;border-radius:4px;border:1px solid var(--memorial-border);box-shadow:0 20px 60px rgba(0,0,0,0.5);filter:sepia(0.12) contrast(1.05)}
-    .memorial-photo::after{content:'';position:absolute;inset:-10px;border:1px solid var(--memorial-border);border-radius:6px;pointer-events:none}
-    .memorial-label{font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--memorial-accent);margin-bottom:16px;font-weight:600}
-    .memorial-title{font-size:clamp(26px,3.5vw,42px);font-weight:900;line-height:1.25;margin-bottom:12px;color:var(--memorial-text);letter-spacing:-0.01em}
-    .memorial-date{font-size:15px;color:var(--memorial-accent);letter-spacing:0.12em;margin-bottom:36px;font-weight:600}
-    .memorial-quote{font-size:clamp(15px,1.8vw,19px);line-height:2.1;color:var(--memorial-text);margin-bottom:40px;border-left:2px solid var(--memorial-accent);padding-left:24px}
-    .memorial-sign{font-size:clamp(22px,2.8vw,34px);font-weight:900;color:var(--memorial-accent);text-align:right;letter-spacing:0.2em}
     .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
     .reveal.is-visible{opacity:1;transform:translateY(0)}
     .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}
@@ -372,10 +354,6 @@
       .bgm-ctrl-btn{padding:10px;min-width:40px;min-height:40px}
       .bgm-ctrl-btn svg{width:20px;height:20px}
       .footer{flex-direction:column;gap:12px;padding:32px 24px;text-align:center}
-      #memorial{padding:80px 24px}
-      #memorial .section-inner{grid-template-columns:1fr;gap:40px}
-      .memorial-quote{font-size:15px;line-height:1.9}
-      .memorial-sign{text-align:center}
       .cookie-banner{padding:24px 20px 20px;max-height:60vh}
       .cookie-btn{padding:9px 22px;font-size:13px}
     }
@@ -475,19 +453,11 @@
       cursor:grabbing !important;
     }
     /* ---------- Custom Cursor (ASUS) ---------- */
-    
-    
-    .custom-cursor{display:none!important}
     .cursor-trail{
       position:fixed;pointer-events:none;z-index:99998;
     }
-    .cursor-particle{
-      position:fixed;width:6px;height:6px;border-radius:50%;
-      background:var(--accent);pointer-events:none;z-index:99997;
-      transform:translate(-50%,-50%);
-    }
     @media (pointer: coarse){
-      .custom-cursor,.cursor-trail,.cursor-particle{display:none!important}
+      .custom-cursor,.cursor-trail,
     }
     /* ---------- 3D Card Hover ---------- */
     .project-card, .skill-card{
@@ -634,8 +604,6 @@
     @keyframes weirdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
   </style>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 </head>
 <body data-theme="dark" data-lang="zh">
   <!-- Scroll Progress Bar -->
@@ -643,7 +611,6 @@
   <!-- Dynamic Background Canvas -->
   <canvas class="bg-canvas" id="bgCanvas"></canvas>
   <!-- Custom Cursor -->
-  <div class="custom-cursor" id="customCursor"></div>
   <div class="cursor-trail" id="cursorTrail"></div>
   <!-- BGM Player -->
   <button class="bgm-fab" id="bgmFab" aria-label="音乐播放器">
@@ -748,7 +715,6 @@
       <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
       <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
       <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
-      <li id="navMemorial" style="display:none;"><a href="#memorial"><span class="zh">纪念</span><span class="en">Memorial</span></a></li>
     </ul>
     <div class="nav-right">
       <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
@@ -792,20 +758,7 @@
   <section class="section" id="about">
     <div class="section-inner">
       <p class="section-label reveal"><span class="zh">关于</span><span class="en">About</span></p>
-      <h2 class="section-title reveal reveal-delay-1"><span class="zh">学生，初三，喜欢公共交通</span><span class="en">Student, Grade 9, public transit enthusiast</span></h2>
-      <p class="section-desc reveal reveal-delay-2" style="margin-top:16px;max-width:600px"><span class="zh">相片可能有点糊，我没有那么多钱买相机请见谅。</span><span class="en">Photos may be a bit blurry, sorry I can't afford a nice camera.</span></p>
-      <div class="project-cover reveal reveal-delay-2" data-cover data-images='["/assets/about/transit-1.webp","/assets/about/transit-2.webp","/assets/about/transit-3.webp","/assets/about/transit-4.webp","/assets/about/transit-5.webp"]' style="margin-top:32px;max-width:800px;height:280px">
-        <img src="/assets/about/transit-1.webp" alt="公共交通" loading="lazy">
-        <button class="project-cover-nav prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <button class="project-cover-nav next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
-        <div class="project-cover-dots">
-          <button class="project-cover-dot active" data-idx="0"></button>
-          <button class="project-cover-dot" data-idx="1"></button>
-          <button class="project-cover-dot" data-idx="2"></button>
-          <button class="project-cover-dot" data-idx="3"></button>
-          <button class="project-cover-dot" data-idx="4"></button>
-        </div>
-      </div>
+      <h2 class="section-title reveal reveal-delay-1" style="opacity:0.5">什么都没有。</h2>
     </div>
   </section>
 
@@ -1000,23 +953,6 @@
           </div>
           <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
         </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="memorial">
-    <div class="section-inner">
-      <div class="memorial-photo reveal">
-        <img src="/assets/mao-memorial.jpg" alt="毛泽东同志" loading="lazy"/>
-      </div>
-      <div class="memorial-content">
-        <p class="memorial-label reveal">特别纪念 / Memorial</p>
-        <h2 class="memorial-title reveal reveal-delay-1">纪念毛泽东同志逝世50周年</h2>
-        <p class="memorial-date reveal reveal-delay-1">1976.09.09 — 2026.09.09</p>
-        <blockquote class="memorial-quote reveal reveal-delay-2">
-          "世界是你们的，也是我们的，但是归根结底是你们的。你们青年人朝气蓬勃，正在兴旺时期，好像早晨八、九点钟的太阳。希望寄托在你们身上。"
-        </blockquote>
-        <p class="memorial-sign reveal reveal-delay-3">教员千古</p>
       </div>
     </div>
   </section>
@@ -1371,63 +1307,6 @@
       animate();
     })();
 
-    // ========== Custom Cursor Particle Trail (ASUS cursor via CSS) ==========
-    (function(){
-      if(window.matchMedia('(pointer:coarse)').matches)return;
-      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-      var particles=[];
-      var mouseX=window.innerWidth/2, mouseY=window.innerHeight/2;
-      var MAX_PARTICLES=60;
-
-      document.addEventListener('mousemove',function(e){
-        mouseX=e.clientX;mouseY=e.clientY;
-      });
-
-      function spawnParticle(){
-        if(particles.length>=MAX_PARTICLES){
-          // Remove oldest particle
-          var oldest=particles.shift();
-          if(oldest&&oldest.el)oldest.el.remove();
-        }
-        var p=document.createElement('div');
-        p.className='cursor-particle';
-        p.style.left=mouseX+'px';p.style.top=mouseY+'px';
-        p.style.opacity='1';
-        document.body.appendChild(p);
-        var angle=Math.random()*Math.PI*2;
-        var speed=Math.random()*1.2+0.3;
-        particles.push({
-          el:p,x:mouseX,y:mouseY,
-          vx:Math.cos(angle)*speed,
-          vy:Math.sin(angle)*speed,
-          life:1,
-          size:Math.random()*4+3
-        });
-      }
-
-      function updateParticles(){
-        // Spawn 2 particles every frame for continuous trail
-        spawnParticle();
-        spawnParticle();
-
-        for(var i=particles.length-1;i>=0;i--){
-          var p=particles[i];
-          p.life-=0.015;
-          p.x+=p.vx;p.y+=p.vy;
-          p.vx*=0.97;p.vy*=0.97;
-          p.el.style.left=p.x+'px';p.el.style.top=p.y+'px';
-          p.el.style.opacity=p.life*0.6;
-          p.el.style.transform='translate(-50%,-50%) scale('+(p.life*p.size/3.5)+')';
-          if(p.life<=0){
-            p.el.remove();
-            particles.splice(i,1);
-          }
-        }
-        requestAnimationFrame(updateParticles);
-      }
-      updateParticles();
-    })();
-
     // ========== Easter Egg: Click name 5 times for explosion ==========
     (function(){
       var heroTitle=document.querySelector('.hero-title');
@@ -1683,38 +1562,32 @@
       });
     })();
 
-    // ---------- Visitor Counter (Supabase) ----------
+    var SUPABASE_URL='https://bvtcdknbvpyeyqvotmrk.supabase.co';
+    var SUPABASE_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
+
+    // ---------- Visitor Counter ----------
     (function(){
       var el=document.getElementById('visitorCount');
       if(!el)return;
-      // Wait for supabaseClient to be initialized (no timeout — initSupabase polls until library loads)
-      var check=setInterval(function(){
-        if(window.supabaseClient){
-          clearInterval(check);
-          try{
-            window.supabaseClient.rpc('increment_visitor_count').then(function(result){
-              if(result&&result.data!==undefined&&result.data!==null){
-                // 用anime.js做数字滚动动画
-                var target=result.data;
-                var obj={val:0};
-                if(window.anime){
-                  anime({
-                    targets:obj,
-                    val:target,
-                    duration:1500,
-                    easing:'easeOutExpo',
-                    update:function(){el.textContent=Math.round(obj.val).toLocaleString();}
-                  });
-                }else{
-                  el.textContent=target.toLocaleString();
-                }
-              }else{
-                el.textContent='---';
-              }
-            }).catch(function(){el.textContent='---';});
-          }catch(e){el.textContent='---';}
+      fetch(SUPABASE_URL+'/rest/v1/rpc/increment_visitor_count',{
+        method:'POST',
+        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}
+      }).then(function(r){return r.json();}).then(function(result){
+        if(result!==undefined&&result!==null){
+          var target=typeof result==='number'?result:(result.result||0);
+          var start=0,duration=1500,startTime=null;
+          function step(ts){
+            if(!startTime)startTime=ts;
+            var progress=Math.min((ts-startTime)/duration,1);
+            var eased=1-Math.pow(1-progress,3);
+            el.textContent=Math.round(start+(target-start)*eased).toLocaleString();
+            if(progress<1)requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }else{
+          el.textContent='---';
         }
-      },100);
+      }).catch(function(){el.textContent='---';});
     })();
 
     // ---------- Link Verification Modal ----------
@@ -1808,20 +1681,10 @@
     // Ensure callback is globally accessible for Turnstile (string callback name)
     window.onLinkVerifySuccess=onLinkVerifySuccess;
 
-    // ========== Feedback System (Supabase backend) ==========
-    var SUPABASE_URL='https://bvtcdknbvpyeyqvotmrk.supabase.co';
-    var SUPABASE_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
-    var supabaseClient=null;
-    function initSupabase(){
-      if(window.supabase){
-        supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-      }else{
-        setTimeout(initSupabase,100);
-      }
-    }
-    initSupabase();
+    // ========== Feedback System (fetch + Supabase REST) ==========
+    var LAST_FEEDBACK_TIME=0;
+    var FEEDBACK_COOLDOWN=30000; // 30秒防刷
 
-    // Get or create user ID (stored in localStorage)
     function getUserId(){
       var uid=localStorage.getItem('feedback_user_id');
       if(!uid){
@@ -1831,57 +1694,69 @@
       return uid;
     }
 
-    // Submit feedback to Supabase
+    function sbFetch(path, options){
+      var headers={
+        'apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+SUPABASE_KEY,
+        'Content-Type':'application/json',
+        'Prefer':'return=representation'
+      };
+      if(options&&options.headers){for(var k in options.headers){headers[k]=options.headers[k];}}
+      return fetch(SUPABASE_URL+'/rest/v1'+path, Object.assign({},options,{headers:headers}));
+    }
+
     function submitFeedback(){
       var input=document.getElementById('feedbackInput');
       var status=document.getElementById('feedbackStatus');
       var btn=document.getElementById('feedbackSubmit');
       var text=input?input.value.trim():'';
+      var isEn=document.body.getAttribute('data-lang')==='en';
       if(!text){
-        if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Please enter content':'请输入内容');status.className='feedback-status error';}
+        if(status){status.textContent=isEn?'Please enter content':'请输入内容';status.className='feedback-status error';}
         return;
       }
-      if(!supabaseClient){
-        if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Service not ready, please retry later':'服务未就绪，请稍后重试');status.className='feedback-status error';}
+      // 防刷
+      var now=Date.now();
+      if(now-LAST_FEEDBACK_TIME<FEEDBACK_COOLDOWN){
+        var remain=Math.ceil((FEEDBACK_COOLDOWN-(now-LAST_FEEDBACK_TIME))/1000);
+        if(status){status.textContent=(isEn?'Please wait ':'请等待')+remain+(isEn?' seconds':'秒')+(isEn?' before next submit','后再提交');status.className='feedback-status error';}
         return;
       }
       if(btn){btn.disabled=true;}
-      if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submitting...':'提交中...');status.className='feedback-status';}
+      if(status){status.textContent=isEn?'Submitting...':'提交中...';status.className='feedback-status';}
       var uid=getUserId();
-      supabaseClient.from('feedback').insert({user_id:uid,content:text}).then(function(result){
-        if(result.error){
-          console.error('[Feedback] insert error:',result.error);
-          if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submit failed, please retry later':'提交失败，请稍后重试');status.className='feedback-status error';}
-        }else{
-          if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submitted! I will reply soon':'提交成功！我会尽快回复');status.className='feedback-status success';}
+      sbFetch('/feedback',{method:'POST',body:JSON.stringify({user_id:uid,content:text})})
+        .then(function(resp){
+          if(!resp.ok)throw new Error('HTTP '+resp.status);
+          return resp.json();
+        })
+        .then(function(){
+          LAST_FEEDBACK_TIME=Date.now();
+          if(status){status.textContent=isEn?'Submitted! I will reply soon':'提交成功！我会尽快回复';status.className='feedback-status success';}
           if(input){input.value='';}
-        }
-      }).catch(function(e){
-        console.error('[Feedback] catch error:',e);
-        if(status){status.textContent=(document.body.getAttribute('data-lang')==='en'?'Submit failed, please retry later':'提交失败，请稍后重试');status.className='feedback-status error';}
-      }).finally(function(){
-        if(btn){btn.disabled=false;}
-      });
+        })
+        .catch(function(e){
+          console.error('[Feedback] error:',e);
+          if(status){status.textContent=isEn?'Submit failed, please retry later':'提交失败，请稍后重试';status.className='feedback-status error';}
+        })
+        .finally(function(){
+          if(btn){btn.disabled=false;}
+        });
     }
 
-    // Check for replies from Supabase
     function checkReplies(){
-      if(!supabaseClient){return;}
       var uid=getUserId();
       var lastRead=parseInt(localStorage.getItem('feedback_last_read_id')||'0',10);
-      supabaseClient.rpc('get_my_replies',{p_user_id:uid})
-        .then(function(result){
-          if(result.error){
-            console.error('[Feedback] query error:',result.error);
-            return;
-          }
-          if(result.data&&result.data.length>0){
-            var latest=result.data[0];
+      sbFetch('/rpc/get_my_replies',{method:'POST',body:JSON.stringify({p_user_id:uid})})
+        .then(function(resp){return resp.json();})
+        .then(function(data){
+          if(data&&data.length>0){
+            var latest=data[0];
             if(latest.id>lastRead){
               showReplyPopup(latest.reply,latest.id,latest.content);
             }
           }
-        }).catch(function(e){console.error('[Feedback] catch error:',e);});
+        }).catch(function(e){console.error('[Feedback] error:',e);});
     }
 
     // Show reply popup
@@ -2013,20 +1888,6 @@
     try{var savedLang=localStorage.getItem('site_lang');if(savedLang==='zh'||savedLang==='en'){document.body.setAttribute('data-lang',savedLang);}}catch(e){}
     applyTheme();
 
-    // ---------- Memorial section: only show on Sep 9 (local timezone) ----------
-    (function(){
-      var now=new Date();
-      var isMemorialDay=now.getMonth()===8&&now.getDate()===9;
-      var navMem=document.getElementById("navMemorial");
-      if(navMem){navMem.style.display=isMemorialDay?"":"none";} // Month 0-based: Sep=8
-      var memorialSection=document.getElementById('memorial');
-      var memorialNavLink=document.querySelector('a[href="#memorial"]');
-      if(!isMemorialDay){
-        if(memorialSection)memorialSection.style.display='none';
-        if(memorialNavLink&&memorialNavLink.parentElement)memorialNavLink.parentElement.style.display='none';
-      }
-    })();
-
     window.addEventListener('load',function(){
       // Only force-top when there's no anchor in URL (preserves #projects etc.)
       if(!window.location.hash){
@@ -2118,7 +1979,7 @@
 
     // ---------- Scroll Spy (nav highlight) ----------
     (function(){
-      var sections=['hero','about','skills','projects','contact','links','memorial'];
+      var sections=['hero','about','skills','projects','contact','links'];
       var navLinks={};
       document.querySelectorAll('.nav-links a').forEach(function(a){
         var id=a.getAttribute('href').replace('#','');
@@ -2769,7 +2630,6 @@
     })();
   </script>
 
-  <!-- Anime.js 动画增强 -->
   <script>
   (function(){
     var heroEls=document.querySelectorAll('.hero-title, .hero-slogan, .avatar-link, .hero-buttons, .visitor-count');
@@ -2783,23 +2643,13 @@
     });
 
     function showHero(){
-      if(window.anime){
-        anime({
-          targets:heroEls,
-          translateY:0,
-          opacity:1,
-          duration:900,
-          delay:anime.stagger(120),
-          easing:'easeOutExpo'
-        });
-      }else{
-        // fallback：anime.js加载失败，直接显示
-        heroEls.forEach(function(el){
-          el.style.opacity='';
-          el.style.transform='';
-          el.style.transition='';
-        });
-      }
+      heroEls.forEach(function(el,i){
+        setTimeout(function(){
+          el.style.transition='opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1)';
+          el.style.opacity='1';
+          el.style.transform='translateY(0)';
+        },i*120);
+      });
     }
 
     // 页面加载后执行
