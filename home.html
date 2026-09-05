@@ -2139,6 +2139,8 @@
       function bgmT(key){var lang=document.body.getAttribute('data-lang')||'zh';return(I18N[lang]&&I18N[lang][key])||I18N.zh[key]||key;}
       function updateBgmLang(){searchInput.placeholder=bgmT('searchPlaceholder');}
       var currentSong=null;
+      var lastSearchResults=[];
+      var playRetryCount=0;
       var queue=[];
       var favorites=[];
       var lyrics=[];
@@ -2258,6 +2260,8 @@
             var list=data&&data.result;
             if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
             resultsEl.innerHTML='';
+            lastSearchResults=list;
+            playRetryCount=0;
             list.forEach(function(song,i){
               var item=document.createElement('div');
               item.className='bgm-result-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
@@ -2320,14 +2324,26 @@
             }
           })
           .catch(function(){
-            npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+            tryNextSong(song);
           });
         scheduleSave();
       }
-      // QQ音乐兜底已停用（第三方API不稳定）
-      function playQQFallback(song){
-        npName.textContent=song.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+      function tryNextSong(failedSong){
+        if(playRetryCount>=2||!lastSearchResults||lastSearchResults.length===0){
+          npName.textContent=failedSong.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+          playRetryCount=0;return;
+        }
+        playRetryCount++;
+        var idx=lastSearchResults.findIndex(function(s){return songKey(s)===songKey(failedSong);});
+        if(idx>=0&&idx<lastSearchResults.length-1){
+          npName.textContent=bgmT('tryingSource')+' ('+playRetryCount+'/2)';
+          setTimeout(function(){playSong(lastSearchResults[idx+1]);},500);
+        }else{
+          npName.textContent=failedSong.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+          playRetryCount=0;
+        }
       }
+      function playQQFallback(song){tryNextSong(song);}
       // ===== 队列 =====
       function addToQueue(song){
         if(queue.some(function(s){return songKey(s)===songKey(song);}))return;
@@ -2571,7 +2587,7 @@
         }
       });
       audio.addEventListener('ended',function(){fab.classList.remove('playing');playIcon.innerHTML=ICON_PLAY;playNext();});
-      audio.addEventListener('error',function(){npName.textContent=bgmT('playFailed');fab.classList.remove('playing');downloadBtn.disabled=true;});
+      audio.addEventListener('error',function(){if(currentSong){tryNextSong(currentSong);}else{npName.textContent=bgmT('playFailed');fab.classList.remove('playing');downloadBtn.disabled=true;}});
       progressBar.addEventListener('click',function(e){
         if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}
       });
