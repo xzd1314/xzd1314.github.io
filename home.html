@@ -1719,7 +1719,7 @@
       var now=Date.now();
       if(now-LAST_FEEDBACK_TIME<FEEDBACK_COOLDOWN){
         var remain=Math.ceil((FEEDBACK_COOLDOWN-(now-LAST_FEEDBACK_TIME))/1000);
-        if(status){status.textContent=(isEn?'Please wait ':'请等待')+remain+(isEn?' seconds':'秒')+(isEn?' before next submit','后再提交');status.className='feedback-status error';}
+        if(status){status.textContent=(isEn?'Please wait ':'请等待')+remain+(isEn?' seconds':'秒')+(isEn?' before next submit':'后再提交');status.className='feedback-status error';}
         return;
       }
       if(btn){btn.disabled=true;}
