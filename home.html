@@ -1658,7 +1658,8 @@
               setTimeout(closeLinkVerifyModal,500);
             }else{
               var a=document.createElement('a');
-              a.href=pendingLinkUrl;a.download='';a.style.display='none';
+              var dlFilename=pendingLinkUrl.split('/').pop();
+              a.href=pendingLinkUrl;a.download=dlFilename;a.style.display='none';
               document.body.appendChild(a);
               a.click();
               setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
