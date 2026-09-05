@@ -2106,7 +2106,8 @@
       }
       // 播放地址用 Meting API（支持CORS，稳定，下载也是mp3不是html）
       function fetchPlayUrl(id, retries, delay){
-        return Promise.resolve({ok:true, url:METING_BASE+'&type=url&id='+id});
+        // 用Worker代理播放地址（把QQ音乐的HTTP地址转成HTTPS，避免混合内容被阻止）
+        return Promise.resolve({ok:true, url:API_BASE+'/play?id='+id});
       }
       var playBtn=document.getElementById('bgmPlayBtn');
       var prevBtn=document.getElementById('bgmPrevBtn');
