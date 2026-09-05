@@ -2308,7 +2308,7 @@
         lyrics=[];currentLyricIdx=-1;renderLyrics();
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
         // 获取播放地址
-        fetchPlayUrl(song.id, 2)
+        fetchPlayUrl(song.id, 4)
           .then(function(data){
             if(data&&data.ok&&data.url){
               npName.textContent=song.name;
@@ -2330,15 +2330,45 @@
         scheduleSave();
       }
       function tryNextSong(failedSong){
-        if(playRetryCount>=2||!lastSearchResults||lastSearchResults.length===0){
+        var maxRetry=4;
+        if(playRetryCount>=maxRetry){
           npName.textContent=failedSong.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
           playRetryCount=0;return;
         }
         playRetryCount++;
-        var idx=lastSearchResults.findIndex(function(s){return songKey(s)===songKey(failedSong);});
-        if(idx>=0&&idx<lastSearchResults.length-1){
-          npName.textContent=bgmT('tryingSource')+' ('+playRetryCount+'/2)';
-          setTimeout(function(){playSong(lastSearchResults[idx+1]);},500);
+        // 如果有搜索结果，切换到下一首
+        if(lastSearchResults&&lastSearchResults.length>0){
+          var idx=lastSearchResults.findIndex(function(s){return songKey(s)===songKey(failedSong);});
+          if(idx>=0&&idx<lastSearchResults.length-1){
+            npName.textContent=bgmT('tryingSource')+' ('+playRetryCount+'/'+maxRetry+')';
+            setTimeout(function(){playSong(lastSearchResults[idx+1]);},300);
+            return;
+          }
+        }
+        // 收藏夹播放失败：自动搜索同名歌曲
+        if(failedSong&&failedSong.name){
+          npName.textContent=bgmT('tryingSource')+' ('+playRetryCount+'/'+maxRetry+')';
+          var searchKw=failedSong.name+(failedSong.singer?' '+failedSong.singer:'');
+          fetch(API_BASE+'/search?keyword='+encodeURIComponent(searchKw)+'&limit=10')
+            .then(function(r){return r.json();})
+            .then(function(d){
+              if(d&&d.result&&d.result.length>0){
+                lastSearchResults=d.result;
+                // 跳过当前失败的歌曲，播放下一首
+                var nextIdx=0;
+                for(var i=0;i<d.result.length;i++){
+                  if(songKey(d.result[i])!==songKey(failedSong)){nextIdx=i;break;}
+                }
+                setTimeout(function(){playSong(lastSearchResults[nextIdx]);},300);
+              }else{
+                npName.textContent=failedSong.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+                playRetryCount=0;
+              }
+            })
+            .catch(function(){
+              npName.textContent=failedSong.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
+              playRetryCount=0;
+            });
         }else{
           npName.textContent=failedSong.name;npArtist.textContent=bgmT('vipRestricted');downloadBtn.disabled=true;
           playRetryCount=0;
