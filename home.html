@@ -2192,26 +2192,9 @@
 
       // ===== 工具 =====
       var API_BASE='https://xzd1314.top/api/music';
-      var METING_BASE='https://api.injahow.cn/meting/?server=netease';
-      var CORS_PROXY='https://api.allorigins.win/raw?url=';
-      // 封面直接用图片URL
+      // QQ音乐曲库：Worker代理搜索（快），Meting API播放/歌词/封面
+      var METING_BASE='https://api.injahow.cn/meting/?server=tencent';
       function proxyPic(url){return url||'';}
-      // CORS代理fetch（带3次重试，空响应也重试）
-      function corsFetch(url, retries){
-        retries=retries||3;
-        return fetch(CORS_PROXY+encodeURIComponent(url)).then(function(r){
-          if(!r.ok)throw new Error('cors fetch failed');
-          return r.text();
-        }).then(function(text){
-          if(!text)throw new Error('empty response');
-          return JSON.parse(text);
-        }).catch(function(){
-          if(retries>0){
-            return new Promise(function(resolve){setTimeout(function(){resolve(corsFetch(url,retries-1));},600);});
-          }
-          throw new Error('cors fetch failed');
-        });
-      }
 
       function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
       function fmtTime(s){if(isNaN(s))return '0:00';var m=Math.floor(s/60),x=Math.floor(s%60);return m+':'+(x<10?'0':'')+x;}
@@ -2257,21 +2240,12 @@
       function searchSongs(kw){
         kw=kw.trim();if(!kw)return;
         resultsEl.innerHTML='<div class="bgm-loading">'+bgmT('searching')+'</div>';
-        var apiUrl='https://music.163.com/api/search/get?s='+encodeURIComponent(kw)+'&type=1&limit=15';
-        corsFetch(apiUrl, 2)
+        // Worker代理QQ音乐搜索（快，不被封）
+        fetch(API_BASE+'/search?keyword='+encodeURIComponent(kw)+'&limit=15')
+          .then(function(r){return r.json();})
           .then(function(data){
-            var rawList=(data&&data.result&&data.result.songs)||[];
-            if(!rawList||rawList.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
-            // 转换为统一格式
-            var list=rawList.map(function(s){
-              return {
-                id:s.id, name:s.name,
-                singer:(s.artists&&s.artists.map(function(a){return a.name;}).join('/'))||'',
-                album:(s.album&&s.album.name)||'',
-                duration:s.duration,
-                cover:(s.album&&s.album.picUrl)||''
-              };
-            });
+            var list=data&&data.result;
+            if(!list||list.length===0){resultsEl.innerHTML='<div class="bgm-error">'+bgmT('noResult')+'</div>';return;}
             resultsEl.innerHTML='';
             list.forEach(function(song,i){
               var item=document.createElement('div');
