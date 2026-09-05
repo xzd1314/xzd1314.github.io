@@ -1777,27 +1777,31 @@
       if(linkVerifyPoller){clearInterval(linkVerifyPoller);linkVerifyPoller=null;}
       if(pendingLinkUrl){
         if(pendingLinkIsDownload){
-          if(pendingLinkUrl==='music-download'&&window.bgmDoDownload){
-            window.bgmDoDownload();
-            window.pendingMusicDownload=false;
-            setTimeout(closeLinkVerifyModal,500);
-          }else{
-          // Download: auto-trigger (no popup blocker issue)
-          var a=document.createElement('a');
-          a.href=pendingLinkUrl;a.download='';a.style.display='none';
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
-          setTimeout(closeLinkVerifyModal,500);
-          }
+          // 等Turnstile成功动画跑完再触发下载
+          setTimeout(function(){
+            if(pendingLinkUrl==='music-download'&&window.bgmDoDownload){
+              window.bgmDoDownload();
+              window.pendingMusicDownload=false;
+              setTimeout(closeLinkVerifyModal,500);
+            }else{
+              var a=document.createElement('a');
+              a.href=pendingLinkUrl;a.download='';a.style.display='none';
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
+              setTimeout(closeLinkVerifyModal,500);
+            }
+          }, 1500);
         }else{
-          // External link: show "click to continue" button (user click in sync stack = no popup blocker)
-          var turnstileEl=document.getElementById('linkTurnstile');
-          var cancelBtn=document.getElementById('linkVerifyCancel');
-          var continueBtn=document.getElementById('linkVerifyContinue');
-          if(turnstileEl)turnstileEl.style.display='none';
-          if(cancelBtn)cancelBtn.style.display='none';
-          if(continueBtn)continueBtn.style.display='inline-block';
+          // 等Turnstile成功动画跑完（约1.5秒），再隐藏验证框显示跳转按钮
+          setTimeout(function(){
+            var turnstileEl=document.getElementById('linkTurnstile');
+            var cancelBtn=document.getElementById('linkVerifyCancel');
+            var continueBtn=document.getElementById('linkVerifyContinue');
+            if(turnstileEl)turnstileEl.style.display='none';
+            if(cancelBtn)cancelBtn.style.display='none';
+            if(continueBtn)continueBtn.style.display='inline-block';
+          }, 1500);
         }
       }
     }
