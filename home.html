@@ -501,9 +501,12 @@
     .bgm-search button{padding:8px 14px;border:none;border-radius:8px;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-size:13px;cursor:pointer;font-weight:600;transition:opacity .2s}
     .bgm-search button:hover{opacity:0.85}
     .bgm-results{flex:1;overflow-y:auto;padding:6px 0}
-    .bgm-result-item{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;transition:background .2s}
+    .bgm-result-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;transition:background .2s}
     .bgm-result-item:hover{background:rgba(139,92,246,0.08)}
     .bgm-result-item.active{background:rgba(139,92,246,0.15)}
+    .bgm-result-cover{width:40px;height:40px;border-radius:6px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,#8b5cf6,#3b82f6);display:flex;align-items:center;justify-content:center}
+    .bgm-result-cover img{width:100%;height:100%;object-fit:cover;display:block}
+    .bgm-result-cover .cover-placeholder{font-size:16px;color:rgba(255,255,255,0.6)}
     .bgm-result-index{width:20px;text-align:center;color:var(--text-muted);font-size:12px;flex-shrink:0}
     .bgm-result-info{flex:1;min-width:0}
     .bgm-result-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2267,7 +2270,8 @@
               var item=document.createElement('div');
               item.className='bgm-result-item'+(currentSong&&songKey(song)===songKey(currentSong)?' active':'');
               var faved=isFav(song);
-              item.innerHTML='<span class="bgm-result-index">'+(i+1)+'</span>'+
+              var coverHtml = song.cover ? '<img loading="lazy" src="'+song.cover+'" alt="'+escapeHtml(song.name)+'">' : '<span class="cover-placeholder">♪</span>';
+              item.innerHTML='<div class="bgm-result-cover">'+coverHtml+'</div>'+
                 '<div class="bgm-result-info"><div class="bgm-result-name">'+escapeHtml(song.name)+'</div><div class="bgm-result-artist">'+escapeHtml(song.singer)+'</div></div>'+
                 '<div class="bgm-result-actions">'+
                   '<button class="bgm-action-btn bgm-fav-btn'+(faved?' faved':'')+'" title="收藏">'+(faved?'♥':'♡')+'</button>'+
@@ -2296,15 +2300,7 @@
         npArtist.textContent=song.singer;
         updateCover(song.cover);
         updateNpFavBtn();
-        // 搜索结果没有封面，播放时补获取
-        if(!song.cover&&song.id){
-          fetch(METING_BASE+'&type=song&id='+song.id)
-            .then(function(r){return r.json();})
-            .then(function(d){
-              if(d&&d[0]&&d[0].pic){song.cover=d[0].pic;currentSong.cover=d[0].pic;updateCover(d[0].pic);}
-            })
-            .catch(function(){});
-        }
+        // 封面已在搜索结果中返回，无需额外获取
         lyrics=[];currentLyricIdx=-1;renderLyrics();
         document.querySelectorAll('.bgm-result-item').forEach(function(el){el.classList.remove('active');});
         // 获取播放地址
@@ -2618,7 +2614,16 @@
         }
       });
       audio.addEventListener('ended',function(){fab.classList.remove('playing');playIcon.innerHTML=ICON_PLAY;playNext();});
-      audio.addEventListener('error',function(){if(currentSong){tryNextSong(currentSong);}else{npName.textContent=bgmT('playFailed');fab.classList.remove('playing');downloadBtn.disabled=true;}});
+      audio.addEventListener('error',function(){
+        if(!currentSong){npName.textContent=bgmT('playFailed');fab.classList.remove('playing');downloadBtn.disabled=true;return;}
+        // 延迟2秒再判断，避免网络慢时误切换
+        clearTimeout(window._musicErrorTimer);
+        window._musicErrorTimer=setTimeout(function(){
+          if(currentSong && audio.error){tryNextSong(currentSong);}
+        },2000);
+      });
+      audio.addEventListener('playing',function(){clearTimeout(window._musicErrorTimer);});
+      audio.addEventListener('canplay',function(){clearTimeout(window._musicErrorTimer);});
       progressBar.addEventListener('click',function(e){
         if(audio.duration){var r=progressBar.getBoundingClientRect();audio.currentTime=(e.clientX-r.left)/r.width*audio.duration;}
       });
