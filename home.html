@@ -2081,7 +2081,7 @@
       // 带重试的 fetch
       function fetchWithRetry(url, retries, delay){
         retries=retries||2; delay=delay||800;
-        return fetch(url).then(function(r){return r.json();}).then(function(data){
+        return fetch(url,{credentials:'include'}).then(function(r){return r.json();}).then(function(data){
           if(data&&data.result&&data.result.length===0&&retries>0){
             return new Promise(function(resolve){setTimeout(function(){resolve(fetchWithRetry(url,retries-1,delay));},delay);});
           }
@@ -2635,7 +2635,7 @@
           var origText=link.innerHTML;
           link.innerHTML='<span class="zh">下载中...</span><span class="en">Downloading...</span>';
           
-          fetch(url).then(function(r){
+          fetch(url,{credentials:'include'}).then(function(r){
             if(!r.ok)throw new Error('HTTP '+r.status);
             return r.blob();
           }).then(function(blob){
@@ -2653,11 +2653,14 @@
             link.style.pointerEvents='';
           }).catch(function(err){
             console.error('下载失败:',err);
-            link.innerHTML='<span class="zh">下载失败，点击重试</span><span class="en">Failed, retry</span>';
+            link.innerHTML=origText;
             link.style.opacity='';
             link.style.pointerEvents='';
-            // 失败后回退到原生下载
-            setTimeout(function(){window.location.href=url;},1000);
+            // 失败后用原生方式下载
+            var a=document.createElement('a');
+            a.href=url;a.download=filename;a.style.display='none';
+            document.body.appendChild(a);a.click();
+            setTimeout(function(){document.body.removeChild(a);},1000);
           });
         });
       });
