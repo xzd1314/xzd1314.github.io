@@ -312,3 +312,83 @@
   var d=new Date();
   el.textContent = months[d.getMonth()] + ' ' + d.getFullYear();
 })();
+
+
+/* ---------- 8. 公开留言墙（读 Supabase feedback 表） ----------
+   用 publishable key，安全可前端直调；
+   需要 Supabase SQL Editor 开放 anon SELECT 权限。 */
+(function(){
+  var grid=document.getElementById('wallGrid');
+  if(!grid)return;
+
+  var SUPABASE_URL='https://bvtcdknbvpyeyqvotmrk.supabase.co';
+  var SUPABASE_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
+
+  function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });}
+
+  function fmtDate(iso){
+    var d=new Date(iso);
+    if(isNaN(d))return'';
+    var lang=document.body.getAttribute('data-lang')==='en'?'en':'zh';
+    if(lang==='en'){
+      return d.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+    }
+    return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';
+  }
+
+  function avatar(userId){
+    var c=String(userId||'X').charAt(0).toUpperCase();
+    if(!/[A-Z0-9]/.test(c))c='✦';
+    return c;
+  }
+
+  function render(items){
+    if(!items || !items.length){
+      grid.innerHTML =
+        '<div class="wall-empty"><span class="zh">还没有公开留言 —— 第一条就由你发起</span>'+
+                     '<span class="en">No public messages yet — yours could be the first</span></div>';
+      return;
+    }
+    grid.innerHTML = items.map(function(m){
+      var a = avatar(m.user_id);
+      var date = fmtDate(m.created_at);
+      var content = esc(m.content||'');
+      var reply = m.reply
+        ? '<div class="wall-reply">'+esc(m.reply)+'</div>'
+        : '';
+      return ''+
+        '<article class="wall-card">'+
+          '<div class="wall-head">'+
+            '<span class="wall-avatar">'+a+'</span>'+
+            '<time class="wall-time">'+date+'</time>'+
+          '</div>'+
+          '<p class="wall-content">'+content+'</p>'+
+          reply+
+        '</article>';
+    }).join('');
+  }
+
+  function load(){
+    fetch(SUPABASE_URL+'/rest/v1/feedback?select=id,user_id,content,reply,created_at&order=created_at.desc&limit=12',{
+      headers:{
+        'apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+SUPABASE_KEY
+      }
+    }).then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      return r.json();
+    }).then(render).catch(function(err){
+      console.warn('[wall] load failed:', err);
+      grid.innerHTML =
+        '<div class="wall-empty">'+
+          '<span class="zh">留言墙加载失败 · 请确认 Supabase 开放了 anon SELECT</span>'+
+          '<span class="en">Wall failed to load · check anon SELECT permission on Supabase</span>'+
+        '</div>';
+    });
+  }
+
+  load();
+  setInterval(load, 30000);  // 30s 自动刷新
+})();

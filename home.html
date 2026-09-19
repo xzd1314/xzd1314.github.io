@@ -509,6 +509,7 @@
     <a href="#hero" class="nav-logo">xzd1314.</a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+      <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
       <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
       <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
       <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
@@ -702,6 +703,25 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 08 公开留言墙 · 最简版 ============
+       数据来自现有 Supabase feedback 表；展示用 publishable key，
+       用户删除走 Supabase Dashboard。隐私：所有留言全量公开。 -->
+  <section class="section" id="wall">
+    <div class="section-inner" style="max-width:1100px">
+      <p class="section-label reveal"><span class="zh">公开留言墙</span><span class="en">Public Wall</span></p>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">来自访客的话</span><span class="en">Voices from visitors</span></h2>
+      <p class="section-desc reveal reveal-delay-2" style="margin-bottom:36px">
+        <span class="zh">每个人都能看到 · 想留一条？</span>
+        <span class="en">Public to everyone · Leave one?</span>
+        <a class="wall-go" href="#contact"><span class="zh">去留言 →</span><span class="en">Send a note →</span></a>
+      </p>
+      <div class="wall-grid" id="wallGrid">
+        <div class="wall-empty"><span class="zh">加载中…</span><span class="en">Loading…</span></div>
       </div>
     </div>
   </section>

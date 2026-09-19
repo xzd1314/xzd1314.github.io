@@ -482,6 +482,7 @@ html.vt-theme::view-transition-new(root) {
   .skill-card:active, .link-card:active { transform: scale(.985); background: var(--surface-2); }
   .project-item:active { background: var(--surface-2); }
   .stat-card:active { transform: scale(.985); }
+  .wall-card:active { transform: scale(.985); }
 }
 
 /* d) 触摸目标尺寸：iOS/Android 建议 >= 44x44 */
@@ -629,6 +630,82 @@ body[data-theme="dark"] .stat-card {
   .stat-label { font-size: 11px; }
 }
 
+
+/* ---------- 08 公开留言墙 ---------- */
+.wall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.wall-card {
+  padding: 22px 22px 18px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--surface-1) 48%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--e1), var(--glass-edge), inset 0 1px 0 rgba(255,255,255,.6);
+  transition: transform var(--dur-3) var(--ease-out), box-shadow var(--dur-3);
+  display: flex; flex-direction: column;
+}
+body[data-theme="dark"] .wall-card {
+  background: color-mix(in srgb, var(--surface-1) 38%, transparent);
+}
+.wall-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--e3), var(--glass-edge);
+}
+.wall-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.wall-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+}
+.wall-time {
+  font-family: var(--mono); font-size: 11px; color: var(--text-3);
+  margin-left: auto; letter-spacing: .04em;
+}
+.wall-content {
+  font-size: 14.5px; color: var(--text-1);
+  line-height: 1.7; flex: 1;
+  word-break: break-word;
+}
+.wall-reply {
+  margin-top: 14px; padding: 10px 14px;
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  border-left: 2px solid var(--brand);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px; color: var(--text-2);
+  line-height: 1.6;
+}
+.wall-reply::before {
+  content: '回 · ';
+  color: var(--brand); font-weight: 600;
+}
+.wall-empty {
+  grid-column: 1 / -1;
+  text-align: center; padding: 60px 20px;
+  color: var(--text-3); font-size: 14px;
+}
+.wall-go {
+  display: inline-block; margin-left: 12px;
+  color: var(--brand); font-weight: 600;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand) 40%, transparent);
+  padding-bottom: 1px; transition: border-color var(--dur-2);
+}
+.wall-go:hover { border-color: var(--brand); }
+@media (max-width: 480px) {
+  .wall-grid { grid-template-columns: 1fr; gap: 12px; }
+  .wall-card { padding: 18px; }
+}
+
 /* ---------- 13. 降低动效偏好：全面降级 ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -647,7 +724,8 @@ body[data-theme="dark"] .stat-card {
   /* 3D 倾斜：reduced-motion 用户直接禁用旋转/抬升 */
   .skill-card, .link-card, .project-item, .project-cover,
   .skill-card > *, .link-card > *, .project-cover img,
-  .stat-card, .stat-card::before, .stat-card::after {
+  .stat-card, .stat-card::before, .stat-card::after,
+  .wall-card, .wall-card::before, .wall-card::after {
     transform: none !important;
     --rx: 0deg !important;
     --ry: 0deg !important;
