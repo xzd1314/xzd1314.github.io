@@ -1,0 +1,20 @@
+{
+  "name": "xzd1314 の个人主页",
+  "short_name": "xzd1314",
+  "description": "xzd1314 の个人主页 —— 游戏开发 / 脚本自动化 / Roblox 创作者",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fbfbfd",
+  "theme_color": "#1e40af",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png",          "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/assets/favicon-32.png", "sizes": "32x32",   "type": "image/png" },
+    { "src": "/assets/favicon-192.png","sizes": "192x192", "type": "image/png" }
+  ],
+  "categories": ["personal", "lifestyle", "developer"],
+  "lang": "zh-CN"
+}

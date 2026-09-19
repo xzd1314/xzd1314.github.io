@@ -299,3 +299,16 @@
   fetchGH();
   setInterval(fetchGH, 60000);   // 每分钟刷新
 })();
+
+
+/* ---------- Now · 当前日期自动填入 ---------- */
+(function(){
+  var el=document.getElementById('nowDate');
+  if(!el)return;
+  var lang=document.body.getAttribute('data-lang')==='en'?'en':'zh';
+  var months=lang==='en'
+    ?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    :['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  var d=new Date();
+  el.textContent = months[d.getMonth()] + ' ' + d.getFullYear();
+})();

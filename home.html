@@ -26,7 +26,9 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Person",
+    "@graph": [
+    {
+      "@type": "Person",
     "name": "xzd1314",
     "url": "https://xzd1314.top/home.html",
     "image": "https://xzd1314.top/assets/avatar.jpg",
@@ -35,6 +37,17 @@
       "https://github.com/xzd1314",
       "https://www.roblox.com/users/4112496357",
       "https://space.bilibili.com/3546384332491100"
+    ],
+    "knowsAbout": ["Roblox", "Lua", "HTML/CSS/JS", "React", "Forge modding", "Game Development"]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "xzd1314 个人主页", "item": "https://xzd1314.top/" },
+        { "@type": "ListItem", "position": 2, "name": "关于", "item": "https://xzd1314.top/#about" },
+        { "@type": "ListItem", "position": 3, "name": "项目", "item": "https://xzd1314.top/#projects" }
+      ]
+    }
     ]
   }
   </script>
@@ -44,6 +57,9 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e40af" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0d0f17" media="(prefers-color-scheme: dark)" />
   <style>
     /* 1.4MB 的自定义字体只在 >=769px 加载；窄屏直接用系统字体，
        不匹配 media 时浏览器根本不会发起这个请求 */
@@ -493,6 +509,7 @@
     <a href="#hero" class="nav-logo">xzd1314.</a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+      <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
       <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
       <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
       <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
@@ -537,6 +554,27 @@
       </div>
     </div>
     <div class="scroll-indicator"><span>SCROLL</span><div class="line"></div></div>
+  </section>
+
+
+  <!-- ============ 02 Now · 此刻在做 ============ -->
+  <section class="section" id="now" style="padding-block:clamp(64px,8vw,128px)">
+    <div class="section-inner" style="max-width:760px">
+      <div class="now-card reveal">
+        <div class="now-head">
+          <span class="now-pulse"></span>
+          <p class="section-label" style="margin:0"><span class="zh">此刻在做</span><span class="en">Now</span></p>
+          <span class="now-date" id="nowDate"></span>
+        </div>
+        <ul class="now-list">
+          <li><span class="now-bullet"></span><span class="zh">在写这个卡片的代码（永远进行中）</span><span class="en">writing this card (always in progress)</span></li>
+          <li><span class="now-bullet"></span><span class="zh">维护 xzd1314.top 的持续优化</span><span class="en">iterating on xzd1314.top</span></li>
+          <li><span class="now-bullet"></span><span class="zh">用 Lua 给猪来了写新的 Boss 行为</span><span class="en">writing boss AI for 猪来了 in Lua</span></li>
+          <li><span class="now-bullet"></span><span class="zh">在想什么时候能再启动一个新项目</span><span class="en">figuring out the next side project</span></li>
+        </ul>
+        <p class="now-foot"><span class="zh">这是 hand-curated 的，不是自动数据 —— 我会手动更新</span><span class="en">hand-curated, not auto-generated · I update it manually</span></p>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="about">

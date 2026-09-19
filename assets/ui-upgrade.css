@@ -520,6 +520,57 @@ html.vt-theme::view-transition-new(root) {
 }
 
 
+
+/* ---------- Now 卡片 ---------- */
+.now-card {
+  padding: clamp(28px, 4vw, 40px);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface-1) 48%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--e1), var(--glass-edge), inset 0 1px 0 rgba(255,255,255,.6);
+}
+body[data-theme="dark"] .now-card {
+  background: color-mix(in srgb, var(--surface-1) 38%, transparent);
+}
+.now-head {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--hairline);
+}
+.now-pulse {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand); flex-shrink: 0;
+  box-shadow: 0 0 0 0 var(--brand-ring);
+  animation: nowPulse 2s ease-in-out infinite;
+}
+@keyframes nowPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(43,92,255,.5); transform: scale(1); }
+  50%     { box-shadow: 0 0 0 8px rgba(43,92,255,0); transform: scale(.92); }
+}
+body[data-theme="dark"] .now-pulse { animation-name: nowPulseDark; }
+@keyframes nowPulseDark {
+  0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,.5); transform: scale(1); }
+  50%     { box-shadow: 0 0 0 8px rgba(139,92,246,0); transform: scale(.92); }
+}
+.now-date { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+.now-list { list-style: none; }
+.now-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; font-size: 14px; color: var(--text-2); line-height: 1.65;
+}
+.now-list li + li { border-top: 1px dashed var(--hairline); }
+.now-bullet {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--brand); margin-top: 9px; flex-shrink: 0;
+}
+.now-foot {
+  margin-top: 18px; padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12px; color: var(--text-3); text-align: center;
+}
+
 /* ---------- 09 站点数据看板 ---------- */
 .stats-grid {
   display: grid;
