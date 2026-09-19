@@ -1,4 +1,4 @@
-const CACHE_NAME = 'xzd1314-site-v1';
+const CACHE_NAME = 'xzd1314-site-v2';
 // 预缓存核心资源
 const PRECACHE_URLS = [
   './',
