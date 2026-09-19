@@ -40,12 +40,16 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <style>
-    @font-face {
-      font-family: 'ChuangZhongHei';
-      src: url('/assets/fonts/chuangzhonghei.woff2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
+    /* 1.4MB 的自定义字体只在 >=769px 加载；窄屏直接用系统字体，
+       不匹配 media 时浏览器根本不会发起这个请求 */
+    @media (min-width: 769px) {
+      @font-face {
+        font-family: 'ChuangZhongHei';
+        src: url('/assets/fonts/chuangzhonghei.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
     }
     @font-face {
       font-family: 'Cascadia Mono';
@@ -737,7 +741,7 @@
   <section class="section" id="hero">
     <div class="section-inner">
       <a href="https://github.com/xzd1314" target="_blank" rel="noopener" class="avatar-link reveal">
-        <div class="avatar-wrap"><img src="/assets/avatar.jpg" alt="xzd1314 avatar"/></div>
+        <div class="avatar-wrap"><img src="/assets/avatar-320.webp" alt="xzd1314 avatar" width="160" height="160" decoding="async" srcset="/assets/avatar-320.webp 320w, /assets/avatar-640.webp 640w" sizes="(max-width:480px) 100px, (max-width:768px) 120px, 160px"/></div>
       </a>
       <h1 class="hero-title reveal reveal-delay-1">xzd1314.</h1>
       <div class="hero-tags reveal reveal-delay-2" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:-20px;">
@@ -1079,12 +1083,18 @@
       var camX=0,camY=0,camVX=0,camVY=0;
       var stars=[],constellations=[],meteors=[];
       var isMobile=window.matchMedia('(pointer:coarse)').matches;
-      var starCount=isMobile?50:180;
+      var starCount=isMobile?36:180;
       // 移动端禁用拖拽和复杂特效，避免与页面滚动冲突
       var enableDrag=!isMobile;
       var enableConstellations=!isMobile;
       var enableMeteors=!isMobile;
       var enableMouseInteraction=!isMobile;
+      // 移动端 + 省流量模式或 2G：完全不绘制星空，省电省流量
+      var _conn=navigator.connection||navigator.webkitConnection||navigator.mozConnection;
+      if(isMobile && _conn && (_conn.saveData || /(^|-)2g$/.test(_conn.effectiveType||''))){
+        canvas.style.display='none';
+        return;
+      }
       var dragging=false,lastX=0,lastY=0,hasMoved=false;
 
       function resize(){
@@ -1285,7 +1295,7 @@
           var mb=mouseActive&&!dragging&&dm<180?(1-dm/180):0;
           var r=st.baseR*(1+mb*0.8);
           var alpha=ta+mb*0.4;if(alpha>1)alpha=1;
-          if(st.baseR>1.1){ctx.beginPath();ctx.arc(sx,sy,r*2.5,0,Math.PI*2);ctx.fillStyle=glowColor(alpha*0.18);ctx.fill();}
+          if(!isMobile&&st.baseR>1.1){ctx.beginPath();ctx.arc(sx,sy,r*2.5,0,Math.PI*2);ctx.fillStyle=glowColor(alpha*0.18);ctx.fill();}
           ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);ctx.fillStyle=starColor(alpha);ctx.fill();
           if(mouseActive&&!dragging&&dm<150){
             ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(mouseX,mouseY);
