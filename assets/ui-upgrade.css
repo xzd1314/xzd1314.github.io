@@ -1,0 +1,427 @@
+/* =============================================================
+   xzd1314.top — UI 质感增强层 (drop-in override)
+   用法：在 home.html 的 <head> 中，放在内联 <style> 之后引入
+   <link rel="stylesheet" href="/assets/ui-upgrade.css">
+   不改动任何 HTML 结构，纯增强；可随时删除回滚。
+   ============================================================= */
+
+/* ---------- 1. 设计 Token：语义色 / 表面 / 描边 ---------- */
+:root {
+  /* 品牌色：主 + 辅，用于渐变与高光 */
+  --brand:      #2b5cff;
+  --brand-2:    #06b6d4;
+  --brand-soft: rgba(43, 92, 255, .10);
+  --brand-ring: rgba(43, 92, 255, .35);
+
+  /* 表面分层（替代原来的半透明黑叠加） */
+  --bg:         #fbfbfd;
+  --surface-1:  #ffffff;
+  --surface-2:  #f5f6f9;
+  --surface-3:  #eceef3;
+
+  /* 文本三级 */
+  --text-1:     #0b1020;
+  --text-2:     #4a5266;
+  --text-3:     #7b8296;
+
+  /* 描边：hairline 弱、strong 强 */
+  --hairline:        rgba(17, 24, 39, .08);
+  --hairline-strong: rgba(17, 24, 39, .16);
+  /* 玻璃高光：卡片顶部 1px 内高光，质感提升最明显的一招 */
+  --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .9);
+
+  /* 圆角体系：4 档，全站统一 */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-pill: 999px;
+
+  /* 阴影体系：环境光 + 直射光双层 */
+  --e1: 0 1px 2px rgba(16, 24, 40, .06);
+  --e2: 0 2px 6px rgba(16, 24, 40, .07), 0 1px 2px rgba(16, 24, 40, .05);
+  --e3: 0 12px 28px -8px rgba(16, 24, 40, .16), 0 4px 10px -4px rgba(16, 24, 40, .08);
+  --e4: 0 24px 56px -12px rgba(16, 24, 40, .24), 0 8px 20px -8px rgba(16, 24, 40, .10);
+  --e5: 0 48px 96px -24px rgba(16, 24, 40, .32);
+
+  /* 动效 Token：时长 + 曲线，全站只准用这几组 */
+  --dur-1: 120ms;  /* 按压、开关 */
+  --dur-2: 200ms;  /* hover */
+  --dur-3: 320ms;  /* 面板、浮层 */
+  --dur-4: 520ms;  /* 入场编排 */
+  --dur-5: 800ms;  /* 大范围位移 */
+  --ease-out:    cubic-bezier(.22, 1, .36, 1);      /* 入场：快出慢收 */
+  --ease-io:     cubic-bezier(.65, 0, .35, 1);      /* 移动：两端缓 */
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);   /* 弹性：轻微回弹 */
+
+  /* 流体间距：8pt 网格 + 视口自适应 */
+  --pad-y: clamp(96px, 13vh, 168px);
+  --pad-x: clamp(20px, 5vw, 64px);
+}
+
+body[data-theme="dark"] {
+  --brand:      #8b5cf6;
+  --brand-2:    #22d3ee;
+  --brand-soft: rgba(139, 92, 246, .14);
+  --brand-ring: rgba(139, 92, 246, .45);
+
+  --bg:        #07080d;
+  --surface-1: #0d0f17;
+  --surface-2: #141824;
+  --surface-3: #1c2231;
+
+  --text-1: #f2f4fa;
+  --text-2: #a8b0c4;
+  --text-3: #6f7789;
+
+  --hairline:        rgba(255, 255, 255, .09);
+  --hairline-strong: rgba(255, 255, 255, .18);
+  --glass-edge: inset 0 1px 0 rgba(255, 255, 255, .07);
+
+  --e1: 0 1px 2px rgba(0, 0, 0, .40);
+  --e2: 0 2px 8px rgba(0, 0, 0, .45), 0 1px 2px rgba(0, 0, 0, .30);
+  --e3: 0 14px 32px -8px rgba(0, 0, 0, .60), 0 4px 12px -4px rgba(0, 0, 0, .40);
+  --e4: 0 28px 60px -12px rgba(0, 0, 0, .72), 0 8px 22px -8px rgba(0, 0, 0, .50);
+  --e5: 0 56px 110px -24px rgba(0, 0, 0, .82);
+}
+
+/* ---------- 2. 基础排版：流体字号 + 语言分行高 ---------- */
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+               'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  text-rendering: optimizeLegibility;
+  font-synthesis-weight: none;
+}
+/* 中文行高更松、英文更紧 */
+.section-desc, .skill-desc, .link-info p, .cookie-text { line-height: 1.75; }
+body[data-lang="en"] .section-desc,
+body[data-lang="en"] .skill-desc { line-height: 1.62; }
+
+/* 统一字重：400 / 600 / 800 三档，去掉 900 的滥用（仅大标题保留） */
+.section-desc, .skill-desc { font-weight: 400; }
+.skill-name, .link-info h3 { font-weight: 600; }
+
+/* ---------- 3. 区块节奏：流体留白，替代固定 120px ---------- */
+.section {
+  padding: var(--pad-y) var(--pad-x);
+  transition: background var(--dur-4) var(--ease-io);
+}
+/* 每个区块用不同的上下留白制造呼吸感 */
+#hero     { padding-top: clamp(120px, 18vh, 220px); }
+#skills   { padding-block: clamp(112px, 15vh, 190px); }
+#projects { padding-block: clamp(112px, 15vh, 190px); }
+
+/* 标题：统一流体字号，清掉原来重复的两条 font-size */
+.section-title {
+  font-size: clamp(44px, 7.2vw, 104px);
+  line-height: 1.06;
+  letter-spacing: -.035em;
+  font-weight: 800;
+  margin-bottom: clamp(20px, 3vw, 36px);
+}
+.hero-title {
+  font-size: clamp(60px, 11.5vw, 172px);
+  letter-spacing: -.05em;
+  line-height: .96;
+}
+.contact-cta {
+  font-size: clamp(38px, 5.6vw, 68px);
+  letter-spacing: -.03em;
+  line-height: 1.12;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+.section-label {
+  font-size: 12px;
+  letter-spacing: .18em;
+  margin-bottom: 24px;
+  color: var(--text-3);
+}
+
+/* ---------- 4. 玻璃卡片系统 ---------- */
+.skill-card, .link-card {
+  border-radius: var(--r-md);
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--surface-1) 72%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+  box-shadow: var(--e1), var(--glass-edge);
+  transition:
+    transform   var(--dur-2) var(--ease-out),
+    box-shadow  var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out),
+    background  var(--dur-2) var(--ease-out);
+  /* 关键：3D 需要父级 perspective 才生效，原来缺了这行 */
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.skill-cards { perspective: 1200px; }
+.link-cards  { perspective: 1200px; }
+.project-list { perspective: 1400px; }   /* 整列共用一个视角 */
+
+/* ---------- 4b. 3D 倾斜：整张卡片作为刚体跟随鼠标 ----------
+   用 transform 里的 perspective() 函数，不依赖父级 perspective，
+   任何容器里都能生效。--rx/--ry 由 ui-motion.js 写入。        */
+.skill-card, .link-card, .project-item, .project-cover {
+  transform:
+    perspective(1000px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    scale(var(--ts, 1));
+  transition:
+    transform   var(--dur-3) var(--ease-out),
+    box-shadow  var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out),
+    background  var(--dur-2) var(--ease-out);
+  transform-style: preserve-3d;
+}
+/* 只在真正被指到时才提升合成层，避免常驻占用 GPU */
+.skill-card:hover, .link-card:hover,
+.project-item:hover, .project-cover:hover { will-change: transform; }
+
+/* 内层保持在同一平面：整卡刚体倾斜，不做 translateZ 分层 */
+.skill-card > *, .link-card > *,
+.project-item > *, .project-cover > * { transform: none; }
+.link-card:hover .link-info { transform: translateX(6px); }
+
+/* spotlight：鼠标位置的高光，由 ui-motion.js 写入 --mx/--my */
+.skill-card::after, .link-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+  background: radial-gradient(
+    340px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--brand) 14%, transparent),
+    transparent 62%
+  );
+}
+.skill-card:hover::after, .link-card:hover::after { opacity: 1; }
+
+/* 悬停：轻微放大，配合 JS 写入的旋转角 */
+.skill-card:hover, .link-card:hover {
+  --ts: 1.02;
+  border-color: var(--hairline-strong);
+  box-shadow: var(--e3), var(--glass-edge);
+}
+.skill-card:active, .link-card:active {
+  --ts: .995;
+  transition-duration: var(--dur-1);
+}
+
+/* 性能修复：原来用 padding-left 驱动位移会触发重排，改成 transform */
+.link-card:hover { padding-left: 24px; }
+
+/* ---------- 5. 项目列表：3D 倾斜 + 渐显操作区 ---------- */
+.project-item {
+  border-top-color: var(--hairline);
+  border-radius: var(--r-sm);
+  transition:
+    transform    var(--dur-3) var(--ease-out),
+    background   var(--dur-3) var(--ease-out),
+    box-shadow   var(--dur-2) var(--ease-out);
+}
+.project-item:last-child { border-bottom: 1px solid var(--border); }
+/* 3D 倾斜 hover：保留原横向位移 + 旋转 + 微抬 */
+.project-item:hover {
+  padding-left: 0;
+  --ts: 1.012;
+  box-shadow: var(--e3);
+}
+.project-item::before {
+  width: 100%;
+  background: linear-gradient(90deg, var(--brand-soft), transparent 72%);
+  opacity: 0;
+  transform: scaleX(.6);
+  transform-origin: left;
+  transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-4) var(--ease-out);
+  z-index: -1; border-radius: var(--r-sm);
+}
+.project-item:hover::before { width: 100%; opacity: 1; transform: scaleX(1); }
+
+.project-cover {
+  border-radius: var(--r-lg);
+  box-shadow: var(--e2), var(--glass-edge);
+  overflow: hidden;
+}
+.project-cover:hover { --ts: 1.02; }
+
+/* ---------- 6. 按钮：补全 hover / active / focus-visible 四态 ---------- */
+.nav-btn, .project-btn, .cookie-btn, .feedback-submit,
+.reply-close, .verify-modal-continue, .back-to-top {
+  border-radius: var(--r-pill);
+  transition:
+    transform    var(--dur-1) var(--ease-out),
+    box-shadow   var(--dur-2) var(--ease-out),
+    background   var(--dur-2) var(--ease-out),
+    color        var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+}
+.nav-btn:hover, .project-btn:hover, .cookie-btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: var(--e2);
+}
+.nav-btn:active, .project-btn:active, .cookie-btn:active,
+.feedback-submit:active, .reply-close:active, .verify-modal-continue:active {
+  transform: translateY(0) scale(.97);
+  transition-duration: var(--dur-1);
+}
+
+/* 全局焦点环：原来只有 textarea 有 outline */
+a:focus-visible, button:focus-visible, input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* 品牌渐变实心按钮 */
+.feedback-submit, .reply-close, .verify-modal-continue {
+  background-image: linear-gradient(135deg, var(--brand), var(--brand-2));
+  background-size: 180% 100%;
+  box-shadow: 0 4px 16px var(--brand-ring);
+  transition: background-position var(--dur-3) var(--ease-io),
+              transform var(--dur-1) var(--ease-out),
+              box-shadow var(--dur-2) var(--ease-out);
+}
+.feedback-submit:hover, .reply-close:hover, .verify-modal-continue:hover {
+  background-position: 100% 0;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 26px var(--brand-ring);
+}
+
+/* 像标签但不可点 —— 视觉上明确弱化 */
+.project-tag {
+  border-radius: var(--r-sm);
+  border-color: transparent;
+  background: var(--surface-3);
+  color: var(--text-3);
+  font-size: 11px;
+  letter-spacing: .06em;
+}
+
+/* ---------- 7. 导航：向下滚隐藏，向上滚出现 ---------- */
+.nav {
+  background: color-mix(in srgb, var(--surface-1) 72%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid transparent;
+  transition: transform var(--dur-3) var(--ease-io),
+              padding var(--dur-3) var(--ease-io),
+              border-color var(--dur-3) var(--ease-io),
+              box-shadow var(--dur-3) var(--ease-io);
+}
+.nav.scrolled { box-shadow: var(--e2); border-bottom-color: var(--hairline); }
+.nav.hide { transform: translateY(-104%); }
+
+/* ---------- 8. 入场编排：用 --i 做 stagger，替代固定 delay ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(.985);
+  transition:
+    opacity   var(--dur-5) var(--ease-out),
+    transform var(--dur-5) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+/* 兼容原有 delay 类：转成 --i */
+.reveal-delay-1 { --i: 1; }
+.reveal-delay-2 { --i: 2; }
+.reveal-delay-3 { --i: 3; }
+.reveal-delay-1, .reveal-delay-2, .reveal-delay-3 { transition-delay: calc(var(--i) * 70ms); }
+
+/* 滚动视差：由 ui-motion.js 写入 --p（0~1） */
+[data-parallax] {
+  transform: translate3d(0, calc(var(--p, 0) * var(--px, -60px)), 0);
+  will-change: transform;
+}
+
+/* ---------- 9. 滚动进度条：发光拖尾 ---------- */
+.scroll-progress {
+  height: 3px;
+  background-image: linear-gradient(90deg, var(--brand), var(--brand-2));
+  box-shadow: 0 0 12px var(--brand-ring);
+  transition: width 90ms linear;
+}
+.scroll-progress::after {
+  content: '';
+  position: absolute; right: -28px; top: 0;
+  width: 28px; height: 100%;
+  background: linear-gradient(90deg, var(--brand-ring), transparent);
+}
+
+/* ---------- 10. 头像：旋转渐变描边环 ---------- */
+.avatar-wrap {
+  position: relative;
+  box-shadow: var(--e3);
+}
+.avatar-wrap::after {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  padding: 1.5px;
+  background: conic-gradient(from 0deg, transparent 0 62%, var(--brand) 78%, var(--brand-2) 92%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+  animation: ringSpin 6s linear infinite;
+  pointer-events: none;
+}
+.avatar-link:hover .avatar-wrap::after { opacity: 1; }
+@keyframes ringSpin { to { transform: rotate(1turn); } }
+.avatar-link:hover .avatar-wrap {
+  transform: scale(1.04);
+  box-shadow: var(--e4), 0 0 0 6px var(--brand-soft);
+}
+
+/* ---------- 11. 磁吸元素（JS 写入 --tx/--ty） ---------- */
+.magnetic {
+  transition: transform var(--dur-2) var(--ease-out);
+  transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0);
+}
+.magnetic.is-pulling { transition-duration: var(--dur-1); }
+
+/* ---------- 12. 主题切换：View Transitions 圆形扩散 ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+html.vt-theme::view-transition-new(root) {
+  animation: vtReveal var(--dur-4) var(--ease-io) both;
+}
+@keyframes vtReveal {
+  from { clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+  to   { clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+}
+
+/* ---------- 13. 降低动效偏好：全面降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .bg-canvas { display: none !important; }
+  .cursor-trail { display: none !important; }
+  [data-parallax] { transform: none !important; }
+  .avatar-wrap::after { animation: none; }
+  /* 3D 倾斜：reduced-motion 用户直接禁用旋转/抬升 */
+  .skill-card, .link-card, .project-item, .project-cover,
+  .skill-card > *, .link-card > *, .project-cover img {
+    transform: none !important;
+    --rx: 0deg !important;
+    --ry: 0deg !important;
+    --ts: 1 !important;
+  }
+}

@@ -34,8 +34,11 @@
   }
   </script>
   <title>xzd1314の个人主页</title>
-  <link rel="icon" type="image/jpeg" href="/assets/avatar.jpg" />
-  <link rel="apple-touch-icon" href="/assets/avatar.jpg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <style>
     @font-face {
       font-family: 'ChuangZhongHei';
@@ -603,6 +606,7 @@
     @keyframes weirdGradient{0%{background-position:0% 50%}100%{background-position:600% 50%}}
     @keyframes weirdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
   </style>
+  <link rel="stylesheet" href="/assets/ui-upgrade.css" />
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body data-theme="dark" data-lang="zh">
@@ -1390,8 +1394,9 @@
           handleClick({clientX:t.clientX,clientY:t.clientY,currentTarget:el});
         },{passive:true});
       }
-      bindClick(heroTitle);
-      bindClick(navLogo);
+      // 彩蛋已迁移到文件末尾的独立脚本（6 次点击 + 独立作用域），这里不再绑定
+      // bindClick(heroTitle);
+      // bindClick(navLogo);
 
       function triggerExplosion(x,y){
         var colors=['#f97316','#8b5cf6','#3b82f6','#22c55e','#eab308','#ec4899','#06b6d4','#f43f5e','#a855f7','#10b981','#f59e0b','#ef4444'];
@@ -2703,6 +2708,137 @@
         }
       });
     },3000);
+  })();
+  </script>
+
+
+  <script src="/assets/ui-motion.js" defer></script>
+
+  <!-- ============ 彩蛋：连点名字 6 次 ============
+       放在独立 script 块里并包 try/catch，不受主脚本块运行时错误牵连 -->
+  <script>
+  (function(){
+    try{
+      var NEED = 6;          // 需要的连点次数
+      var WINDOW_MS = 3500;  // 连点时间窗（原实现只有 2s，点慢一点就归零）
+      var els = document.querySelectorAll('.hero-title, .nav-logo');
+      if(!els.length) return;
+
+      var count = 0, timer = null, lastFire = 0;
+      var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+      function hexToRgb(hex){
+        hex = String(hex || '').replace('#','').trim();
+        if(hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+        var r = parseInt(hex.substring(0,2),16) || 0;
+        var g = parseInt(hex.substring(2,4),16) || 0;
+        var b = parseInt(hex.substring(4,6),16) || 0;
+        return r + ',' + g + ',' + b;
+      }
+      function accentRgb(){
+        var v = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        if(!v) v = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+        return hexToRgb(v || '#8b5cf6');
+      }
+      function glow(el){
+        var rgb = accentRgb();
+        var k = Math.min(0.2 + count * 0.13, 0.9);
+        var blur = 6 + count * 4;
+        el.style.transition = 'transform .12s ease, text-shadow .25s ease';
+        el.style.textShadow = '0 0 ' + blur + 'px rgba(' + rgb + ',' + k + '),' +
+                              ' 0 0 ' + (blur*2.5) + 'px rgba(' + rgb + ',' + (k*0.4) + ')';
+        el.style.transform = 'scale(0.94)';
+        setTimeout(function(){ el.style.transform = ''; }, 120);
+      }
+      function clearGlow(){
+        for(var i=0;i<els.length;i++){ els[i].style.textShadow=''; els[i].style.transform=''; }
+      }
+      function boom(x, y){
+        var colors = ['#f97316','#8b5cf6','#3b82f6','#22c55e','#eab308','#ec4899',
+                      '#06b6d4','#f43f5e','#a855f7','#10b981','#f59e0b','#ef4444'];
+        var n = isTouch ? 70 : 150;
+        var parts = [];
+
+        var ring = document.createElement('div');
+        ring.style.cssText = 'position:fixed;left:'+x+'px;top:'+y+'px;width:20px;height:20px;' +
+          'border-radius:50%;border:3px solid rgba(255,255,255,0.8);pointer-events:none;' +
+          'z-index:99998;transform:translate(-50%,-50%)';
+        document.body.appendChild(ring);
+        var ringLife = 1;
+
+        var flash = document.createElement('div');
+        flash.style.cssText = 'position:fixed;left:'+x+'px;top:'+y+'px;width:300px;height:300px;' +
+          'border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.9) 0%,' +
+          'rgba(255,200,100,0.4) 30%,transparent 70%);pointer-events:none;z-index:99998;' +
+          'transform:translate(-50%,-50%)';
+        document.body.appendChild(flash);
+        var flashLife = 1;
+
+        for(var i=0;i<n;i++){
+          var size = Math.random()*10+5;
+          var color = colors[Math.floor(Math.random()*colors.length)];
+          var a = Math.random()*Math.PI*2, d = Math.random()*40;
+          var px = x + Math.cos(a)*d, py = y + Math.sin(a)*d;
+          var p = document.createElement('div');
+          p.style.cssText = 'position:fixed;left:'+px+'px;top:'+py+'px;width:'+size+'px;' +
+            'height:'+size+'px;border-radius:50%;background:'+color+';pointer-events:none;' +
+            'z-index:99999;transform:translate(-50%,-50%)' +
+            (isTouch ? '' : ';box-shadow:0 0 '+(size*2)+'px '+color+',0 0 '+size+'px '+color);
+          document.body.appendChild(p);
+          var ang = Math.random()*Math.PI*2, sp = Math.random()*10+3;
+          parts.push({el:p,x:px,y:py,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp-4,
+                      life:1,rot:Math.random()*360,rs:(Math.random()-0.5)*10});
+        }
+        (function animate(){
+          var alive = false, i, p;
+          for(i=parts.length-1;i>=0;i--){
+            p = parts[i];
+            p.life -= 0.006; p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.vx *= 0.992; p.rot += p.rs;
+            p.el.style.left = p.x+'px'; p.el.style.top = p.y+'px';
+            p.el.style.opacity = p.life;
+            p.el.style.transform = 'translate(-50%,-50%) scale('+(0.5+p.life*0.8)+') rotate('+p.rot+'deg)';
+            if(p.life <= 0){ p.el.remove(); parts.splice(i,1); } else { alive = true; }
+          }
+          if(ringLife > 0){
+            ringLife -= 0.012;
+            ring.style.transform = 'translate(-50%,-50%) scale('+(1+(1-ringLife)*15)+')';
+            ring.style.opacity = ringLife*0.8;
+            ring.style.borderWidth = (3*ringLife)+'px';
+            alive = true;
+          } else if(ring.parentNode){ ring.remove(); }
+          if(flashLife > 0){
+            flashLife -= 0.012;
+            flash.style.opacity = flashLife;
+            flash.style.transform = 'translate(-50%,-50%) scale('+(1+(1-flashLife)*2)+')';
+            alive = true;
+          } else if(flash.parentNode){ flash.remove(); }
+          if(alive) requestAnimationFrame(animate);
+        })();
+      }
+      function hit(el, x, y){
+        var now = Date.now();
+        if(now - lastFire < 90) return;       // 去重：touchstart 与 click 会双发
+        lastFire = now;
+        count++;
+        clearTimeout(timer);
+        timer = setTimeout(function(){ count = 0; clearGlow(); }, WINDOW_MS);
+        glow(el);
+        if(count >= NEED){
+          count = 0;
+          clearTimeout(timer);
+          clearGlow();
+          boom(x, y);
+        }
+      }
+      for(var i=0;i<els.length;i++){
+        (function(el){
+          el.addEventListener('click', function(e){ hit(el, e.clientX, e.clientY); });
+          el.addEventListener('touchstart', function(e){
+            var t = e.touches[0]; hit(el, t.clientX, t.clientY);
+          }, {passive:true});
+        })(els[i]);
+      }
+    }catch(err){ console.warn('[easter-egg] init failed:', err); }
   })();
   </script>
 
