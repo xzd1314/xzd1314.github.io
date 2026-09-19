@@ -319,55 +319,6 @@
     .turnstile-desc{font-size:14px;color:var(--text-secondary,#888);margin-bottom:24px;line-height:1.6}
     .turnstile-box .cf-turnstile{display:flex;justify-content:center}
     @media(max-width:480px){.turnstile-box{padding:32px 20px}.turnstile-title{font-size:18px}.turnstile-desc{font-size:13px}}
-    /* ---------- Cookie Banner ---------- */
-    .cookie-banner{
-      position:fixed;left:0;right:0;bottom:0;z-index:200;
-      background:var(--cookie-bg);
-      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-      border-top:1px solid var(--cookie-border);
-      padding:32px 48px 28px;
-      transform:translateY(100%);
-      transition:transform .5s cubic-bezier(.22,1,.36,1);
-      max-height:50vh;overflow-y:auto;
-    }
-    .cookie-banner.show{transform:translateY(0)}
-    .cookie-inner{max-width:900px;margin:0 auto}
-    .cookie-title{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:10px}
-    .cookie-title svg{width:22px;height:22px;opacity:.8}
-    .cookie-text{font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:20px}
-    .cookie-buttons{display:flex;gap:12px;flex-wrap:wrap}
-    .cookie-btn{
-      padding:10px 28px;border-radius:100px;font-size:14px;font-weight:600;
-      cursor:pointer;font-family:inherit;transition:all .25s ease;border:1px solid var(--border);
-    }
-    .cookie-btn-accept{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .cookie-btn-accept:hover{opacity:.85;transform:translateY(-1px)}
-    .cookie-btn-reject{background:transparent;color:var(--text-secondary)}
-    .cookie-btn-reject:hover{background:var(--card-hover);color:var(--text);border-color:var(--border-hover)}
-
-    @media(max-width:1200px){.skill-cards{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:1024px){.nav{padding:18px 32px}.nav.scrolled{padding:12px 32px}.section{padding:100px 32px}#skills .section-inner{grid-template-columns:1fr;gap:40px}#skills .section-left{position:static}.skill-cards{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:768px){
-      .nav{padding:16px 24px}.nav.scrolled{padding:10px 24px}
-      .nav-links{position:fixed;top:0;right:-100%;width:100%;height:100vh;flex-direction:column;justify-content:center;background:var(--nav-bg);backdrop-filter:blur(20px);transition:right .4s cubic-bezier(.22,1,.36,1);gap:32px}
-      .nav-links.open{right:0}.nav-links a{font-size:24px}
-      .nav-mobile-toggle{display:block;z-index:101}
-      .nav-mobile-toggle.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
-      .nav-mobile-toggle.active span:nth-child(2){opacity:0}
-      .nav-mobile-toggle.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-      .nav-btn{padding:6px 10px;font-size:12px}.nav-btn .btn-text{display:none}.lang-btn .btn-text{display:inline}
-      .section{padding:80px 24px;min-height:auto}#hero{min-height:100vh}.avatar-wrap{width:120px;height:120px}
-      .skill-cards{grid-template-columns:1fr}
-      .project-item{grid-template-columns:40px 1fr;gap:20px}
-      .project-cover{height:140px;border-radius:10px}
-      .project-actions{grid-column:2;justify-content:flex-start;margin-top:8px}
-      .project-info h3{font-size:22px}
-      .project-btn{padding:10px 16px;min-height:40px}
-      .footer{flex-direction:column;gap:12px;padding:32px 24px;text-align:center}
-      .cookie-banner{padding:24px 20px 20px;max-height:60vh}
-      .cookie-btn{padding:9px 22px;font-size:13px}
-    }
-    @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:10px 14px;font-size:13px;min-height:42px}.project-cover{height:120px}.project-cover-nav{width:36px;height:36px}}
     /* ---------- Back to Top ---------- */
     .back-to-top{
       position:fixed;bottom:28px;right:28px;z-index:90;
@@ -546,6 +497,7 @@
       <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
       <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
       <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+      <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
       <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
     </ul>
     <div class="nav-right">
@@ -787,6 +739,35 @@
         </a>
       </div>
     </div>
+
+  <!-- ============ 09 站点数据看板 ============ -->
+  <section class="section" id="stats" style="padding-block:clamp(80px,10vw,140px)">
+    <div class="section-inner" style="max-width:880px">
+      <p class="section-label reveal"><span class="zh">数据</span><span class="en">Stats</span></p>
+      <h2 class="section-title reveal reveal-delay-1" style="font-size:clamp(28px,4vw,48px);margin-bottom:40px">
+        <span class="zh">这个站点 · 实时数字</span><span class="en">This site · live numbers</span>
+      </h2>
+      <div class="stats-grid">
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-num" id="statVisitors">---</div>
+          <div class="stat-label"><span class="zh">独立访客</span><span class="en">Visitors</span></div>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-num" id="statStars">---</div>
+          <div class="stat-label"><span class="zh">GitHub Stars</span><span class="en">GitHub Stars</span></div>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-num" id="statRepos">---</div>
+          <div class="stat-label"><span class="zh">公开项目</span><span class="en">Public repos</span></div>
+        </div>
+      </div>
+      <p class="stats-foot reveal reveal-delay-3">
+        <span class="zh">数据每分钟自动更新 · 仅展示聚合数字 · 不追踪个人</span>
+        <span class="en">Updates every minute · aggregates only · no personal tracking</span>
+      </p>
+    </div>
+  </section>
+
   </section>
 
   <footer class="footer">
@@ -834,30 +815,6 @@
       <p class="reply-admin-label"><span class="zh">站长回复</span><span class="en">Admin reply</span></p>
       <div class="reply-content" id="replyContent"></div>
       <button class="reply-close" id="replyClose"><span class="zh">知道了</span><span class="en">Got it</span></button>
-    </div>
-  </div>
-  <!-- Cookie Banner -->
-  <div class="cookie-banner" id="cookieBanner">
-    <div class="cookie-inner">
-      <div class="cookie-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21.59 11.13a1 1 0 0 0-.84-.14 8.49 8.49 0 0 1-7.74-7.74 1 1 0 0 0-.14-.84A10 10 0 1 0 21.59 11.13z"/>
-          <circle cx="8.5" cy="8.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/><circle cx="9" cy="15" r="1"/>
-        </svg>
-        <span class="zh">Cookie 偏好设置</span><span class="en">Cookie Preferences</span>
-      </div>
-      <p class="cookie-text">
-        <span class="zh">本网站仅使用 Cookie 记录您的深色浅色、语言等界面使用偏好，不会进行追踪统计。</span>
-        <span class="en">This website only uses cookies to remember your interface preferences such as theme and language. No tracking or analytics.</span>
-      </p>
-      <div class="cookie-buttons">
-        <button class="cookie-btn cookie-btn-accept" id="cookieAccept">
-          <span class="zh">接受</span><span class="en">Accept</span>
-        </button>
-        <button class="cookie-btn cookie-btn-reject" id="cookieReject">
-          <span class="zh">拒绝</span><span class="en">Reject</span>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -1855,34 +1812,6 @@
       }
       try{localStorage.setItem('site_lang',document.body.getAttribute('data-lang'))}catch(e){}
     });
-
-    // ---------- Cookie banner (UI only, does not block preference storage) ----------
-    var cookieBanner=document.getElementById('cookieBanner');
-    var cookieAccept=document.getElementById('cookieAccept');
-    var cookieReject=document.getElementById('cookieReject');
-
-    function hideCookieBanner(){
-      cookieBanner.classList.remove('show');
-    }
-
-    function setCookieChoice(choice){
-      try{localStorage.setItem('cookie_choice',choice)}catch(e){}
-      hideCookieBanner();
-    }
-
-    cookieAccept.addEventListener('click',function(){setCookieChoice('accepted')});
-    cookieReject.addEventListener('click',function(){setCookieChoice('rejected')});
-
-    // Show banner only on first visit (no previous choice recorded)
-    try{
-      var cookieChoice=localStorage.getItem('cookie_choice');
-      if(!cookieChoice){
-        setTimeout(function(){cookieBanner.classList.add('show')},600);
-      }
-    }catch(e){
-      // If localStorage is unavailable, still show banner
-      setTimeout(function(){cookieBanner.classList.add('show')},600);
-    }
 
     // ---------- Scroll reveal with fallback ----------
     var revealEls=document.querySelectorAll('.reveal');

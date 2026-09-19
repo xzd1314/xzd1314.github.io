@@ -27,7 +27,7 @@
 
       // 倾斜强度：横向的项目条目用得小一些，方块卡片用大一些
       var max = el.dataset.tilt ? parseFloat(el.dataset.tilt)
-              : (el.classList.contains('project-item') ? 8 : 14);
+              : (el.classList.contains('project-item') ? 14 : 24);
       // 与站点原来的 3D Card Hover 同向：鼠标在上方 → 上沿后仰；在右侧 → 右沿后仰
       var rx = (0.5 - py) * max;
       var ry = (px - 0.5) * max;
@@ -259,4 +259,43 @@
   } else { boot(); }
 
   window.XZD = { countUp: countUp, splitLines: splitLines };
+})();
+
+
+/* ---------- 9. 站点数据看板（GitHub stars + repos + 访客数） ---------- */
+(function(){
+  var SUPABASE_URL='https://bvtcdknbvpyeyqvotmrk.supabase.co';
+  var SUPABASE_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
+
+  var visitorEl=document.getElementById('statVisitors');
+  var starsEl=document.getElementById('statStars');
+  var reposEl=document.getElementById('statRepos');
+
+  // 访客数：复用现有的 Supabase RPC
+  if(visitorEl){
+    fetch(SUPABASE_URL+'/rest/v1/rpc/increment_visitor_count',{
+      method:'POST',
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}
+    }).then(function(r){return r.json();}).then(function(result){
+      var n=typeof result==='number'?result:(result&&result.result)||0;
+      visitorEl.textContent=n.toLocaleString();
+    }).catch(function(){visitorEl.textContent='---'});
+  }
+
+  // GitHub stars 与 repos：公开 API，无速率限制（未认证 60/h，超了就显示 ---）
+  function fetchGH(){
+    fetch('https://api.github.com/users/xzd1314/repos?per_page=100',{
+      headers:{'Accept':'application/vnd.github+json'}
+    }).then(function(r){return r.ok?r.json():Promise.reject(r.status);})
+      .then(function(repos){
+        var stars=repos.reduce(function(s,r){return s+(r.stargazers_count||0);},0);
+        if(starsEl)starsEl.textContent=stars.toLocaleString();
+        if(reposEl)reposEl.textContent=repos.length.toLocaleString();
+      }).catch(function(){
+        if(starsEl)starsEl.textContent='---';
+        if(reposEl)reposEl.textContent='---';
+      });
+  }
+  fetchGH();
+  setInterval(fetchGH, 60000);   // 每分钟刷新
 })();

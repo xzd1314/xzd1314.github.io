@@ -112,6 +112,17 @@ body[data-lang="en"] .skill-desc { line-height: 1.62; }
 #projects { padding-block: clamp(112px, 15vh, 190px); }
 
 /* 标题：统一流体字号，清掉原来重复的两条 font-size */
+/* 选区颜色用品牌色 —— 意外选中看着像刻意设计 */
+::selection {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--text-1);
+}
+::-moz-selection {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--text-1);
+}
+.hero-title { -webkit-user-select: none; user-select: none; }
+
 .section-title {
   font-size: clamp(44px, 7.2vw, 104px);
   line-height: 1.06;
@@ -137,44 +148,58 @@ body[data-lang="en"] .skill-desc { line-height: 1.62; }
   color: var(--text-3);
 }
 
-/* ---------- 4. 玻璃卡片系统 ---------- */
+/* ---------- 4. 液态玻璃卡片系统 ---------- */
 .skill-card, .link-card {
   border-radius: var(--r-md);
   border: 1px solid var(--hairline);
-  background: color-mix(in srgb, var(--surface-1) 72%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
-  backdrop-filter: blur(14px) saturate(150%);
-  box-shadow: var(--e1), var(--glass-edge);
+  /* 透明度从 72% 降到 48%，背景能透出来 —— 真正的玻璃 */
+  background: color-mix(in srgb, var(--surface-1) 48%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(24px) saturate(190%);
+  /* 三层叠加：玻璃高光 + 内描边让边缘亮起 + 投影 */
+  box-shadow:
+    var(--e1),
+    var(--glass-edge),
+    inset 0 1px 0 rgba(255,255,255,.6),
+    inset 0 -1px 0 rgba(0,0,0,.04);
   transition:
-    transform   var(--dur-2) var(--ease-out),
-    box-shadow  var(--dur-2) var(--ease-out),
+    transform   var(--dur-4) var(--ease-out),
+    box-shadow  var(--dur-3) var(--ease-out),
     border-color var(--dur-2) var(--ease-out),
     background  var(--dur-2) var(--ease-out);
-  /* 关键：3D 需要父级 perspective 才生效，原来缺了这行 */
   transform-style: preserve-3d;
   will-change: transform;
 }
-.skill-cards { perspective: 1200px; }
-.link-cards  { perspective: 1200px; }
-.project-list { perspective: 1400px; }   /* 整列共用一个视角 */
+.skill-cards { perspective: 700px; }     /* 视角从 1200 拉到 700，倾斜更明显 */
+.link-cards  { perspective: 700px; }
+.project-list { perspective: 900px; }
+
+/* 液态玻璃对深色模式专门调过：背景压暗一些，玻璃光更亮 */
+body[data-theme="dark"] .skill-card,
+body[data-theme="dark"] .link-card {
+  background: color-mix(in srgb, var(--surface-1) 38%, transparent);
+  box-shadow:
+    var(--e1),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(0,0,0,.35);
+}
 
 /* ---------- 4b. 3D 倾斜：整张卡片作为刚体跟随鼠标 ----------
-   用 transform 里的 perspective() 函数，不依赖父级 perspective，
-   任何容器里都能生效。--rx/--ry 由 ui-motion.js 写入。        */
+   perspective() 内联在 transform 里，不依赖父级；
+   600px 视角 + 24° 最大角度，肉眼能明显看出。                  */
 .skill-card, .link-card, .project-item, .project-cover {
   transform:
-    perspective(1000px)
+    perspective(600px)
     rotateX(var(--rx, 0deg))
     rotateY(var(--ry, 0deg))
     scale(var(--ts, 1));
   transition:
-    transform   var(--dur-3) var(--ease-out),
-    box-shadow  var(--dur-2) var(--ease-out),
+    transform   var(--dur-4) var(--ease-out),     /* 320→520ms，电影感 */
+    box-shadow  var(--dur-3) var(--ease-out),
     border-color var(--dur-2) var(--ease-out),
     background  var(--dur-2) var(--ease-out);
   transform-style: preserve-3d;
 }
-/* 只在真正被指到时才提升合成层，避免常驻占用 GPU */
 .skill-card:hover, .link-card:hover,
 .project-item:hover, .project-cover:hover { will-change: transform; }
 
@@ -183,8 +208,8 @@ body[data-lang="en"] .skill-desc { line-height: 1.62; }
 .project-item > *, .project-cover > * { transform: none; }
 .link-card:hover .link-info { transform: translateX(6px); }
 
-/* spotlight：鼠标位置的高光，由 ui-motion.js 写入 --mx/--my */
-.skill-card::after, .link-card::after {
+/* 液态玻璃边缘跟随光带：鼠标位置出现一道斜光，标志性 liquid glass 效果 */
+.skill-card::before, .link-card::before {
   content: '';
   position: absolute; inset: 0;
   border-radius: inherit;
@@ -192,18 +217,40 @@ body[data-lang="en"] .skill-desc { line-height: 1.62; }
   opacity: 0;
   transition: opacity var(--dur-3) var(--ease-out);
   background: radial-gradient(
-    340px circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--brand) 14%, transparent),
-    transparent 62%
+    280px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--brand) 22%, transparent),
+    transparent 65%
   );
+}
+.skill-card:hover::before, .link-card:hover::before { opacity: 1; }
+
+/* 第二层：跟随光带 —— 倾斜时压在卡面上 */
+.skill-card::after, .link-card::after {
+  content: '';
+  position: absolute; inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out), background var(--dur-4);
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    color-mix(in srgb, var(--brand) 35%, transparent) 50%,
+    transparent 60%
+  );
+  background-size: 240% 240%;
+  background-position: calc(var(--mx, 50%) - 100%) 50%;
 }
 .skill-card:hover::after, .link-card:hover::after { opacity: 1; }
 
 /* 悬停：轻微放大，配合 JS 写入的旋转角 */
 .skill-card:hover, .link-card:hover {
-  --ts: 1.02;
+  --ts: 1.045;                                    /* 抬升更明显 */
   border-color: var(--hairline-strong);
-  box-shadow: var(--e3), var(--glass-edge);
+  box-shadow:
+    var(--e3),
+    var(--glass-edge),
+    inset 0 1px 0 rgba(255,255,255,.8);
 }
 .skill-card:active, .link-card:active {
   --ts: .995;
@@ -434,6 +481,7 @@ html.vt-theme::view-transition-new(root) {
   /* 触屏用 :active 做按压反馈，替代 hover 抬升 */
   .skill-card:active, .link-card:active { transform: scale(.985); background: var(--surface-2); }
   .project-item:active { background: var(--surface-2); }
+  .stat-card:active { transform: scale(.985); }
 }
 
 /* d) 触摸目标尺寸：iOS/Android 建议 >= 44x44 */
@@ -471,6 +519,65 @@ html.vt-theme::view-transition-new(root) {
   .project-cover { height: 150px; }
 }
 
+
+/* ---------- 09 站点数据看板 ---------- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.stat-card {
+  padding: 28px 22px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--surface-1) 48%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--e1), var(--glass-edge), inset 0 1px 0 rgba(255,255,255,.6);
+  text-align: center;
+  transition: transform var(--dur-3) var(--ease-out), box-shadow var(--dur-3);
+}
+body[data-theme="dark"] .stat-card {
+  background: color-mix(in srgb, var(--surface-1) 38%, transparent);
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--e3), var(--glass-edge);
+}
+.stat-num {
+  font-family: var(--mono);
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -.02em;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.05;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.stats-foot {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 8px;
+}
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 22px 12px; }
+  .stat-num { font-size: 26px; }
+  .stat-label { font-size: 11px; }
+}
+
 /* ---------- 13. 降低动效偏好：全面降级 ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -488,7 +595,8 @@ html.vt-theme::view-transition-new(root) {
   .avatar-wrap::after { animation: none; }
   /* 3D 倾斜：reduced-motion 用户直接禁用旋转/抬升 */
   .skill-card, .link-card, .project-item, .project-cover,
-  .skill-card > *, .link-card > *, .project-cover img {
+  .skill-card > *, .link-card > *, .project-cover img,
+  .stat-card, .stat-card::before, .stat-card::after {
     transform: none !important;
     --rx: 0deg !important;
     --ry: 0deg !important;
