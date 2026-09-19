@@ -246,6 +246,8 @@ body[data-lang="en"] .skill-desc { line-height: 1.62; }
   overflow: hidden;
 }
 .project-cover:hover { --ts: 1.02; }
+.project-cover img { transition: transform var(--dur-5) var(--ease-out); }
+.project-cover:hover img { transform: scale(1.06); }
 
 /* ---------- 6. 按钮：补全 hover / active / focus-visible 四态 ---------- */
 .nav-btn, .project-btn, .cookie-btn, .feedback-submit,
