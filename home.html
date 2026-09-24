@@ -487,6 +487,167 @@
     @keyframes weirdSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
     @keyframes weirdGradient{0%{background-position:0% 50%}100%{background-position:600% 50%}}
     @keyframes weirdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+    /* ========== 响应式布局优化 ========== */
+    /* 平板端 (<=1024px) */
+    @media (max-width: 1024px) {
+      .nav{padding:16px 32px}
+      .nav.scrolled{padding:12px 32px}
+      .section{padding:100px 32px}
+      .section-inner{max-width:100%}
+      #skills .section-inner{grid-template-columns:1fr;gap:48px}
+      #skills .section-left{position:static}
+      .skill-cards{grid-template-columns:repeat(2,1fr)}
+      .project-item{gap:24px;padding:28px 0}
+      .project-info h3{font-size:24px}
+      .footer{padding:32px}
+    }
+
+    /* 手机端 (<=768px) */
+    @media (max-width: 768px) {
+      /* 导航栏 */
+      .nav{padding:14px 20px}
+      .nav.scrolled{padding:10px 20px}
+      .nav-logo{font-size:18px}
+      .nav-links{
+        position:fixed;top:0;right:-100%;width:280px;height:100vh;
+        background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+        flex-direction:column;align-items:flex-start;gap:0;
+        padding:80px 32px 32px;box-shadow:-8px 0 32px rgba(0,0,0,0.1);
+        transition:right .35s cubic-bezier(.22,1,.36,1);
+        border-left:1px solid var(--border);
+      }
+      .nav-links.open{right:0}
+      .nav-links li{width:100%;border-bottom:1px solid var(--border)}
+      .nav-links a{display:block;padding:14px 0;font-size:16px}
+      .nav-links a::after{display:none}
+      .nav-mobile-toggle{display:block;z-index:101}
+      .nav-mobile-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+      .nav-mobile-toggle.open span:nth-child(2){opacity:0}
+      .nav-mobile-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+      .nav-right{gap:6px}
+      .nav-btn{padding:6px 10px;font-size:12px}
+      .nav-btn .btn-text{display:none}
+
+      /* 区块通用 */
+      .section{padding:80px 20px;min-height:auto}
+      .section-title{font-size:clamp(36px,10vw,56px);margin-bottom:20px}
+      .section-label{margin-bottom:16px;font-size:11px}
+      .section-desc{font-size:15px}
+
+      /* Hero区 */
+      #hero .section-inner{gap:24px}
+      .avatar-wrap{width:120px;height:120px}
+      .hero-title{font-size:clamp(48px,15vw,96px)}
+      .hero-slogan{font-size:15px}
+
+      /* 技能区 */
+      .skill-cards{grid-template-columns:1fr;gap:12px}
+      .skill-card{padding:20px}
+      .skill-name{font-size:17px}
+
+      /* 项目区 */
+      .project-item{
+        grid-template-columns:1fr;gap:16px;padding:24px 0;
+      }
+      .project-item:hover{padding-left:0}
+      .project-num{font-size:12px}
+      .project-info h3{font-size:22px}
+      .project-info p{font-size:14px;line-height:1.6}
+      .project-btns{justify-content:flex-start;gap:8px}
+      .project-btn{padding:8px 16px;font-size:13px}
+      .project-cover{height:180px;margin-bottom:12px}
+      .project-tag{font-size:11px;padding:4px 10px}
+
+      /* 联系区 */
+      .contact-cta{font-size:clamp(32px,8vw,48px);margin-bottom:32px}
+      .contact-link{font-size:16px}
+      .feedback-input{padding:12px 14px;font-size:14px}
+
+      /* 页脚 */
+      .footer{
+        flex-direction:column;gap:12px;padding:24px 20px;
+        text-align:center;font-size:12px;
+      }
+
+      /* 移动端遮罩 */
+      .nav-overlay{
+        position:fixed;inset:0;background:rgba(0,0,0,0.5);
+        z-index:99;opacity:0;visibility:hidden;transition:all .3s ease;
+        backdrop-filter:blur(4px);
+      }
+      .nav-overlay.show{opacity:1;visibility:visible}
+    }
+
+    /* 小手机 (<=480px) */
+    @media (max-width: 480px) {
+      .section{padding:64px 16px}
+      .nav{padding:12px 16px}
+      .hero-title{font-size:44px}
+      .avatar-wrap{width:100px;height:100px}
+      .project-cover{height:160px}
+      .project-btns{flex-direction:column;align-items:stretch}
+      .project-btn{justify-content:center}
+      .skill-card{padding:16px}
+      .link-card{padding:16px;gap:12px}
+      .link-info h3{font-size:15px}
+      .verify-modal-box{padding:28px 20px}
+      .turnstile-box{padding:28px 16px}
+    }
+
+    /* ========== IPA 确认弹窗 ========== */
+    .ipa-confirm-modal{
+      position:fixed;inset:0;z-index:9997;
+      background:rgba(0,0,0,0.75);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;visibility:hidden;transition:all .3s ease;
+      padding:20px;
+    }
+    [data-theme="light"] .ipa-confirm-modal{background:rgba(255,255,255,0.7)}
+    .ipa-confirm-modal.show{opacity:1;visibility:visible}
+    .ipa-confirm-box{
+      background:var(--card-bg);border:1px solid var(--border);
+      border-radius:16px;padding:32px 26px;text-align:center;
+      max-width:400px;width:100%;
+      transform:scale(0.95);transition:transform .3s ease;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    }
+    .ipa-confirm-modal.show .ipa-confirm-box{transform:scale(1)}
+    .ipa-confirm-icon{
+      width:56px;height:56px;margin:0 auto 16px;
+      background:rgba(245,158,11,0.12);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      color:#f59e0b;
+    }
+    .ipa-confirm-icon svg{width:28px;height:28px}
+    .ipa-confirm-title{font-size:19px;font-weight:800;margin-bottom:12px;color:var(--text)}
+    .ipa-confirm-desc{font-size:14px;color:var(--text-secondary);margin-bottom:24px;line-height:1.7}
+    .ipa-confirm-version{
+      display:inline-block;padding:6px 14px;border-radius:100px;
+      background:rgba(245,158,11,0.1);color:#f59e0b;
+      font-size:13px;font-weight:700;margin-bottom:20px;
+    }
+    .ipa-confirm-btns{display:flex;gap:10px;justify-content:center}
+    .ipa-confirm-cancel{
+      flex:1;padding:11px 20px;border-radius:100px;
+      border:1px solid var(--border);background:transparent;
+      color:var(--text-secondary);font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;transition:all .25s ease;
+    }
+    .ipa-confirm-cancel:hover{background:var(--card-hover);color:var(--text)}
+    .ipa-confirm-ok{
+      flex:1;padding:11px 20px;border-radius:100px;border:none;
+      background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
+      font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+      transition:all .25s ease;box-shadow:0 4px 14px rgba(245,158,11,0.3);
+    }
+    .ipa-confirm-ok:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,0.4)}
+    @media(max-width:480px){
+      .ipa-confirm-box{padding:26px 20px}
+      .ipa-confirm-title{font-size:17px}
+      .ipa-confirm-desc{font-size:13px}
+    }
   </style>
   <link rel="stylesheet" href="/assets/ui-upgrade.css" />
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -841,6 +1002,32 @@
   <button class="back-to-top" id="backToTop" aria-label="回到顶部">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- IPA Download Confirm Modal -->
+  <div class="ipa-confirm-modal" id="ipaConfirmModal">
+    <div class="ipa-confirm-box">
+      <div class="ipa-confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="ipa-confirm-title"><span class="zh">IPA 已停止更新</span><span class="en">IPA Discontinued</span></h3>
+      <div class="ipa-confirm-version">V11</div>
+      <p class="ipa-confirm-desc">
+        <span class="zh">猪来了 nextbot 的 IPA 版本已经永久停止更新。<br>当前版本：V11，请确认是否继续下载。</span>
+        <span class="en">The IPA version of Zhulaile nextbot has been permanently discontinued.<br>Current version: V11. Do you want to continue downloading?</span>
+      </p>
+      <div class="ipa-confirm-btns">
+        <button class="ipa-confirm-cancel" id="ipaConfirmCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
+        <button class="ipa-confirm-ok" id="ipaConfirmOk"><span class="zh">确认下载</span><span class="en">Continue</span></button>
+      </div>
+    </div>
+  </div>
 
   <!-- Link Verification Modal -->
   <div class="verify-modal" id="linkVerifyModal">
@@ -1444,6 +1631,18 @@
       }).catch(function(){el.textContent='---';});
     })();
 
+    // ---------- IPA Download Confirm Modal ----------
+    var pendingIpaUrl=null;
+    function openIpaConfirmModal(url){
+      pendingIpaUrl=url;
+      var modal=document.getElementById('ipaConfirmModal');
+      if(modal){modal.classList.add('show');}
+    }
+    function closeIpaConfirmModal(){
+      var modal=document.getElementById('ipaConfirmModal');
+      if(modal){modal.classList.remove('show');}
+      pendingIpaUrl=null;
+    }
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
@@ -1673,9 +1872,50 @@
       dlLinks.forEach(function(link){
         link.addEventListener('click',function(e){
           e.preventDefault();
-          openLinkVerifyModal(link.href,true);
+          // IPA 下载先弹确认弹窗
+          if(link.href.indexOf('.ipa')!==-1){
+            openIpaConfirmModal(link.href);
+          }else{
+            openLinkVerifyModal(link.href,true);
+          }
         });
       });
+      // IPA 确认弹窗按钮
+      var ipaCancel=document.getElementById('ipaConfirmCancel');
+      if(ipaCancel){ipaCancel.addEventListener('click',closeIpaConfirmModal);}
+      var ipaOk=document.getElementById('ipaConfirmOk');
+      if(ipaOk){ipaOk.addEventListener('click',function(){
+        var url=pendingIpaUrl;
+        closeIpaConfirmModal();
+        if(url){openLinkVerifyModal(url,true);}
+      });}
+      var ipaModal=document.getElementById('ipaConfirmModal');
+      if(ipaModal){ipaModal.addEventListener('click',function(e){if(e.target===ipaModal)closeIpaConfirmModal();});}
+
+      // Mobile Nav Toggle
+      var navToggle=document.getElementById('navToggle');
+      var navLinks=document.getElementById('navLinks');
+      var navOverlay=document.getElementById('navOverlay');
+      if(navToggle&&navLinks){
+        navToggle.addEventListener('click',function(){
+          navToggle.classList.toggle('open');
+          navLinks.classList.toggle('open');
+          if(navOverlay){navOverlay.classList.toggle('show');}
+        });
+        // 点击链接后自动关闭菜单
+        navLinks.querySelectorAll('a').forEach(function(a){
+          a.addEventListener('click',function(){
+            navToggle.classList.remove('open');
+            navLinks.classList.remove('open');
+            if(navOverlay){navOverlay.classList.remove('show');}
+          });
+        });
+        if(navOverlay){navOverlay.addEventListener('click',function(){
+          navToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          navOverlay.classList.remove('show');
+        });}
+      }
     })();
 
     // ---------- Feedback System Events ----------
