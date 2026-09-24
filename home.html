@@ -369,6 +369,16 @@
     .link-arrow{width:20px;height:20px;color:var(--text-muted);flex-shrink:0;transition:transform .3s ease,color .3s ease}
     .link-card:hover .link-arrow{transform:translate(4px,-4px);color:var(--text)}
     @media(max-width:480px){.link-card{padding:18px;gap:14px}.link-icon{width:40px;height:40px}.link-info h3{font-size:16px}}
+    /* Stats Grid */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+    .stat-card{
+      padding:28px 20px;border:1px solid var(--border);border-radius:16px;
+      background:var(--card-bg);text-align:center;transition:all .3s ease;
+    }
+    .stat-card:hover{border-color:var(--border-hover);background:var(--card-hover);transform:translateY(-2px)}
+    .stat-num{font-size:48px;font-weight:900;color:var(--accent);line-height:1;margin-bottom:12px;letter-spacing:-.02em}
+    .stat-label{font-size:14px;color:var(--text-secondary);font-weight:500}
+    .stats-foot{margin-top:24px;font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6}
     /* ---------- Link Verification Modal ---------- */
     .verify-modal{
       position:fixed;inset:0;z-index:9998;
@@ -581,7 +591,7 @@
       /* 移动端遮罩 */
       .nav-overlay{
         position:fixed;inset:0;background:rgba(0,0,0,0.5);
-        z-index:101;opacity:0;visibility:hidden;transition:all .3s ease;
+        z-index:99;opacity:0;visibility:hidden;transition:all .3s ease;
         backdrop-filter:blur(4px);
       }
       .nav-overlay.show{opacity:1;visibility:visible}
@@ -603,6 +613,9 @@
       .skill-card{padding:16px}
       .link-card{padding:16px;gap:12px}
       .link-info h3{font-size:15px}
+      .stats-grid{grid-template-columns:1fr;gap:12px;margin-top:24px}
+      .stat-card{padding:20px 16px}
+      .stat-num{font-size:36px}
       .verify-modal-box{padding:28px 20px}
       .turnstile-box{padding:28px 16px}
     }
@@ -970,6 +983,7 @@
         </a>
       </div>
     </div>
+  </section>
 
   <!-- ============ 09 站点数据看板 ============ -->
   <section class="section" id="stats" style="padding-block:clamp(80px,10vw,140px)">
@@ -997,8 +1011,6 @@
         <span class="en">Updates every minute · aggregates only · no personal tracking</span>
       </p>
     </div>
-  </section>
-
   </section>
 
   <footer class="footer">
@@ -1645,6 +1657,7 @@
 
     // ---------- IPA Download Confirm Modal ----------
     var pendingIpaUrl=null;
+    var pendingIpaElement=null;
     function openIpaConfirmModal(url){
       pendingIpaUrl=url;
       var modal=document.getElementById('ipaConfirmModal');
@@ -1654,10 +1667,12 @@
       var modal=document.getElementById('ipaConfirmModal');
       if(modal){modal.classList.remove('show');}
       pendingIpaUrl=null;
+      pendingIpaElement=null;
     }
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
+    var pendingLinkElement=null;
     var linkVerifyPoller=null;
     var linkWidgetId=null;
     function renderLinkTurnstile(){
@@ -1685,12 +1700,13 @@
         }
       },300);
     }
-    function openLinkVerifyModal(url,isDownload){
+    function openLinkVerifyModal(url,isDownload,element){
       // Bots: bypass external link verification (SEO needs to follow links),
       // but NEVER bypass download verification.
       if(isBot()&&!isDownload){return true;}
       pendingLinkUrl=url;
       pendingLinkIsDownload=isDownload;
+      pendingLinkElement=element||null;
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
       if(window.turnstile){renderLinkTurnstile();}
@@ -1701,6 +1717,7 @@
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
+      pendingLinkElement=null;
       linkWidgetId=null;
       // Reset button states
       var turnstileEl=document.getElementById('linkTurnstile');
@@ -1717,14 +1734,18 @@
         if(pendingLinkIsDownload){
           // 等Turnstile成功动画跑完再触发下载
           setTimeout(function(){
-            {
+            if(pendingLinkElement && pendingLinkElement.classList.contains('blob-download')){
+              // 使用blob方式下载（修复Safari问题）
+              triggerBlobDownload(pendingLinkElement);
+            }else{
+              // 原生下载
               var a=document.createElement('a');
               a.href=pendingLinkUrl;a.download='';a.style.display='none';
               document.body.appendChild(a);
               a.click();
               setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
-              setTimeout(closeLinkVerifyModal,500);
             }
+            setTimeout(closeLinkVerifyModal,500);
           }, 1500);
         }else{
           // 等Turnstile成功动画跑完（约1.5秒），再隐藏验证框显示跳转按钮
@@ -1886,9 +1907,10 @@
           e.preventDefault();
           // IPA 下载先弹确认弹窗
           if(link.href.indexOf('.ipa')!==-1){
+            pendingIpaElement=link;
             openIpaConfirmModal(link.href);
           }else{
-            openLinkVerifyModal(link.href,true);
+            openLinkVerifyModal(link.href,true,link);
           }
         });
       });
@@ -1898,8 +1920,9 @@
       var ipaOk=document.getElementById('ipaConfirmOk');
       if(ipaOk){ipaOk.addEventListener('click',function(){
         var url=pendingIpaUrl;
+        var element=pendingIpaElement;
         closeIpaConfirmModal();
-        if(url){openLinkVerifyModal(url,true);}
+        if(url){openLinkVerifyModal(url,true,element);}
       });}
       var ipaModal=document.getElementById('ipaConfirmModal');
       if(ipaModal){ipaModal.addEventListener('click',function(e){if(e.target===ipaModal)closeIpaConfirmModal();});}
@@ -2156,48 +2179,43 @@
       });
     })();
     // ========== Fetch+Blob 强制下载（修复 Safari 下载成 HTML）==========
-    (function(){
-      var links=document.querySelectorAll('.blob-download');
-      links.forEach(function(link){
-        link.addEventListener('click',function(e){
-          e.preventDefault();
-          var url=link.getAttribute('href');
-          var filename=url.split('/').pop();
-          link.style.opacity='0.6';
-          link.style.pointerEvents='none';
-          var origText=link.innerHTML;
-          link.innerHTML='<span class="zh">下载中...</span><span class="en">Downloading...</span>';
-          
-          fetch(url,{credentials:'include'}).then(function(r){
-            if(!r.ok)throw new Error('HTTP '+r.status);
-            return r.blob();
-          }).then(function(blob){
-            var blobUrl=URL.createObjectURL(blob);
-            var a=document.createElement('a');
-            a.href=blobUrl;
-            a.download=filename;
-            a.style.display='none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(function(){URL.revokeObjectURL(blobUrl);},1000);
-            link.innerHTML=origText;
-            link.style.opacity='';
-            link.style.pointerEvents='';
-          }).catch(function(err){
-            console.error('下载失败:',err);
-            link.innerHTML=origText;
-            link.style.opacity='';
-            link.style.pointerEvents='';
-            // 失败后用原生方式下载
-            var a=document.createElement('a');
-            a.href=url;a.download=filename;a.style.display='none';
-            document.body.appendChild(a);a.click();
-            setTimeout(function(){document.body.removeChild(a);},1000);
-          });
-        });
+    // 封装成全局函数，验证通过后调用
+    function triggerBlobDownload(link){
+      var url=link.getAttribute('href');
+      var filename=url.split('/').pop();
+      link.style.opacity='0.6';
+      link.style.pointerEvents='none';
+      var origText=link.innerHTML;
+      link.innerHTML='<span class="zh">下载中...</span><span class="en">Downloading...</span>';
+      
+      fetch(url,{credentials:'include'}).then(function(r){
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.blob();
+      }).then(function(blob){
+        var blobUrl=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=blobUrl;
+        a.download=filename;
+        a.style.display='none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(blobUrl);},1000);
+        link.innerHTML=origText;
+        link.style.opacity='';
+        link.style.pointerEvents='';
+      }).catch(function(err){
+        console.error('下载失败:',err);
+        link.innerHTML=origText;
+        link.style.opacity='';
+        link.style.pointerEvents='';
+        // 失败后用原生方式下载
+        var a=document.createElement('a');
+        a.href=url;a.download=filename;a.style.display='none';
+        document.body.appendChild(a);a.click();
+        setTimeout(function(){document.body.removeChild(a);},1000);
       });
-    })();
+    }
   </script>
 
   <script>
