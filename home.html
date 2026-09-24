@@ -121,7 +121,7 @@
     body[data-lang="zh"] .en{display:none !important}
     body[data-lang="en"] .zh{display:none !important}
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
-    .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
     .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none;-webkit-user-select:none;cursor:pointer;touch-action:manipulation}
     .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
@@ -527,7 +527,7 @@
         padding:80px 24px 32px;box-shadow:-8px 0 32px rgba(0,0,0,0.1);
         transition:transform .35s cubic-bezier(.22,1,.36,1);
         border-left:1px solid var(--border);
-        z-index:102;visibility:hidden;
+        z-index:100;visibility:hidden;list-style:none;margin:0;
       }
       .nav-links.open{transform:translateX(0);visibility:visible}
       .nav-links li{width:100%;border-bottom:1px solid var(--border)}
@@ -693,17 +693,6 @@
   </div>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
-      <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
-      <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
-      <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
-      <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
-      <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
-      <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
-      <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
-      <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
-    </ul>
     <div class="nav-right">
       <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
         <span class="lang-zh">中文</span><span class="lang-divider">|</span><span class="lang-en">EN</span>
@@ -717,6 +706,19 @@
       <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     </div>
   </nav>
+
+  <!-- 侧边导航菜单（独立于nav，避免层叠上下文问题） -->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+    <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
+    <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
+    <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
+    <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
+    <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
+    <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+    <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
+    <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
+  </ul>
 
   <section class="section" id="hero">
     <div class="section-inner">
