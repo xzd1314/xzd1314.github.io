@@ -519,25 +519,38 @@
       .nav.scrolled{padding:10px 20px}
       .nav-logo{font-size:18px}
       .nav-links{
-        position:fixed;top:0;right:0;left:auto;
-        transform:translateX(100%);
-        width:280px;max-width:80vw;height:100dvh;
-        background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-        flex-direction:column;align-items:flex-start;gap:0;
-        padding:80px 24px 32px;box-shadow:-8px 0 32px rgba(0,0,0,0.1);
-        transition:transform .35s cubic-bezier(.22,1,.36,1);
-        border-left:1px solid var(--border);
-        z-index:100;visibility:hidden;list-style:none;margin:0;
+        position:fixed !important;
+        top:0 !important;
+        right:-320px !important;
+        width:280px !important;
+        max-width:80vw !important;
+        height:100vh !important;
+        background:var(--nav-bg) !important;
+        backdrop-filter:blur(20px) !important;
+        -webkit-backdrop-filter:blur(20px) !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        gap:0 !important;
+        padding:80px 24px 32px !important;
+        box-shadow:-8px 0 32px rgba(0,0,0,0.1) !important;
+        transition:right .35s cubic-bezier(.22,1,.36,1) !important;
+        border-left:1px solid var(--border) !important;
+        z-index:1000 !important;
+        list-style:none !important;
+        margin:0 !important;
+        display:flex !important;
       }
-      .nav-links.open{transform:translateX(0);visibility:visible}
+      .nav-links.open{
+        right:0 !important;
+      }
       .nav-links li{width:100%;border-bottom:1px solid var(--border)}
       .nav-links a{display:block;padding:14px 0;font-size:16px}
       .nav-links a::after{display:none}
-      .nav-mobile-toggle{display:block;z-index:103;position:relative}
+      .nav-mobile-toggle{display:block;z-index:1002;position:relative}
       .nav-mobile-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
       .nav-mobile-toggle.open span:nth-child(2){opacity:0}
       .nav-mobile-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-      .nav-right{gap:6px;position:relative;z-index:103}
+      .nav-right{gap:6px;position:relative;z-index:1002}
       .nav-btn{padding:6px 10px;font-size:12px}
       .nav-btn .btn-text{display:none}
 
@@ -591,7 +604,7 @@
       /* 移动端遮罩 */
       .nav-overlay{
         position:fixed;inset:0;background:rgba(0,0,0,0.5);
-        z-index:99;opacity:0;visibility:hidden;transition:all .3s ease;
+        z-index:999;opacity:0;visibility:hidden;transition:all .3s ease;
         backdrop-filter:blur(4px);
       }
       .nav-overlay.show{opacity:1;visibility:visible}
