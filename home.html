@@ -127,11 +127,7 @@
     .nav{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
     .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none!important;-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;-webkit-touch-callout:none;cursor:pointer;touch-action:manipulation}
-    .nav-links{
-      display:flex;align-items:center;gap:32px;list-style:none;margin:0;padding:0;
-      position:fixed;top:0;left:50%;transform:translateX(-50%);
-      height:64px;z-index:99;
-    }
+    .nav-links{display:flex;align-items:center;gap:32px;list-style:none;margin:0;padding:0}
     .nav-links a{font-size:14px;font-weight:500;color:var(--text-secondary);position:relative;transition:color .2s ease}
     .nav-links a:hover{color:var(--text)}
     .nav-links a::after{content:'';position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--text);transition:width .3s ease}
@@ -526,30 +522,14 @@
       .nav.scrolled{padding:10px 20px}
       .nav-logo{font-size:18px}
       .nav-links{
-        position:fixed !important;
-        top:0 !important;
-        right:-100% !important;
-        left:auto !important;
-        transform:none !important;
-        width:100% !important;
-        height:100vh !important;
-        z-index:100 !important;
-        background:var(--nav-bg) !important;
-        backdrop-filter:blur(20px) !important;
-        -webkit-backdrop-filter:blur(20px) !important;
-        flex-direction:column !important;
-        align-items:center !important;
-        justify-content:center !important;
-        gap:24px !important;
-        padding:80px 24px 32px !important;
-        transition:right .4s cubic-bezier(.22,1,.36,1) !important;
-        list-style:none !important;
-        margin:0 !important;
-        display:flex !important;
+        position:fixed;top:0;right:-100%;width:100%;height:100vh;
+        flex-direction:column;justify-content:center;
+        background:var(--nav-bg);backdrop-filter:blur(20px);
+        transition:right .4s cubic-bezier(.22,1,.36,1);
+        gap:32px;list-style:none;margin:0;padding:0;
       }
-      .nav-links.open{
-        right:0 !important;
-      }
+      .nav-links.open{right:0}
+      .nav-links a{font-size:24px}
       .nav-links li{width:100%;border-bottom:1px solid var(--border)}
       .nav-links a{display:block;padding:14px 0;font-size:16px}
       .nav-links a::after{display:none}
@@ -607,14 +587,6 @@
         flex-direction:column;gap:12px;padding:24px 20px;
         text-align:center;font-size:12px;
       }
-
-      /* 移动端遮罩 */
-      .nav-overlay{
-        position:fixed;inset:0;background:rgba(0,0,0,0.5);
-        z-index:98;opacity:0;visibility:hidden;transition:all .3s ease;
-        backdrop-filter:blur(4px);
-      }
-      .nav-overlay.show{opacity:1;visibility:visible}
 
       /* 移动端隐藏背景canvas，避免干扰滚动 */
       .bg-canvas{display:none!important}
@@ -713,6 +685,17 @@
   </div>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+      <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
+      <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
+      <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
+      <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
+      <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
+      <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+      <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
+      <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
+    </ul>
     <div class="nav-right">
       <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
         <span class="lang-zh">中文</span><span class="lang-divider">|</span><span class="lang-en">EN</span>
@@ -726,19 +709,6 @@
       <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     </div>
   </nav>
-
-  <!-- 导航菜单：独立放在body最外层，避免被nav的毛玻璃影响定位 -->
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
-    <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
-    <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
-    <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
-    <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
-    <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
-    <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
-    <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
-    <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
-  </ul>
 
   <section class="section" id="hero">
     <div class="section-inner">
@@ -1049,8 +1019,6 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
 
-  <!-- Mobile Nav Overlay -->
-  <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- IPA Download Confirm Modal -->
   <div class="ipa-confirm-modal" id="ipaConfirmModal">
@@ -1972,26 +1940,18 @@
       // Mobile Nav Toggle
       var navToggle=document.getElementById('navToggle');
       var navLinks=document.getElementById('navLinks');
-      var navOverlay=document.getElementById('navOverlay');
       if(navToggle&&navLinks){
         navToggle.addEventListener('click',function(){
           navToggle.classList.toggle('open');
           navLinks.classList.toggle('open');
-          if(navOverlay){navOverlay.classList.toggle('show');}
         });
         // 点击链接后自动关闭菜单
         navLinks.querySelectorAll('a').forEach(function(a){
           a.addEventListener('click',function(){
             navToggle.classList.remove('open');
             navLinks.classList.remove('open');
-            if(navOverlay){navOverlay.classList.remove('show');}
           });
         });
-        if(navOverlay){navOverlay.addEventListener('click',function(){
-          navToggle.classList.remove('open');
-          navLinks.classList.remove('open');
-          navOverlay.classList.remove('show');
-        });}
       }
     })();
 
