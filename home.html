@@ -124,7 +124,7 @@
     body[data-lang="zh"] .en{display:none !important}
     body[data-lang="en"] .zh{display:none !important}
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
-    .nav{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
     .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none!important;-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;-webkit-touch-callout:none;cursor:pointer;touch-action:manipulation}
     .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
@@ -538,7 +538,6 @@
         box-shadow:-8px 0 32px rgba(0,0,0,0.1) !important;
         transition:right .35s cubic-bezier(.22,1,.36,1) !important;
         border-left:1px solid var(--border) !important;
-        z-index:1000 !important;
         list-style:none !important;
         margin:0 !important;
         display:flex !important;
@@ -607,7 +606,7 @@
       /* 移动端遮罩 */
       .nav-overlay{
         position:fixed;inset:0;background:rgba(0,0,0,0.5);
-        z-index:999;opacity:0;visibility:hidden;transition:all .3s ease;
+        z-index:99;opacity:0;visibility:hidden;transition:all .3s ease;
         backdrop-filter:blur(4px);
       }
       .nav-overlay.show{opacity:1;visibility:visible}
@@ -709,6 +708,17 @@
   </div>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+      <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
+      <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
+      <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
+      <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
+      <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
+      <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+      <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
+      <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
+    </ul>
     <div class="nav-right">
       <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
         <span class="lang-zh">中文</span><span class="lang-divider">|</span><span class="lang-en">EN</span>
@@ -722,19 +732,6 @@
       <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     </div>
   </nav>
-
-  <!-- 侧边导航菜单（独立于nav，避免层叠上下文问题） -->
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
-    <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
-    <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
-    <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
-    <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
-    <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
-    <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
-    <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
-    <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
-  </ul>
 
   <section class="section" id="hero">
     <div class="section-inner">
@@ -1652,25 +1649,45 @@
     (function(){
       var el=document.getElementById('visitorCount');
       if(!el)return;
-      fetch(SUPABASE_URL+'/rest/v1/rpc/increment_visitor_count',{
-        method:'POST',
-        headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}
-      }).then(function(r){return r.json();}).then(function(result){
-        if(result!==undefined&&result!==null){
-          var target=typeof result==='number'?result:(result.result||0);
-          var start=0,duration=1500,startTime=null;
-          function step(ts){
-            if(!startTime)startTime=ts;
-            var progress=Math.min((ts-startTime)/duration,1);
-            var eased=1-Math.pow(1-progress,3);
-            el.textContent=Math.round(start+(target-start)*eased).toLocaleString();
-            if(progress<1)requestAnimationFrame(step);
+      
+      function fetchVisitor(retries){
+        // 5秒超时
+        var controller=new AbortController();
+        var timeoutId=setTimeout(function(){controller.abort();},5000);
+        
+        fetch(SUPABASE_URL+'/rest/v1/rpc/increment_visitor_count',{
+          method:'POST',
+          headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+          signal:controller.signal
+        }).then(function(r){return r.json();}).then(function(result){
+          clearTimeout(timeoutId);
+          if(result!==undefined&&result!==null){
+            var target=typeof result==='number'?result:(result.result||0);
+            var start=0,duration=1500,startTime=null;
+            function step(ts){
+              if(!startTime)startTime=ts;
+              var progress=Math.min((ts-startTime)/duration,1);
+              var eased=1-Math.pow(1-progress,3);
+              el.textContent=Math.round(start+(target-start)*eased).toLocaleString();
+              if(progress<1)requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }else{
+            el.textContent='---';
           }
-          requestAnimationFrame(step);
-        }else{
-          el.textContent='---';
-        }
-      }).catch(function(){el.textContent='---';});
+        }).catch(function(){
+          clearTimeout(timeoutId);
+          // 失败重试一次
+          if(retries>0){
+            setTimeout(function(){fetchVisitor(retries-1);},1000);
+          }else{
+            el.textContent='---';
+          }
+        });
+      }
+      
+      // 页面加载后延迟500ms开始请求，避免和页面加载抢资源
+      setTimeout(function(){fetchVisitor(1);},500);
     })();
 
     // ---------- IPA Download Confirm Modal ----------
