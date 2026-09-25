@@ -26,7 +26,9 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Person",
+    "@graph": [
+    {
+      "@type": "Person",
     "name": "xzd1314",
     "url": "https://xzd1314.top/home.html",
     "image": "https://xzd1314.top/assets/avatar.jpg",
@@ -35,6 +37,17 @@
       "https://github.com/xzd1314",
       "https://www.roblox.com/users/4112496357",
       "https://space.bilibili.com/3546384332491100"
+    ],
+    "knowsAbout": ["Roblox", "Lua", "HTML/CSS/JS", "React", "Forge modding", "Game Development"]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "xzd1314 个人主页", "item": "https://xzd1314.top/" },
+        { "@type": "ListItem", "position": 2, "name": "关于", "item": "https://xzd1314.top/#about" },
+        { "@type": "ListItem", "position": 3, "name": "项目", "item": "https://xzd1314.top/#projects" }
+      ]
+    }
     ]
   }
   </script>
@@ -44,6 +57,9 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e40af" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0d0f17" media="(prefers-color-scheme: dark)" />
   <style>
     /* 1.4MB 的自定义字体只在 >=769px 加载；窄屏直接用系统字体，
        不匹配 media 时浏览器根本不会发起这个请求 */
@@ -99,13 +115,13 @@
       --cookie-border: rgba(255,255,255,0.1);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:background .4s ease,color .4s ease}
+    html{scroll-behavior:smooth;overflow-x:hidden;max-width:100vw}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;max-width:100vw;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:background .4s ease,color .4s ease}
     a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
     body[data-lang="zh"] .en{display:none !important}
     body[data-lang="en"] .zh{display:none !important}
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--scrollbar-track)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
-    .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:padding .3s ease,background .3s ease,border-color .3s ease}
     .nav.scrolled{padding:14px 48px;border-bottom:1px solid var(--border)}
     .nav-logo{font-weight:900;font-size:20px;letter-spacing:-.02em;color:var(--text);font-family:'Cascadia Mono','Cascadia Code','Consolas','JetBrains Mono',monospace;font-style:italic;user-select:none;-webkit-user-select:none;cursor:pointer;touch-action:manipulation}
     .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
@@ -319,55 +335,6 @@
     .turnstile-desc{font-size:14px;color:var(--text-secondary,#888);margin-bottom:24px;line-height:1.6}
     .turnstile-box .cf-turnstile{display:flex;justify-content:center}
     @media(max-width:480px){.turnstile-box{padding:32px 20px}.turnstile-title{font-size:18px}.turnstile-desc{font-size:13px}}
-    /* ---------- Cookie Banner ---------- */
-    .cookie-banner{
-      position:fixed;left:0;right:0;bottom:0;z-index:200;
-      background:var(--cookie-bg);
-      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-      border-top:1px solid var(--cookie-border);
-      padding:32px 48px 28px;
-      transform:translateY(100%);
-      transition:transform .5s cubic-bezier(.22,1,.36,1);
-      max-height:50vh;overflow-y:auto;
-    }
-    .cookie-banner.show{transform:translateY(0)}
-    .cookie-inner{max-width:900px;margin:0 auto}
-    .cookie-title{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--text);display:flex;align-items:center;gap:10px}
-    .cookie-title svg{width:22px;height:22px;opacity:.8}
-    .cookie-text{font-size:14px;line-height:1.7;color:var(--text-secondary);margin-bottom:20px}
-    .cookie-buttons{display:flex;gap:12px;flex-wrap:wrap}
-    .cookie-btn{
-      padding:10px 28px;border-radius:100px;font-size:14px;font-weight:600;
-      cursor:pointer;font-family:inherit;transition:all .25s ease;border:1px solid var(--border);
-    }
-    .cookie-btn-accept{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .cookie-btn-accept:hover{opacity:.85;transform:translateY(-1px)}
-    .cookie-btn-reject{background:transparent;color:var(--text-secondary)}
-    .cookie-btn-reject:hover{background:var(--card-hover);color:var(--text);border-color:var(--border-hover)}
-
-    @media(max-width:1200px){.skill-cards{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:1024px){.nav{padding:18px 32px}.nav.scrolled{padding:12px 32px}.section{padding:100px 32px}#skills .section-inner{grid-template-columns:1fr;gap:40px}#skills .section-left{position:static}.skill-cards{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:768px){
-      .nav{padding:16px 24px}.nav.scrolled{padding:10px 24px}
-      .nav-links{position:fixed;top:0;right:-100%;width:100%;height:100vh;flex-direction:column;justify-content:center;background:var(--nav-bg);backdrop-filter:blur(20px);transition:right .4s cubic-bezier(.22,1,.36,1);gap:32px}
-      .nav-links.open{right:0}.nav-links a{font-size:24px}
-      .nav-mobile-toggle{display:block;z-index:101}
-      .nav-mobile-toggle.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
-      .nav-mobile-toggle.active span:nth-child(2){opacity:0}
-      .nav-mobile-toggle.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
-      .nav-btn{padding:6px 10px;font-size:12px}.nav-btn .btn-text{display:none}.lang-btn .btn-text{display:inline}
-      .section{padding:80px 24px;min-height:auto}#hero{min-height:100vh}.avatar-wrap{width:120px;height:120px}
-      .skill-cards{grid-template-columns:1fr}
-      .project-item{grid-template-columns:40px 1fr;gap:20px}
-      .project-cover{height:140px;border-radius:10px}
-      .project-actions{grid-column:2;justify-content:flex-start;margin-top:8px}
-      .project-info h3{font-size:22px}
-      .project-btn{padding:10px 16px;min-height:40px}
-      .footer{flex-direction:column;gap:12px;padding:32px 24px;text-align:center}
-      .cookie-banner{padding:24px 20px 20px;max-height:60vh}
-      .cookie-btn{padding:9px 22px;font-size:13px}
-    }
-    @media(max-width:480px){.nav{padding:14px 20px}.nav.scrolled{padding:10px 20px}.section{padding:60px 20px}.hero-title{font-size:56px;font-size:clamp(48px,14vw,80px)}.section-title{font-size:44px;font-size:clamp(36px,10vw,64px)}.contact-cta{font-size:36px;font-size:clamp(32px,8vw,48px)}.avatar-wrap{width:100px;height:100px}.skill-card{padding:20px}.project-info h3{font-size:18px}.contact-link{font-size:16px}.project-btn{padding:10px 14px;font-size:13px;min-height:42px}.project-cover{height:120px}.project-cover-nav{width:36px;height:36px}}
     /* ---------- Back to Top ---------- */
     .back-to-top{
       position:fixed;bottom:28px;right:28px;z-index:90;
@@ -402,6 +369,16 @@
     .link-arrow{width:20px;height:20px;color:var(--text-muted);flex-shrink:0;transition:transform .3s ease,color .3s ease}
     .link-card:hover .link-arrow{transform:translate(4px,-4px);color:var(--text)}
     @media(max-width:480px){.link-card{padding:18px;gap:14px}.link-icon{width:40px;height:40px}.link-info h3{font-size:16px}}
+    /* Stats Grid */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+    .stat-card{
+      padding:28px 20px;border:1px solid var(--border);border-radius:16px;
+      background:var(--card-bg);text-align:center;transition:all .3s ease;
+    }
+    .stat-card:hover{border-color:var(--border-hover);background:var(--card-hover);transform:translateY(-2px)}
+    .stat-num{font-size:48px;font-weight:900;color:var(--accent);line-height:1;margin-bottom:12px;letter-spacing:-.02em}
+    .stat-label{font-size:14px;color:var(--text-secondary);font-weight:500}
+    .stats-foot{margin-top:24px;font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6}
     /* ---------- Link Verification Modal ---------- */
     .verify-modal{
       position:fixed;inset:0;z-index:9998;
@@ -520,6 +497,195 @@
     @keyframes weirdSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
     @keyframes weirdGradient{0%{background-position:0% 50%}100%{background-position:600% 50%}}
     @keyframes weirdPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+    /* ========== 响应式布局优化 ========== */
+    /* 平板端 (<=1024px) */
+    @media (max-width: 1024px) {
+      .nav{padding:16px 32px}
+      .nav.scrolled{padding:12px 32px}
+      .section{padding:100px 32px}
+      .section-inner{max-width:100%}
+      #skills .section-inner{grid-template-columns:1fr;gap:48px}
+      #skills .section-left{position:static}
+      .skill-cards{grid-template-columns:repeat(2,1fr)}
+      .project-item{gap:24px;padding:28px 0}
+      .project-info h3{font-size:24px}
+      .footer{padding:32px}
+    }
+    /* 手机端 (<=768px) */
+    @media (max-width: 768px) {
+      /* 导航栏 */
+      .nav{padding:14px 20px}
+      .nav.scrolled{padding:10px 20px}
+      .nav-logo{font-size:18px}
+      .nav-links{
+        position:fixed !important;
+        top:0 !important;
+        right:-320px !important;
+        width:280px !important;
+        max-width:80vw !important;
+        height:100vh !important;
+        background:var(--nav-bg) !important;
+        backdrop-filter:blur(20px) !important;
+        -webkit-backdrop-filter:blur(20px) !important;
+        flex-direction:column !important;
+        align-items:flex-start !important;
+        gap:0 !important;
+        padding:80px 24px 32px !important;
+        box-shadow:-8px 0 32px rgba(0,0,0,0.1) !important;
+        transition:right .35s cubic-bezier(.22,1,.36,1) !important;
+        border-left:1px solid var(--border) !important;
+        z-index:1000 !important;
+        list-style:none !important;
+        margin:0 !important;
+        display:flex !important;
+      }
+      .nav-links.open{
+        right:0 !important;
+      }
+      .nav-links li{width:100%;border-bottom:1px solid var(--border)}
+      .nav-links a{display:block;padding:14px 0;font-size:16px}
+      .nav-links a::after{display:none}
+      .nav-mobile-toggle{display:block;z-index:1002;position:relative}
+      .nav-mobile-toggle.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+      .nav-mobile-toggle.open span:nth-child(2){opacity:0}
+      .nav-mobile-toggle.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+      .nav-right{gap:6px;position:relative;z-index:1002}
+      .nav-btn{padding:6px 10px;font-size:12px}
+      .nav-btn .btn-text{display:none}
+
+      /* 区块通用 */
+      .section{padding:80px 20px;min-height:auto;position:relative;z-index:1;width:100%;max-width:100vw;overflow:hidden}
+      .section-inner{max-width:100%!important;width:100%;padding:0}
+      .section-title{font-size:clamp(36px,10vw,56px);margin-bottom:20px}
+      .section-label{margin-bottom:16px;font-size:11px}
+      .section-desc{font-size:15px}
+
+      /* Hero区 */
+      #hero .section-inner{gap:24px}
+      .avatar-wrap{width:120px;height:120px}
+      .hero-title{font-size:clamp(48px,15vw,96px)}
+      .hero-slogan{font-size:15px}
+
+      /* 技能区 */
+      .skill-cards{grid-template-columns:1fr;gap:12px}
+      .skill-card{padding:20px;transform:none!important}
+      .skill-card > *{transform:none!important}
+      .skill-name{font-size:17px}
+
+      /* 项目区 */
+      .project-item{
+        grid-template-columns:1fr;gap:16px;padding:24px 0;
+      }
+      .project-item:hover{padding-left:0}
+      .project-num{font-size:12px}
+      .project-info h3{font-size:22px}
+      .project-info p{font-size:14px;line-height:1.6}
+      .project-btns{justify-content:flex-start;gap:8px}
+      .project-btn{padding:8px 16px;font-size:13px;transform:none!important}
+      .project-cover{height:180px;margin-bottom:12px}
+      .project-tag{font-size:11px;padding:4px 10px}
+
+      /* 禁用3D悬停效果 */
+      .project-card, .skill-card{transform:none!important}
+      .project-card > *, .skill-card > *{transform:none!important}
+
+      /* 联系区 */
+      .contact-cta{font-size:clamp(32px,8vw,48px);margin-bottom:32px}
+      .contact-link{font-size:16px}
+      .feedback-input{padding:12px 14px;font-size:14px}
+
+      /* 页脚 */
+      .footer{
+        flex-direction:column;gap:12px;padding:24px 20px;
+        text-align:center;font-size:12px;
+      }
+
+      /* 移动端遮罩 */
+      .nav-overlay{
+        position:fixed;inset:0;background:rgba(0,0,0,0.5);
+        z-index:999;opacity:0;visibility:hidden;transition:all .3s ease;
+        backdrop-filter:blur(4px);
+      }
+      .nav-overlay.show{opacity:1;visibility:visible}
+
+      /* 移动端隐藏背景canvas，避免干扰滚动 */
+      .bg-canvas{display:none!important}
+      .cursor-trail{display:none!important}
+    }
+
+    /* 小手机 (<=480px) */
+    @media (max-width: 480px) {
+      .section{padding:64px 16px}
+      .nav{padding:12px 16px}
+      .hero-title{font-size:44px}
+      .avatar-wrap{width:100px;height:100px}
+      .project-cover{height:160px}
+      .project-btns{flex-direction:column;align-items:stretch}
+      .project-btn{justify-content:center}
+      .skill-card{padding:16px}
+      .link-card{padding:16px;gap:12px}
+      .link-info h3{font-size:15px}
+      .stats-grid{grid-template-columns:1fr;gap:12px;margin-top:24px}
+      .stat-card{padding:20px 16px}
+      .stat-num{font-size:36px}
+      .verify-modal-box{padding:28px 20px}
+      .turnstile-box{padding:28px 16px}
+    }
+
+    /* ========== IPA 确认弹窗 ========== */
+    .ipa-confirm-modal{
+      position:fixed;inset:0;z-index:9997;
+      background:rgba(0,0,0,0.75);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;visibility:hidden;transition:all .3s ease;
+      padding:20px;
+    }
+    [data-theme="light"] .ipa-confirm-modal{background:rgba(255,255,255,0.7)}
+    .ipa-confirm-modal.show{opacity:1;visibility:visible}
+    .ipa-confirm-box{
+      background:var(--card-bg);border:1px solid var(--border);
+      border-radius:16px;padding:32px 26px;text-align:center;
+      max-width:400px;width:100%;
+      transform:scale(0.95);transition:transform .3s ease;
+      box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    }
+    .ipa-confirm-modal.show .ipa-confirm-box{transform:scale(1)}
+    .ipa-confirm-icon{
+      width:56px;height:56px;margin:0 auto 16px;
+      background:rgba(245,158,11,0.12);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      color:#f59e0b;
+    }
+    .ipa-confirm-icon svg{width:28px;height:28px}
+    .ipa-confirm-title{font-size:19px;font-weight:800;margin-bottom:12px;color:var(--text)}
+    .ipa-confirm-desc{font-size:14px;color:var(--text-secondary);margin-bottom:24px;line-height:1.7}
+    .ipa-confirm-version{
+      display:inline-block;padding:6px 14px;border-radius:100px;
+      background:rgba(245,158,11,0.1);color:#f59e0b;
+      font-size:13px;font-weight:700;margin-bottom:20px;
+    }
+    .ipa-confirm-btns{display:flex;gap:10px;justify-content:center}
+    .ipa-confirm-cancel{
+      flex:1;padding:11px 20px;border-radius:100px;
+      border:1px solid var(--border);background:transparent;
+      color:var(--text-secondary);font-size:14px;font-weight:600;
+      cursor:pointer;font-family:inherit;transition:all .25s ease;
+    }
+    .ipa-confirm-cancel:hover{background:var(--card-hover);color:var(--text)}
+    .ipa-confirm-ok{
+      flex:1;padding:11px 20px;border-radius:100px;border:none;
+      background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
+      font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+      transition:all .25s ease;box-shadow:0 4px 14px rgba(245,158,11,0.3);
+    }
+    .ipa-confirm-ok:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,0.4)}
+    @media(max-width:480px){
+      .ipa-confirm-box{padding:26px 20px}
+      .ipa-confirm-title{font-size:17px}
+      .ipa-confirm-desc{font-size:13px}
+    }
   </style>
   <link rel="stylesheet" href="/assets/ui-upgrade.css" />
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -540,14 +706,6 @@
   </div>
   <nav class="nav" id="nav">
     <a href="#hero" class="nav-logo">xzd1314.</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
-      <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
-      <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
-      <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
-      <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
-      <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
-    </ul>
     <div class="nav-right">
       <button class="nav-btn lang-btn" id="langBtn" data-active="zh" aria-label="切换语言">
         <span class="lang-zh">中文</span><span class="lang-divider">|</span><span class="lang-en">EN</span>
@@ -561,6 +719,19 @@
       <button class="nav-mobile-toggle" id="navToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     </div>
   </nav>
+
+  <!-- 侧边导航菜单（独立于nav，避免层叠上下文问题） -->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero"><span class="zh">首页</span><span class="en">Home</span></a></li>
+    <li><a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a></li>
+    <li><a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a></li>
+    <li><a href="#about"><span class="zh">关于</span><span class="en">About</span></a></li>
+    <li><a href="#skills"><span class="zh">技能</span><span class="en">Skills</span></a></li>
+    <li><a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a></li>
+    <li><a href="#contact"><span class="zh">联系</span><span class="en">Contact</span></a></li>
+    <li><a href="#stats"><span class="zh">数据</span><span class="en">Stats</span></a></li>
+    <li><a href="#links"><span class="zh">友链</span><span class="en">Links</span></a></li>
+  </ul>
 
   <section class="section" id="hero">
     <div class="section-inner">
@@ -585,6 +756,27 @@
       </div>
     </div>
     <div class="scroll-indicator"><span>SCROLL</span><div class="line"></div></div>
+  </section>
+
+
+  <!-- ============ 02 Now · 此刻在做 ============ -->
+  <section class="section" id="now" style="padding-block:clamp(64px,8vw,128px)">
+    <div class="section-inner" style="max-width:760px">
+      <div class="now-card reveal">
+        <div class="now-head">
+          <span class="now-pulse"></span>
+          <p class="section-label" style="margin:0"><span class="zh">此刻在做</span><span class="en">Now</span></p>
+          <span class="now-date" id="nowDate"></span>
+        </div>
+        <ul class="now-list">
+          <li><span class="now-bullet"></span><span class="zh">在写这个卡片的代码（永远进行中）</span><span class="en">writing this card (always in progress)</span></li>
+          <li><span class="now-bullet"></span><span class="zh">维护 xzd1314.top 的持续优化</span><span class="en">iterating on xzd1314.top</span></li>
+          <li><span class="now-bullet"></span><span class="zh">用 Lua 给猪来了写新的 Boss 行为</span><span class="en">writing boss AI for 猪来了 in Lua</span></li>
+          <li><span class="now-bullet"></span><span class="zh">在想什么时候能再启动一个新项目</span><span class="en">figuring out the next side project</span></li>
+        </ul>
+        <p class="now-foot"><span class="zh">这是 hand-curated 的，不是自动数据 —— 我会手动更新</span><span class="en">hand-curated, not auto-generated · I update it manually</span></p>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="about">
@@ -716,6 +908,25 @@
     </div>
   </section>
 
+
+  <!-- ============ 08 公开留言墙 · 最简版 ============
+       数据来自现有 Supabase feedback 表；展示用 publishable key，
+       用户删除走 Supabase Dashboard。隐私：所有留言全量公开。 -->
+  <section class="section" id="wall">
+    <div class="section-inner" style="max-width:1100px">
+      <p class="section-label reveal"><span class="zh">公开留言墙</span><span class="en">Public Wall</span></p>
+      <h2 class="section-title reveal reveal-delay-1"><span class="zh">来自访客的话</span><span class="en">Voices from visitors</span></h2>
+      <p class="section-desc reveal reveal-delay-2" style="margin-bottom:36px">
+        <span class="zh">每个人都能看到 · 想留一条？</span>
+        <span class="en">Public to everyone · Leave one?</span>
+        <a class="wall-go" href="#contact"><span class="zh">去留言 →</span><span class="en">Send a note →</span></a>
+      </p>
+      <div class="wall-grid" id="wallGrid">
+        <div class="wall-empty"><span class="zh">加载中…</span><span class="en">Loading…</span></div>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="contact">
     <div class="section-inner">
       <p class="section-label reveal"><span class="zh">联系</span><span class="en">Contact</span></p>
@@ -789,6 +1000,34 @@
     </div>
   </section>
 
+  <!-- ============ 09 站点数据看板 ============ -->
+  <section class="section" id="stats" style="padding-block:clamp(80px,10vw,140px)">
+    <div class="section-inner" style="max-width:880px">
+      <p class="section-label reveal"><span class="zh">数据</span><span class="en">Stats</span></p>
+      <h2 class="section-title reveal reveal-delay-1" style="font-size:clamp(28px,4vw,48px);margin-bottom:40px">
+        <span class="zh">这个站点 · 实时数字</span><span class="en">This site · live numbers</span>
+      </h2>
+      <div class="stats-grid">
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-num" id="statVisitors">---</div>
+          <div class="stat-label"><span class="zh">独立访客</span><span class="en">Visitors</span></div>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-num" id="statStars">---</div>
+          <div class="stat-label"><span class="zh">GitHub Stars</span><span class="en">GitHub Stars</span></div>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-num" id="statRepos">---</div>
+          <div class="stat-label"><span class="zh">公开项目</span><span class="en">Public repos</span></div>
+        </div>
+      </div>
+      <p class="stats-foot reveal reveal-delay-3">
+        <span class="zh">数据每分钟自动更新 · 仅展示聚合数字 · 不追踪个人</span>
+        <span class="en">Updates every minute · aggregates only · no personal tracking</span>
+      </p>
+    </div>
+  </section>
+
   <footer class="footer">
     <span>&copy; 2026 xzd1314. <span class="zh">版权所有</span><span class="en">All rights reserved</span>.</span>
     <span class="visitor-count">
@@ -802,6 +1041,32 @@
   <button class="back-to-top" id="backToTop" aria-label="回到顶部">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- IPA Download Confirm Modal -->
+  <div class="ipa-confirm-modal" id="ipaConfirmModal">
+    <div class="ipa-confirm-box">
+      <div class="ipa-confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="ipa-confirm-title"><span class="zh">IPA 已停止更新</span><span class="en">IPA Discontinued</span></h3>
+      <div class="ipa-confirm-version">V11</div>
+      <p class="ipa-confirm-desc">
+        <span class="zh">猪来了 nextbot 的 IPA 版本已经永久停止更新。<br>当前版本：V11，请确认是否继续下载。</span>
+        <span class="en">The IPA version of Zhulaile nextbot has been permanently discontinued.<br>Current version: V11. Do you want to continue downloading?</span>
+      </p>
+      <div class="ipa-confirm-btns">
+        <button class="ipa-confirm-cancel" id="ipaConfirmCancel"><span class="zh">取消</span><span class="en">Cancel</span></button>
+        <button class="ipa-confirm-ok" id="ipaConfirmOk"><span class="zh">确认下载</span><span class="en">Continue</span></button>
+      </div>
+    </div>
+  </div>
 
   <!-- Link Verification Modal -->
   <div class="verify-modal" id="linkVerifyModal">
@@ -834,30 +1099,6 @@
       <p class="reply-admin-label"><span class="zh">站长回复</span><span class="en">Admin reply</span></p>
       <div class="reply-content" id="replyContent"></div>
       <button class="reply-close" id="replyClose"><span class="zh">知道了</span><span class="en">Got it</span></button>
-    </div>
-  </div>
-  <!-- Cookie Banner -->
-  <div class="cookie-banner" id="cookieBanner">
-    <div class="cookie-inner">
-      <div class="cookie-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21.59 11.13a1 1 0 0 0-.84-.14 8.49 8.49 0 0 1-7.74-7.74 1 1 0 0 0-.14-.84A10 10 0 1 0 21.59 11.13z"/>
-          <circle cx="8.5" cy="8.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/><circle cx="9" cy="15" r="1"/>
-        </svg>
-        <span class="zh">Cookie 偏好设置</span><span class="en">Cookie Preferences</span>
-      </div>
-      <p class="cookie-text">
-        <span class="zh">本网站仅使用 Cookie 记录您的深色浅色、语言等界面使用偏好，不会进行追踪统计。</span>
-        <span class="en">This website only uses cookies to remember your interface preferences such as theme and language. No tracking or analytics.</span>
-      </p>
-      <div class="cookie-buttons">
-        <button class="cookie-btn cookie-btn-accept" id="cookieAccept">
-          <span class="zh">接受</span><span class="en">Accept</span>
-        </button>
-        <button class="cookie-btn cookie-btn-reject" id="cookieReject">
-          <span class="zh">拒绝</span><span class="en">Reject</span>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -1429,9 +1670,24 @@
       }).catch(function(){el.textContent='---';});
     })();
 
+    // ---------- IPA Download Confirm Modal ----------
+    var pendingIpaUrl=null;
+    var pendingIpaElement=null;
+    function openIpaConfirmModal(url){
+      pendingIpaUrl=url;
+      var modal=document.getElementById('ipaConfirmModal');
+      if(modal){modal.classList.add('show');}
+    }
+    function closeIpaConfirmModal(){
+      var modal=document.getElementById('ipaConfirmModal');
+      if(modal){modal.classList.remove('show');}
+      pendingIpaUrl=null;
+      pendingIpaElement=null;
+    }
     // ---------- Link Verification Modal ----------
     var pendingLinkUrl=null;
     var pendingLinkIsDownload=false;
+    var pendingLinkElement=null;
     var linkVerifyPoller=null;
     var linkWidgetId=null;
     function renderLinkTurnstile(){
@@ -1459,12 +1715,13 @@
         }
       },300);
     }
-    function openLinkVerifyModal(url,isDownload){
+    function openLinkVerifyModal(url,isDownload,element){
       // Bots: bypass external link verification (SEO needs to follow links),
       // but NEVER bypass download verification.
       if(isBot()&&!isDownload){return true;}
       pendingLinkUrl=url;
       pendingLinkIsDownload=isDownload;
+      pendingLinkElement=element||null;
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.add('show');}
       if(window.turnstile){renderLinkTurnstile();}
@@ -1475,6 +1732,7 @@
       var modal=document.getElementById('linkVerifyModal');
       if(modal){modal.classList.remove('show');}
       pendingLinkUrl=null;
+      pendingLinkElement=null;
       linkWidgetId=null;
       // Reset button states
       var turnstileEl=document.getElementById('linkTurnstile');
@@ -1491,14 +1749,18 @@
         if(pendingLinkIsDownload){
           // 等Turnstile成功动画跑完再触发下载
           setTimeout(function(){
-            {
+            if(pendingLinkElement && pendingLinkElement.classList.contains('blob-download')){
+              // 使用blob方式下载（修复Safari问题）
+              triggerBlobDownload(pendingLinkElement);
+            }else{
+              // 原生下载
               var a=document.createElement('a');
               a.href=pendingLinkUrl;a.download='';a.style.display='none';
               document.body.appendChild(a);
               a.click();
               setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},100);
-              setTimeout(closeLinkVerifyModal,500);
             }
+            setTimeout(closeLinkVerifyModal,500);
           }, 1500);
         }else{
           // 等Turnstile成功动画跑完（约1.5秒），再隐藏验证框显示跳转按钮
@@ -1658,9 +1920,52 @@
       dlLinks.forEach(function(link){
         link.addEventListener('click',function(e){
           e.preventDefault();
-          openLinkVerifyModal(link.href,true);
+          // IPA 下载先弹确认弹窗
+          if(link.href.indexOf('.ipa')!==-1){
+            pendingIpaElement=link;
+            openIpaConfirmModal(link.href);
+          }else{
+            openLinkVerifyModal(link.href,true,link);
+          }
         });
       });
+      // IPA 确认弹窗按钮
+      var ipaCancel=document.getElementById('ipaConfirmCancel');
+      if(ipaCancel){ipaCancel.addEventListener('click',closeIpaConfirmModal);}
+      var ipaOk=document.getElementById('ipaConfirmOk');
+      if(ipaOk){ipaOk.addEventListener('click',function(){
+        var url=pendingIpaUrl;
+        var element=pendingIpaElement;
+        closeIpaConfirmModal();
+        if(url){openLinkVerifyModal(url,true,element);}
+      });}
+      var ipaModal=document.getElementById('ipaConfirmModal');
+      if(ipaModal){ipaModal.addEventListener('click',function(e){if(e.target===ipaModal)closeIpaConfirmModal();});}
+
+      // Mobile Nav Toggle
+      var navToggle=document.getElementById('navToggle');
+      var navLinks=document.getElementById('navLinks');
+      var navOverlay=document.getElementById('navOverlay');
+      if(navToggle&&navLinks){
+        navToggle.addEventListener('click',function(){
+          navToggle.classList.toggle('open');
+          navLinks.classList.toggle('open');
+          if(navOverlay){navOverlay.classList.toggle('show');}
+        });
+        // 点击链接后自动关闭菜单
+        navLinks.querySelectorAll('a').forEach(function(a){
+          a.addEventListener('click',function(){
+            navToggle.classList.remove('open');
+            navLinks.classList.remove('open');
+            if(navOverlay){navOverlay.classList.remove('show');}
+          });
+        });
+        if(navOverlay){navOverlay.addEventListener('click',function(){
+          navToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          navOverlay.classList.remove('show');
+        });}
+      }
     })();
 
     // ---------- Feedback System Events ----------
@@ -1856,34 +2161,6 @@
       try{localStorage.setItem('site_lang',document.body.getAttribute('data-lang'))}catch(e){}
     });
 
-    // ---------- Cookie banner (UI only, does not block preference storage) ----------
-    var cookieBanner=document.getElementById('cookieBanner');
-    var cookieAccept=document.getElementById('cookieAccept');
-    var cookieReject=document.getElementById('cookieReject');
-
-    function hideCookieBanner(){
-      cookieBanner.classList.remove('show');
-    }
-
-    function setCookieChoice(choice){
-      try{localStorage.setItem('cookie_choice',choice)}catch(e){}
-      hideCookieBanner();
-    }
-
-    cookieAccept.addEventListener('click',function(){setCookieChoice('accepted')});
-    cookieReject.addEventListener('click',function(){setCookieChoice('rejected')});
-
-    // Show banner only on first visit (no previous choice recorded)
-    try{
-      var cookieChoice=localStorage.getItem('cookie_choice');
-      if(!cookieChoice){
-        setTimeout(function(){cookieBanner.classList.add('show')},600);
-      }
-    }catch(e){
-      // If localStorage is unavailable, still show banner
-      setTimeout(function(){cookieBanner.classList.add('show')},600);
-    }
-
     // ---------- Scroll reveal with fallback ----------
     var revealEls=document.querySelectorAll('.reveal');
     if('IntersectionObserver' in window){
@@ -1917,48 +2194,43 @@
       });
     })();
     // ========== Fetch+Blob 强制下载（修复 Safari 下载成 HTML）==========
-    (function(){
-      var links=document.querySelectorAll('.blob-download');
-      links.forEach(function(link){
-        link.addEventListener('click',function(e){
-          e.preventDefault();
-          var url=link.getAttribute('href');
-          var filename=url.split('/').pop();
-          link.style.opacity='0.6';
-          link.style.pointerEvents='none';
-          var origText=link.innerHTML;
-          link.innerHTML='<span class="zh">下载中...</span><span class="en">Downloading...</span>';
-          
-          fetch(url,{credentials:'include'}).then(function(r){
-            if(!r.ok)throw new Error('HTTP '+r.status);
-            return r.blob();
-          }).then(function(blob){
-            var blobUrl=URL.createObjectURL(blob);
-            var a=document.createElement('a');
-            a.href=blobUrl;
-            a.download=filename;
-            a.style.display='none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(function(){URL.revokeObjectURL(blobUrl);},1000);
-            link.innerHTML=origText;
-            link.style.opacity='';
-            link.style.pointerEvents='';
-          }).catch(function(err){
-            console.error('下载失败:',err);
-            link.innerHTML=origText;
-            link.style.opacity='';
-            link.style.pointerEvents='';
-            // 失败后用原生方式下载
-            var a=document.createElement('a');
-            a.href=url;a.download=filename;a.style.display='none';
-            document.body.appendChild(a);a.click();
-            setTimeout(function(){document.body.removeChild(a);},1000);
-          });
-        });
+    // 封装成全局函数，验证通过后调用
+    function triggerBlobDownload(link){
+      var url=link.getAttribute('href');
+      var filename=url.split('/').pop();
+      link.style.opacity='0.6';
+      link.style.pointerEvents='none';
+      var origText=link.innerHTML;
+      link.innerHTML='<span class="zh">下载中...</span><span class="en">Downloading...</span>';
+      
+      fetch(url,{credentials:'include'}).then(function(r){
+        if(!r.ok)throw new Error('HTTP '+r.status);
+        return r.blob();
+      }).then(function(blob){
+        var blobUrl=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=blobUrl;
+        a.download=filename;
+        a.style.display='none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(blobUrl);},1000);
+        link.innerHTML=origText;
+        link.style.opacity='';
+        link.style.pointerEvents='';
+      }).catch(function(err){
+        console.error('下载失败:',err);
+        link.innerHTML=origText;
+        link.style.opacity='';
+        link.style.pointerEvents='';
+        // 失败后用原生方式下载
+        var a=document.createElement('a');
+        a.href=url;a.download=filename;a.style.display='none';
+        document.body.appendChild(a);a.click();
+        setTimeout(function(){document.body.removeChild(a);},1000);
       });
-    })();
+    }
   </script>
 
   <script>
