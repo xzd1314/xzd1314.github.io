@@ -1938,21 +1938,7 @@
       if(ipaModal){ipaModal.addEventListener('click',function(e){if(e.target===ipaModal)closeIpaConfirmModal();});}
 
       // Mobile Nav Toggle
-      var navToggle=document.getElementById('navToggle');
-      var navLinks=document.getElementById('navLinks');
-      if(navToggle&&navLinks){
-        navToggle.addEventListener('click',function(){
-          navToggle.classList.toggle('open');
-          navLinks.classList.toggle('open');
-        });
-        // 点击链接后自动关闭菜单
-        navLinks.querySelectorAll('a').forEach(function(a){
-          a.addEventListener('click',function(){
-            navToggle.classList.remove('open');
-            navLinks.classList.remove('open');
-          });
-        });
-      }
+     }
     })();
 
     // ---------- Feedback System Events ----------
