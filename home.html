@@ -63,14 +63,12 @@
   <style>
     /* 1.4MB 的自定义字体只在 >=769px 加载；窄屏直接用系统字体，
        不匹配 media 时浏览器根本不会发起这个请求 */
-    @media (min-width: 769px) {
-      @font-face {
-        font-family: 'ChuangZhongHei';
-        src: url('/assets/fonts/chuangzhonghei.woff2') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
+    @font-face {
+      font-family: 'ChuangZhongHei';
+      src: url('/assets/fonts/chuangzhonghei.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
     }
     @font-face {
       font-family: 'Cascadia Mono';
