@@ -453,6 +453,12 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 .dlg h3{font-size:20px;font-weight:500;margin-bottom:8px}
 .dlg p{font-size:13.5px;line-height:20px;color:var(--on-surface-variant);margin-bottom:6px}
 .dlg-actions{display:flex;justify-content:flex-end;margin-top:16px}
+
+.reply-quote{font-size:13px;color:var(--on-surface-variant);line-height:20px;margin-bottom:10px;
+  padding-left:10px;border-left:3px solid var(--outline-variant);white-space:pre-wrap;word-break:break-word}
+.reply-box{background:var(--primary-container);color:var(--on-primary-container);border-radius:12px;
+  padding:12px 14px;font-size:14.5px;line-height:22px;white-space:pre-wrap;word-break:break-word;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 </style>
 </head>
 <body>
@@ -901,8 +907,10 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   window.__setGbToken=function(t){ GB_TOKEN=t||''; };
 
   function uid(){
-    var k='gb_uid', v=localStorage.getItem(k);
-    if(!v){ v='u_'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); localStorage.setItem(k,v); }
+    var v=localStorage.getItem('gb_uid');
+    if(!v){ v=localStorage.getItem('feedback_user_id'); }          /* 兼容老版本 */
+    if(!v){ v='u_'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+    localStorage.setItem('gb_uid',v);
     return v;
   }
   function esc(s){
@@ -983,10 +991,62 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 
   document.getElementById('langBtn').addEventListener('click',function(){ setTimeout(load,60); });
   load();
+
+  /* ---------- 有新回复就弹窗 ---------- */
+  var pendingReply=null;
+  function replyEl(){ return document.getElementById('replyBackdrop'); }
+
+  function showReply(row){
+    var dlg=replyEl();
+    if(!dlg) return;
+    document.getElementById('replyMine').textContent=row.content||'';
+    document.getElementById('replyBody').textContent=row.reply||'';
+    pendingReply=row.id;
+    dlg.hidden=false;
+    if(!dlg.__wired){
+      dlg.__wired=1;
+      document.getElementById('replyOk').addEventListener('click',closeReply);
+      dlg.addEventListener('click',function(e){ if(e.target===dlg) closeReply(); });
+    }
+  }
+  function closeReply(){
+    var dlg=replyEl();
+    if(dlg) dlg.hidden=true;
+    if(pendingReply) localStorage.setItem('gb_last_reply',String(pendingReply));
+    pendingReply=null;
+  }
+
+  function checkReplies(){
+    fetch(SB_URL+'/rest/v1/rpc/get_my_replies',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({p_user_id:uid()})
+    }).then(function(r){ return r.ok?r.json():[]; })
+      .then(function(rows){
+        if(!Array.isArray(rows)||!rows.length) return;
+        var seen=parseInt(localStorage.getItem('gb_last_reply')||'0',10);
+        var newest=rows[0];
+        if(newest && newest.reply && newest.id>seen) showReply(newest);
+      })
+      .catch(function(e){ console.warn('[replies]',e); });
+  }
+  setTimeout(checkReplies,900);
 })();
 </script>
 
 
+<div class="dlg-backdrop" id="replyBackdrop" hidden>
+  <div class="dlg" role="dialog" aria-modal="true">
+    <h3><span class="zh">xzd1314 回复了你</span><span class="en">xzd1314 replied to you</span></h3>
+    <p class="reply-quote" id="replyMine"></p>
+    <div class="reply-box" id="replyBody"></div>
+    <div class="dlg-actions">
+      <button class="btn btn-filled" id="replyOk" type="button">
+        <span class="zh">知道了</span><span class="en">Got it</span>
+      </button>
+    </div>
+  </div>
+</div>
 <div class="dlg-backdrop" id="iosBackdrop" hidden>
   <div class="dlg" role="dialog" aria-modal="true">
     <h3><span class="zh">iOS 版已停止更新</span><span class="en">iOS version discontinued</span></h3>
