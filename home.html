@@ -790,12 +790,20 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       });
     });
     if('IntersectionObserver' in window){
+      /* 进场动画结束后清掉 transition-delay，否则会拖慢后续 hover */
+      function show(el){
+        el.classList.add('in');
+        var d=parseInt(el.style.getPropertyValue('--d'))||0;
+        setTimeout(function(){ el.style.transitionDelay='0ms'; }, d+700);
+      }
       var io=new IntersectionObserver(function(es){
-        es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+        es.forEach(function(e){ if(e.isIntersecting){ show(e.target); io.unobserve(e.target);} });
       },{rootMargin:'0px 0px -8% 0px',threshold:.08});
       items.forEach(function(el){ io.observe(el); });
-    } else { items.forEach(function(el){ el.classList.add('in'); }); }
-    setTimeout(function(){ items.forEach(function(el){ el.classList.add('in'); }); },1200);
+      setTimeout(function(){ items.forEach(function(el){ if(!el.classList.contains('in')) show(el); }); },1200);
+    } else {
+      items.forEach(function(el){ el.classList.add('in'); el.style.transitionDelay='0ms'; });
+    }
 
     /* 粒子 */
     var bg=document.querySelector('.bg');
