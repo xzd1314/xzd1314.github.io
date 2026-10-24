@@ -341,59 +341,32 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 @media(max-width:600px){.fab{right:16px;bottom:calc(96px + env(safe-area-inset-bottom))}}
 
 /* ============ 液态玻璃底部导航 ============ */
-.bnav.hide{transform:translateY(130%);opacity:0;pointer-events:none}
+/* ============ M3 底部导航栏 ============ */
+.bnav.hide{transform:translateY(120%)}
 .bnav{
-  transition:transform .38s var(--ease),opacity .3s var(--ease);
-  display:none;position:fixed;z-index:95;
-  left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));
-  height:64px;border-radius:26px;padding:0 6px;
-  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,.30));
-  -webkit-backdrop-filter:blur(34px) saturate(230%) brightness(1.08);
-  backdrop-filter:blur(34px) saturate(230%) brightness(1.08);
-  border:1px solid var(--glass-border);
-  box-shadow:var(--glass-shadow),
-             inset 0 1.5px 0 rgba(255,255,255,.95),
-             inset 0 -1px 0 rgba(255,255,255,.28),
-             inset 0 0 30px rgba(255,255,255,.22);
-  overflow-x:auto;overflow-y:hidden;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:95;height:80px;
+  background:var(--surface-container);
+  border-top:1px solid var(--outline-variant);
+  padding-bottom:env(safe-area-inset-bottom);
+  transition:transform .35s var(--ease);
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
-  -webkit-user-drag:none;user-drag:none;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
 }
-/* 高光扫过 + 顶部反光 */
-.bnav::before{
-  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-  background:
-    radial-gradient(120% 55% at 50% -25%,rgba(255,255,255,.95),rgba(255,255,255,0) 62%),
-    linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 48%);
-  opacity:.85;mix-blend-mode:screen;
-}
-[data-theme="dark"] .bnav{background:linear-gradient(180deg,rgba(60,49,43,.55),rgba(28,22,19,.42))}
-[data-theme="dark"] .bnav::before{
-  background:radial-gradient(120% 60% at 50% -20%,rgba(255,255,255,.22),rgba(255,255,255,0) 60%);
-  opacity:.9;
-}
-.bnav::after{
-  content:"";position:absolute;top:-40%;left:-30%;width:60%;height:180%;pointer-events:none;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);
-  transform:rotate(8deg);filter:blur(8px);animation:sheen 7s ease-in-out infinite;
-}
-@keyframes sheen{0%,70%{transform:translateX(-40%) rotate(8deg);opacity:0}
-  80%{opacity:.9}100%{transform:translateX(240%) rotate(8deg);opacity:0}}
-.bnav::-webkit-scrollbar{display:none}
 @media(max-width:600px){.bnav{display:flex}}
-.bnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none;
+.bnav a{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  font-size:12px;font-weight:500;color:var(--on-surface-variant);text-decoration:none;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-  font-size:11px;color:var(--on-surface-variant);font-weight:500;position:relative;z-index:1;
-  border-radius:20px;margin:6px 2px;transition:color .2s var(--ease),background .25s var(--ease);}
-.bnav a.active{color:var(--primary);background:rgba(255,255,255,.62);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
-[data-theme="dark"] .bnav a.active{background:rgba(255,255,255,.08);color:var(--primary)}
-.bn-ico{width:56px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
+  transition:color .25s var(--ease);
+}
+.bnav a.active{color:var(--on-secondary-container)}
+.bn-ico{
+  width:64px;height:32px;border-radius:var(--r-full);display:grid;place-items:center;
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.bnav a.active .bn-ico{background:var(--secondary-container);color:var(--on-secondary-container)}
 .bnav svg,.bnav img{pointer-events:none;-webkit-user-drag:none}
-.bnav a.active .bn-ico{background:var(--primary-container);color:var(--on-primary-container)}
-
 footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-variant);
   font-size:12.5px;color:var(--on-surface-variant);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 @media(max-width:600px){footer{padding-bottom:104px}}
