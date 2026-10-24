@@ -1096,7 +1096,23 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     bnav.addEventListener('pointerleave',endDrag);
   }
 
-  /* 回到顶部 */
+"
+  /* 彩蛋：点头像三次 */
+  var avaEl=document.querySelector('.avatar');
+  if(avaEl){
+    var cCount=0, cLast=0;
+    avaEl.style.cursor='pointer';
+    avaEl.addEventListener('click',function(){
+      var now=Date.now();
+      if(now-cLast>900) cCount=0;
+      cCount++; cLast=now;
+      avaEl.style.transform='scale(.9)';
+      setTimeout(function(){ avaEl.style.transform=''; },130);
+      if(cCount>=3){ cCount=0; location.href='/egg.html'; }
+    });
+  }
+
+  /* 回到顶部 */"
   var topBtn=document.getElementById('toTop');
   if(topBtn){
     addEventListener('scroll',function(){ topBtn.classList.toggle('show', scrollY>420); },{passive:true});
