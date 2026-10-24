@@ -29,9 +29,9 @@
   --appbar-bg:rgba(255,248,245,.86);
   --state-hover:rgba(34,26,18,.06);
   --state-press:rgba(34,26,18,.12);
-  --glass:rgba(255,255,255,.55);
-  --glass-border:rgba(255,255,255,.65);
-  --glass-shadow:0 8px 32px rgba(80,50,20,.18);
+  --glass:rgba(255,255,255,.34);
+  --glass-border:rgba(255,255,255,.85);
+  --glass-shadow:0 10px 40px rgba(80,50,20,.26);
   --font:"Roboto","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   --r-xs:8px; --r-sm:12px; --r-md:16px; --r-lg:28px; --r-full:999px;
   --ease:cubic-bezier(.2,0,0,1);
@@ -57,9 +57,9 @@
   --appbar-bg:rgba(25,18,16,.86);
   --state-hover:rgba(239,224,214,.08);
   --state-press:rgba(239,224,214,.14);
-  --glass:rgba(38,30,26,.55);
-  --glass-border:rgba(255,255,255,.14);
-  --glass-shadow:0 8px 32px rgba(0,0,0,.5);
+  --glass:rgba(34,27,23,.42);
+  --glass-border:rgba(255,255,255,.22);
+  --glass-shadow:0 10px 40px rgba(0,0,0,.6);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
@@ -151,6 +151,7 @@ h1 b{font-weight:700;color:var(--primary)}
 .stat{background:var(--surface-container);border-radius:var(--r-sm);padding:14px 16px}
 .stat .k{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--on-surface-variant);margin-bottom:4px}
 .stat .v{font-size:17px;font-weight:500}
+.stat.span2{grid-column:1/-1}
 
 /* ============ Sections ============ */
 section{padding:56px 0}
@@ -255,12 +256,15 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 .social .handle{font-size:12.5px;color:var(--on-surface-variant)}
 
 /* ============ FAB ============ */
-.fab{position:fixed;right:24px;bottom:24px;z-index:90;height:56px;padding:0 20px;border-radius:var(--r-md);
-  background:var(--primary-container);color:var(--on-primary-container);
-  display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:500;
-  box-shadow:0 1px 3px rgba(var(--shadow),.3),0 4px 8px 3px rgba(var(--shadow),.15);
-  transition:.25s var(--ease);}
-@media(max-width:600px){.fab{display:none}}
+.fab{position:fixed;right:24px;bottom:24px;z-index:90;width:56px;height:56px;padding:0;border:0;cursor:pointer;
+  border-radius:50%;background:var(--primary-container);color:var(--on-primary-container);
+  display:grid;place-items:center;
+  box-shadow:0 1px 3px rgba(var(--shadow),.3),0 4px 10px 3px rgba(var(--shadow),.18);
+  opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;
+  transition:opacity .28s var(--ease),transform .28s var(--ease),box-shadow .2s;}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+.fab:hover{box-shadow:0 2px 6px rgba(var(--shadow),.35),0 8px 18px 4px rgba(var(--shadow),.22)}
+@media(max-width:600px){.fab{right:16px;bottom:calc(96px + env(safe-area-inset-bottom))}}
 
 /* ============ 液态玻璃底部导航 ============ */
 .bnav{
@@ -268,19 +272,24 @@ h2{font-size:24px;line-height:32px;font-weight:500}
   left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));
   height:64px;border-radius:26px;padding:0 6px;
   background:var(--glass);
-  -webkit-backdrop-filter:blur(22px) saturate(190%);
-  backdrop-filter:blur(22px) saturate(190%);
+  -webkit-backdrop-filter:blur(34px) saturate(230%) brightness(1.08);
+  backdrop-filter:blur(34px) saturate(230%) brightness(1.08);
   border:1px solid var(--glass-border);
-  box-shadow:var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.12);
+  box-shadow:var(--glass-shadow),
+             inset 0 1.5px 0 rgba(255,255,255,.95),
+             inset 0 -1px 0 rgba(255,255,255,.28),
+             inset 0 0 30px rgba(255,255,255,.22);
   overflow:hidden;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
 }
 /* 高光扫过 + 顶部反光 */
 .bnav::before{
   content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
   background:
-    radial-gradient(120% 60% at 50% -20%,rgba(255,255,255,.75),rgba(255,255,255,0) 60%),
-    linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 45%);
-  opacity:.7;mix-blend-mode:screen;
+    radial-gradient(120% 55% at 50% -25%,rgba(255,255,255,.95),rgba(255,255,255,0) 62%),
+    linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 48%);
+  opacity:.85;mix-blend-mode:screen;
 }
 [data-theme="dark"] .bnav::before{
   background:radial-gradient(120% 60% at 50% -20%,rgba(255,255,255,.22),rgba(255,255,255,0) 60%);
@@ -295,9 +304,11 @@ h2{font-size:24px;line-height:32px;font-weight:500}
   80%{opacity:.9}100%{transform:translateX(240%) rotate(8deg);opacity:0}}
 @media(max-width:600px){.bnav{display:flex}}
 .bnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
   font-size:11px;color:var(--on-surface-variant);font-weight:500;position:relative;z-index:1;
   border-radius:20px;margin:6px 2px;transition:color .2s var(--ease),background .25s var(--ease);}
-.bnav a.active{color:var(--primary);background:rgba(255,255,255,.45)}
+.bnav a.active{color:var(--primary);background:rgba(255,255,255,.62);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
 [data-theme="dark"] .bnav a.active{background:rgba(255,255,255,.08);color:var(--primary)}
 .bn-ico{width:52px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
 .bnav a.active .bn-ico{background:var(--primary-container);color:var(--on-primary-container)}
@@ -347,9 +358,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 .ripple{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;
   background:currentColor;opacity:.18;animation:rip .6s var(--ease) forwards}
 @keyframes rip{to{transform:scale(2.6);opacity:0}}
-.fab{animation:floaty 5s ease-in-out infinite}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.fab:hover{animation-play-state:paused}
+
 .eyebrow .dot{animation:breathe 2.6s ease-in-out infinite}
 @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
 .profile{transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
@@ -448,10 +457,8 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
           <div class="v"><span class="zh">猪来了</span><span class="en">Zhulaile</span></div></div>
         <div class="stat"><div class="k"><span class="zh">常驻城市</span><span class="en">City</span></div>
           <div class="v"><span class="zh">广州</span><span class="en">Guangzhou</span></div></div>
-        <div class="stat"><div class="k"><span class="zh">公开仓库</span><span class="en">Public repos</span></div>
+        <div class="stat span2"><div class="k"><span class="zh">公开仓库</span><span class="en">Public repos</span></div>
           <div class="v"><span class="zh">7 个</span><span class="en">7</span></div></div>
-        <div class="stat"><div class="k"><span class="zh">状态</span><span class="en">Status</span></div>
-          <div class="v"><span class="zh">在线</span><span class="en">Online</span></div></div>
       </div>
     </aside>
   </section>
@@ -539,7 +546,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
         <label for="gbInput"><span class="zh">写点什么</span><span class="en">Leave a note</span></label>
         <textarea class="gb-input" id="gbInput" maxlength="300" placeholder="说点什么都行，别骂太狠…"></textarea>
         <div class="gb-foot">
-          <button class="btn btn-filled" type="submit" id="gbSubmit">
+          <button class="btn btn-filled" type="submit" id="gbSubmit" disabled>
             <span class="zh">发表</span><span class="en">Post</span>
             <svg class="i i-18" viewBox="0 -960 960 960"><path d="M647-440H200q-17 0-28.5-11.5T160-480q0-17 11.5-28.5T200-520h447L451-716q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l264 264q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L508-188q-11 11-27.5 11T452-188q-12-12-12-28.5t12-28.5l195-195Z"/></svg>
           </button>
@@ -560,13 +567,13 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       <span class="en-label">Links</span></div>
     <div class="link-grid">
       <a class="link-card" href="https://45.206MHz.com" target="_blank" rel="noopener">
-        <div class="l-ico"><svg class="i" viewBox="0 -960 960 960"><path d="M280-280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h120q17 0 28.5 11.5T440-640q0 17-11.5 28.5T400-600H280q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h240q17 0 28.5 11.5T640-480q0 17-11.5 28.5T600-440H360Zm200 160q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h120q50 0 85-35t35-85q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H560Z"/></svg></div>
+        <div class="l-ico"><img src="/assets/avatar-external.webp" alt="45" loading="lazy"></div>
         <div><div class="t"><span class="zh">45 的小站</span><span class="en">45's Site</span></div>
           <div class="d">Majority doesn't exist</div></div>
         <svg class="i go" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm560-584L416-360q-11 11-28 11t-28-11q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104Z"/></svg>
       </a>
       <a class="link-card" href="https://scrhub.org" target="_blank" rel="noopener">
-        <div class="l-ico"><svg class="i" viewBox="0 -960 960 960"><path d="M280-280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h120q17 0 28.5 11.5T440-640q0 17-11.5 28.5T400-600H280q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h240q17 0 28.5 11.5T640-480q0 17-11.5 28.5T600-440H360Zm200 160q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h120q50 0 85-35t35-85q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H560Z"/></svg></div>
+        <div class="l-ico"><img src="/assets/projects/scrhub-favicon.png" alt="SCR Hub" loading="lazy"></div>
         <div><div class="t">SCR Hub</div>
           <div class="d"><span class="zh">SCRHub 官网（感谢 45.206MHz）</span><span class="en">SCRHub official site (thanks 45.206MHz)</span></div></div>
         <svg class="i go" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm560-584L416-360q-11 11-28 11t-28-11q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104Z"/></svg>
@@ -598,10 +605,9 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   </section>
 </main>
 
-<a class="fab" href="#downloads">
-  <svg class="i" viewBox="0 -960 960 960"><path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z"/></svg>
-  <span class="zh">下载猪来了</span><span class="en">Get Zhulaile</span>
-</a>
+<button class="fab" id="toTop" type="button" aria-label="回到顶部">
+  <svg class="i" viewBox="0 -960 960 960"><path d="M440-647 244-451q-12 12-28 11.5T188-452q-11-12-11.5-28t11.5-28l264-264q6-6 13-8.5t15-2.5q8 0 15 2.5t13 8.5l264 264q11 11 11 27.5T772-452q-12 12-28.5 12T715-452L520-647v447q0 17-11.5 28.5T480-160q-17 0-28.5-11.5T440-200v-447Z"/></svg>
+</button>
 
 <nav class="bnav">
   <a href="#top" class="active"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M360-120q-66 0-113-47t-47-113v-327q-35-13-57.5-43.5T120-720q0-50 35-85t85-35q50 0 85 35t35 85q0 39-22.5 69.5T280-607v327q0 33 23.5 56.5T360-200q33 0 56.5-23.5T440-280v-400q0-66 47-113t113-47q66 0 113 47t47 113v327q35 13 57.5 43.5T840-240q0 50-35 85t-85 35q-50 0-85-35t-35-85q0-39 22.5-70t57.5-43v-327q0-33-23.5-56.5T600-760q-33 0-56.5 23.5T520-680v400q0 66-47 113t-113 47ZM240-680q17 0 28.5-11.5T280-720q0-17-11.5-28.5T240-760q-17 0-28.5 11.5T200-720q0 17 11.5 28.5T240-680Zm480 480q17 0 28.5-11.5T760-240q0-17-11.5-28.5T720-280q-17 0-28.5 11.5T680-240q0 17 11.5 28.5T720-200ZM240-720Zm480 480Z"/></svg></span>
@@ -854,6 +860,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       input.value=''; countEl.textContent='0 / 300';
       status(en?'Posted!':'发表成功！','ok');
       GB_TOKEN='';
+      var sb=document.getElementById('gbSubmit'); if(sb) sb.disabled=true;
       try{ if(window.turnstile) turnstile.reset('#gbTs'); }catch(e){}
       load();
     }).catch(function(e){
@@ -893,9 +900,9 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     gbRendered=true;
     turnstile.render('#gbTs',{
       sitekey:SK, theme:curTheme(), language:curLang(),
-      callback:function(tok){ window.__setGbToken && window.__setGbToken(tok); },
-      'expired-callback':function(){ window.__setGbToken && window.__setGbToken(''); },
-      'error-callback':function(){ window.__setGbToken && window.__setGbToken(''); }
+      callback:function(tok){ window.__setGbToken && window.__setGbToken(tok); var b=document.getElementById('gbSubmit'); if(b) b.disabled=false; },
+      'expired-callback':function(){ window.__setGbToken && window.__setGbToken(''); var b=document.getElementById('gbSubmit'); if(b) b.disabled=true; },
+      'error-callback':function(){ window.__setGbToken && window.__setGbToken(''); var b=document.getElementById('gbSubmit'); if(b) b.disabled=true; }
     });
   }
 
@@ -944,6 +951,14 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     try{ turnstile.reset('#dlTs'); }catch(e){}
   });
   dlg.addEventListener('click',function(e){ if(e.target===dlg){ dlg.hidden=true; pending=null; } });
+
+
+  /* 回到顶部 */
+  var topBtn=document.getElementById('toTop');
+  if(topBtn){
+    addEventListener('scroll',function(){ topBtn.classList.toggle('show', scrollY>420); },{passive:true});
+    topBtn.addEventListener('click',function(){ scrollTo({top:0,behavior:'smooth'}); });
+  }
 
   if(document.getElementById('gbTs')) initGb();
 })();
