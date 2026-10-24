@@ -152,9 +152,42 @@ h1 b{font-weight:700;color:var(--primary)}
 .chip .i{transition:transform .3s var(--ease)}
 .profile{background:var(--surface-container-low);border-radius:var(--r-lg);padding:28px;
   box-shadow:0 1px 2px rgba(var(--shadow),.3),0 1px 3px 1px rgba(var(--shadow),.15);}
-.profile-top{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.profile-top{display:flex;align-items:center;gap:16px;margin-bottom:22px;position:relative}
+.ava-ripple{position:absolute;left:8px;top:50%;width:64px;height:64px;margin-top:-32px;border-radius:50%;
+  border:2px solid var(--primary);pointer-events:none;opacity:0;
+  animation:avaRipple .85s cubic-bezier(.2,0,0,1) forwards}
+@keyframes avaRipple{
+  0%{transform:scale(.9);opacity:.85;border-width:3px}
+  100%{transform:scale(2.6);opacity:0;border-width:1px}
+}
 .avatar{width:64px;height:64px;border-radius:var(--r-full);overflow:hidden;flex:none;
-  background:var(--primary-container);outline:2px solid var(--primary);outline-offset:2px;}
+  background:var(--primary-container);outline:2px solid var(--primary);outline-offset:2px;
+  cursor:pointer;transform-origin:center;
+  transition:transform .18s var(--ease),box-shadow .3s var(--ease);
+  -webkit-tap-highlight-color:transparent;}
+.avatar:active{transform:scale(.86)}
+.avatar.pop{animation:avaPop .46s var(--ease)}
+@keyframes avaPop{
+  0%{transform:scale(.84)}
+  45%{transform:scale(1.2)}
+  70%{transform:scale(.97)}
+  100%{transform:scale(1)}
+}
+.avatar.ring{animation:avaRing .75s var(--ease)}
+@keyframes avaRing{
+  0%{box-shadow:0 0 0 0 rgba(139,80,0,.55),0 0 0 0 rgba(139,80,0,.35)}
+  60%{box-shadow:0 0 0 14px rgba(139,80,0,.18),0 0 0 26px rgba(139,80,0,.07)}
+  100%{box-shadow:0 0 0 22px rgba(139,80,0,0),0 0 0 40px rgba(139,80,0,0)}
+}
+.avatar.boom{animation:avaBoom .42s var(--ease) forwards}
+@keyframes avaBoom{
+  0%{transform:scale(1)}
+  40%{transform:scale(1.28) rotate(-4deg)}
+  100%{transform:scale(1.6);opacity:0;filter:blur(2px)}
+}
+html.leaving body{transform:scale(1.04);opacity:0;
+  transition:transform .4s var(--ease),opacity .4s var(--ease)}
+body{transition:transform .4s var(--ease),opacity .4s var(--ease)}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .p-name{font-size:20px;font-weight:500;line-height:26px}
 .p-role{font-size:13px;color:var(--on-surface-variant)}
@@ -1151,9 +1184,36 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       var now=Date.now();
       if(now-cLast>900) cCount=0;
       cCount++; cLast=now;
-      avaEl.style.transform='scale(.9)';
-      setTimeout(function(){ avaEl.style.transform=''; },130);
-      if(cCount>=3){ cCount=0; location.href='/egg.html'; }
+
+      avaEl.classList.remove('pop','ring','boom');
+      void avaEl.offsetWidth;
+      avaEl.classList.add('pop');
+
+      var host=avaEl.parentNode;
+      function ripple(delay){
+        var r=document.createElement('span');
+        r.className='ava-ripple';
+        if(delay) r.style.animationDelay=delay+'ms';
+        host.appendChild(r);
+        setTimeout(function(){ r.remove(); }, 1000+(delay||0));
+      }
+      ripple(0);
+      if(cCount>=2) ripple(90);
+
+      if(cCount>=3){
+        avaEl.classList.remove('pop');
+        avaEl.classList.add('boom','ring');
+        ripple(0); ripple(120); ripple(240);
+        if(navigator.vibrate) navigator.vibrate(22);
+        setTimeout(function(){ document.documentElement.classList.add('leaving'); },180);
+        setTimeout(function(){ location.href='/egg.html'; },620);
+        cCount=0;
+        return;
+      }
+
+      avaEl.classList.add('ring');
+      if(navigator.vibrate) navigator.vibrate(8);
+      setTimeout(function(){ avaEl.classList.remove('pop','ring'); },780);
     });
   }
 
