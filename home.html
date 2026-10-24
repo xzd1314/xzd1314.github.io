@@ -93,8 +93,9 @@ a{color:inherit;text-decoration:none}
 .icon-btn{
   width:40px;height:40px;border-radius:var(--r-full);border:0;background:transparent;
   color:var(--on-surface-variant);display:grid;place-items:center;cursor:pointer;
-  transition:background .2s var(--ease),color .2s var(--ease);font-family:inherit;
+  transition:background .3s var(--ease),color .3s var(--ease),transform .3s var(--ease);font-family:inherit;
 }
+.icon-btn:hover{transform:translateY(-1px)}
 .icon-btn:hover{background:var(--state-hover);color:var(--on-surface)}
 .icon-btn:active{background:var(--state-press)}
 .lang-btn{width:auto;padding:0 14px;height:36px;border-radius:var(--r-full);font-size:13px;font-weight:600;
@@ -125,7 +126,8 @@ h1 b{font-weight:700;color:var(--primary)}
 .btn{
   height:40px;padding:0 24px;border-radius:var(--r-full);border:0;cursor:pointer;
   font-family:inherit;font-size:14px;font-weight:500;letter-spacing:.1px;
-  display:inline-flex;align-items:center;gap:8px;transition:.2s var(--ease);
+  display:inline-flex;align-items:center;gap:8px;
+  transition:box-shadow .38s var(--ease),background .28s var(--ease),transform .28s var(--ease),color .28s var(--ease);
 }
 .btn-filled{background:var(--primary);color:var(--on-primary)}
 .btn-filled:hover{box-shadow:0 1px 2px rgba(var(--shadow),.3),0 2px 6px 2px rgba(var(--shadow),.15)}
@@ -184,7 +186,9 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 .card p{font-size:13.5px;line-height:20px;color:var(--on-surface-variant);flex:1;margin-top:2px}
 .card-foot{display:flex;align-items:center;gap:6px;color:var(--primary);font-size:13px;font-weight:500;margin-top:10px}
 .dl-card{background:var(--surface-container-low);border-radius:var(--r-md);overflow:hidden}
-.dl-item{display:flex;align-items:center;gap:16px;padding:16px 20px;transition:background .2s var(--ease)}
+.dl-item{display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer;
+  transition:background .3s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease)}
+.dl-item:hover{box-shadow:0 6px 18px -8px rgba(80,50,20,.35)}
 .dl-item + .dl-item{border-top:1px solid var(--outline-variant)}
 .dl-item:hover{background:var(--surface-container)}
 .dl-ico{width:44px;height:44px;border-radius:var(--r-full);background:var(--primary-container);
@@ -193,6 +197,8 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 .dl-txt .n{font-size:15px;font-weight:500}
 .dl-txt .m{font-size:12.5px;color:var(--on-surface-variant)}
 .dl-item .i{color:var(--primary)}
+.badge{display:inline-flex;align-items:center;height:18px;padding:0 7px;margin-left:8px;border-radius:999px;
+  background:var(--error-container);color:var(--on-error-container);font-size:10.5px;font-weight:600;letter-spacing:.3px;vertical-align:2px}
 .skill-chips{display:flex;flex-wrap:wrap;gap:8px}
 .skill{height:36px;padding:0 14px;border-radius:var(--r-xs);background:var(--surface-container);
   color:var(--on-surface-variant);font-size:13px;font-weight:500;display:inline-flex;align-items:center;
@@ -201,7 +207,7 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 .link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 @media(max-width:760px){.link-grid{grid-template-columns:1fr}}
 .link-card{background:var(--surface-container-low);border-radius:var(--r-md);padding:20px;
-  display:flex;align-items:center;gap:16px;transition:background .2s var(--ease);}
+  display:flex;align-items:center;gap:16px;}
 .link-card:hover{background:var(--surface-container)}
 .link-card .l-ico{width:44px;height:44px;border-radius:var(--r-sm);background:var(--tertiary-container);
   color:var(--on-tertiary-container);display:grid;place-items:center;flex:none;}
@@ -248,7 +254,10 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 @media(max-width:820px){.contact-wrap{grid-template-columns:1fr;gap:24px}}
 .contact-wrap .lede{margin-bottom:0;max-width:32ch}
 .social-list{background:var(--surface-container-low);border-radius:var(--r-md);overflow:hidden}
-.social{display:flex;align-items:center;gap:14px;padding:14px 20px;transition:background .2s var(--ease)}
+.social{display:flex;align-items:center;gap:14px;padding:14px 20px;width:100%;
+  border:0;background:transparent;font-family:inherit;color:inherit;text-align:left;
+  cursor:pointer;transition:background .3s var(--ease),padding-left .3s var(--ease)}
+.social:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
 .social + .social{border-top:1px solid var(--outline-variant)}
 .social:hover{background:var(--surface-container)}
 .social .s-ico{color:var(--on-surface-variant)}
@@ -279,7 +288,8 @@ h2{font-size:24px;line-height:32px;font-weight:500}
              inset 0 1.5px 0 rgba(255,255,255,.95),
              inset 0 -1px 0 rgba(255,255,255,.28),
              inset 0 0 30px rgba(255,255,255,.22);
-  overflow:hidden;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
   -webkit-user-drag:none;user-drag:none;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
@@ -304,15 +314,16 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 }
 @keyframes sheen{0%,70%{transform:translateX(-40%) rotate(8deg);opacity:0}
   80%{opacity:.9}100%{transform:translateX(240%) rotate(8deg);opacity:0}}
+.bnav::-webkit-scrollbar{display:none}
 @media(max-width:600px){.bnav{display:flex}}
-.bnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+.bnav a{flex:0 0 auto;width:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-  font-size:11px;color:var(--on-surface-variant);font-weight:500;position:relative;z-index:1;
+  font-size:10.5px;color:var(--on-surface-variant);font-weight:500;position:relative;z-index:1;
   border-radius:20px;margin:6px 2px;transition:color .2s var(--ease),background .25s var(--ease);}
 .bnav a.active{color:var(--primary);background:rgba(255,255,255,.62);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
 [data-theme="dark"] .bnav a.active{background:rgba(255,255,255,.08);color:var(--primary)}
-.bn-ico{width:52px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
+.bn-ico{width:42px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
 .bnav svg,.bnav img{pointer-events:none;-webkit-user-drag:none}
 .bnav a.active .bn-ico{background:var(--primary-container);color:var(--on-primary-container)}
 
@@ -323,18 +334,27 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 /* ============ 动态背景 ============ */
 .bg{position:fixed;inset:-20vmax;z-index:-2;pointer-events:none;overflow:hidden}
 .bg i{position:absolute;display:block;border-radius:50%;will-change:transform;transform:translateZ(0)}
-.bg .b1{width:62vmax;height:62vmax;left:-14vmax;top:-18vmax;
+.bg .b1{width:70vmax;height:70vmax;left:-14vmax;top:-18vmax;
   background:radial-gradient(circle at 30% 30%,var(--primary-container),transparent 62%);
-  opacity:.75;animation:drift1 42s ease-in-out infinite alternate}
-.bg .b2{width:54vmax;height:54vmax;right:-12vmax;top:2vmax;
+  opacity:.95;animation:drift1 30s ease-in-out infinite alternate}
+.bg .b2{width:62vmax;height:62vmax;right:-12vmax;top:2vmax;
   background:radial-gradient(circle at 60% 40%,var(--secondary-container),transparent 62%);
-  opacity:.7;animation:drift2 54s ease-in-out infinite alternate}
+  opacity:.9;animation:drift2 38s ease-in-out infinite alternate}
 .bg .b3{width:48vmax;height:48vmax;left:24vmax;bottom:-22vmax;
   background:radial-gradient(circle at 50% 50%,var(--tertiary-container),transparent 64%);
-  opacity:.6;animation:drift3 66s ease-in-out infinite alternate}
+  opacity:.8;animation:drift3 46s ease-in-out infinite alternate}
 @keyframes drift1{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(6vmax,4vmax,0) scale(1.12)}}
 @keyframes drift2{0%{transform:translate3d(0,0,0) scale(1.05)}100%{transform:translate3d(-7vmax,6vmax,0) scale(.95)}}
 @keyframes drift3{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(5vmax,-6vmax,0) scale(1.1)}}
+.bg::after{
+  content:"";position:absolute;left:50%;top:40%;width:120vmax;height:120vmax;margin:-60vmax 0 0 -60vmax;
+  background:conic-gradient(from 0deg,
+    rgba(255,196,140,.55) 0deg, transparent 70deg,
+    rgba(255,214,170,.4) 130deg, transparent 200deg,
+    rgba(190,205,150,.35) 250deg, transparent 330deg);
+  filter:blur(46px);opacity:.5;animation:spin 52s linear infinite;will-change:transform;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 .bg-noise{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.035;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
 [data-theme="dark"] .bg-noise{mix-blend-mode:screen;opacity:.05}
@@ -352,7 +372,9 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 .profile[data-reveal]{transition-duration:.9s}
 .card[data-reveal] .card-img img{transform:scale(1.08);transition:transform 1.2s var(--ease)}
 .card[data-reveal].in .card-img img{transform:scale(1)}
-.card{position:relative;isolation:isolate}
+.card,.link-card{position:relative;isolation:isolate;transform-style:preserve-3d;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .25s var(--ease)}
+.card:hover,.link-card:hover{transform:translateY(-3px)}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
   background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.16),transparent 65%);
   transition:opacity .3s var(--ease)}
@@ -367,14 +389,14 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 .profile{transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
 
 @media (prefers-reduced-motion: reduce){
-  .bg i,.fab,.eyebrow .dot,.spark,.bnav::after,.skel{animation:none!important}
+  .bg i,.bg::after,.fab,.eyebrow .dot,.spark,.bnav::after,.skel{animation:none!important}
   [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
   html{scroll-behavior:auto}
 }
 @media (max-width:600px){
   .bg .b1{opacity:.4}.bg .b2{opacity:.34}.bg .b3{opacity:.3}
 }
-.no-motion .bg i,.no-motion .spark,.no-motion .fab,.no-motion .eyebrow .dot,.no-motion .bnav::after{animation:none!important}
+.no-motion .bg i,.no-motion .bg::after,.no-motion .spark,.no-motion .fab,.no-motion .eyebrow .dot,.no-motion .bnav::after{animation:none!important}
 .no-motion [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
 
 /* ===== Turnstile / 下载验证弹窗 ===== */
@@ -486,10 +508,10 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       <a class="card" href="#downloads">
         <div class="card-img"><img src="/assets/projects/project2-zhulaile-1.webp" alt="Zhulaile nextbot"></div>
         <div class="card-body">
-          <div class="card-kicker">Lua · Game</div>
+          <div class="card-kicker">HTML5 · Three.js</div>
           <h3><span class="zh">猪来了 nextbot</span><span class="en">Zhulaile nextbot</span></h3>
-          <p><span class="zh">和朋友一起做的 Roblox 游戏，负责玩法、Boss 行为和版本迭代。</span>
-             <span class="en">A Roblox game made with friends — gameplay, boss behaviour and releases.</span></p>
+          <p><span class="zh">HTML5 + Three.js 写的局域网联机游戏，5 种玩法；安卓/iOS 用 WebView 套壳，原生层跑 WebSocket 与 UDP 广播。</span>
+             <span class="en">A LAN multiplayer game built with HTML5 + Three.js, 5 modes. Wrapped in a WebView shell; native layer handles WebSocket and UDP discovery.</span></p>
           <div class="card-foot"><span class="zh">去下载</span><span class="en">Download</span>
             <svg class="i i-18" viewBox="0 -960 960 960"><path d="M647-440H200q-17 0-28.5-11.5T160-480q0-17 11.5-28.5T200-520h447L451-716q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l264 264q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L508-188q-11 11-27.5 11T452-188q-12-12-12-28.5t12-28.5l195-195Z"/></svg></div>
         </div>
@@ -513,16 +535,17 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       <h2><span class="zh">下载</span><span class="en">Downloads</span></h2>
       <span class="en-label">Downloads</span></div>
     <div class="dl-card">
-      <a class="dl-item" href="/downloads/zhulaile-nextbot-v12-slim.apk">
+      <a class="dl-item" role="link" tabindex="0" data-href="/downloads/zhulaile-nextbot-v12-slim.apk">
         <div class="dl-ico"><svg class="i" viewBox="0 -960 960 960"><path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z"/></svg></div>
-        <div class="dl-txt"><div class="n"><span class="zh">猪来了 nextbot V12 · 精简版</span><span class="en">Zhulaile nextbot V12 · Slim</span></div>
-          <div class="m">Android · APK · 10.7 MB</div></div>
+        <div class="dl-txt"><div class="n"><span class="zh">猪来了 nextbot V12 · 轻量版</span><span class="en">Zhulaile nextbot V12 · Lite</span></div>
+          <div class="m"><span class="zh">Android · APK · 10.7 MB · 素材压缩（图片/音频降质），功能完整</span><span class="en">Android · APK · 10.7 MB · Compressed media, full features</span></div></div>
         <svg class="i" viewBox="0 -960 960 960"><path d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z"/></svg>
       </a>
-      <a class="dl-item" href="/downloads/zhulaile-nextbot-v11.ipa">
+      <a class="dl-item" role="link" tabindex="0" data-href="/downloads/zhulaile-nextbot-v11.ipa" data-ios="1">
         <div class="dl-ico"><svg class="i" viewBox="0 -960 960 960"><path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z"/></svg></div>
-        <div class="dl-txt"><div class="n"><span class="zh">猪来了 nextbot V11</span><span class="en">Zhulaile nextbot V11</span></div>
-          <div class="m">iOS · IPA · 17.8 MB</div></div>
+        <div class="dl-txt"><div class="n"><span class="zh">猪来了 nextbot V11 · iOS</span><span class="en">Zhulaile nextbot V11 · iOS</span>
+            <span class="badge"><span class="zh">已停止更新</span><span class="en">Discontinued</span></span></div>
+          <div class="m">iOS · IPA · 17.8 MB · <span class="zh">停留在 V11，不再更新</span><span class="en">Stuck on V11, no longer updated</span></div></div>
         <svg class="i" viewBox="0 -960 960 960"><path d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z"/></svg>
       </a>
     </div>
@@ -594,14 +617,21 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
         <span class="en">Whether it's building something, asking a tech question, or just venting — come find me.</span>
       </p>
       <div class="social-list">
+        <button class="social" type="button" id="mailBtn">
+          <svg class="i i-20 s-ico" viewBox="0 -960 960 960"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm640-480L501-453q-5 3-10.5 4.5T480-447q-5 0-10.5-1.5T459-453L160-640v400h640v-400ZM480-520l320-200H160l320 200ZM160-640v10-59 1-32 32-.5 58.5-10 400-400Z"/></svg>
+          <span class="lab"><span class="zh">邮箱</span><span class="en">Email</span></span>
+          <span class="handle" id="mailText">点击复制</span></button>
         <a class="social" href="https://github.com/xzd1314" target="_blank" rel="noopener">
           <svg class="i i-20 s-ico" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
           <span class="lab">GitHub</span><span class="handle">@xzd1314</span></a>
         <a class="social" href="https://www.roblox.com/users/4112496357" target="_blank" rel="noopener">
-          <svg class="i i-20 s-ico" viewBox="0 -960 960 960"><path d="m438-452-58-57q-11-11-27.5-11T324-508q-11 11-11 28t11 28l86 86q12 12 28 12t28-12l170-170q12-12 11.5-28T636-592q-12-12-28.5-12.5T579-593L438-452ZM326-90l-58-98-110-24q-15-3-24-15.5t-7-27.5l11-113-75-86q-10-11-10-26t10-26l75-86-11-113q-2-15 7-27.5t24-15.5l110-24 58-98q8-13 22-17.5t28 1.5l104 44 104-44q14-6 28-1.5t22 17.5l58 98 110 24q15 3 24 15.5t7 27.5l-11 113 75 86q10 11 10 26t-10 26l-75 86 11 113q2 15-7 27.5T802-212l-110 24-58 98q-8 13-22 17.5T584-74l-104-44-104 44q-14 6-28 1.5T326-90Zm52-72 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Z"/></svg>
+          <svg class="i i-20 s-ico" viewBox="0 0 24 24"><path d="M18.926 23.998 0 18.892 5.075.002 24 5.108ZM15.348 10.09l-5.282-1.453-1.414 5.273 5.282 1.453z"/></svg>
           <span class="lab">Roblox</span><span class="handle">@xzd1314</span></a>
+        <a class="social" href="https://qun.qq.com/universal-share/share?ac=1&amp;authKey=EraEfGIT6W3R5suBRrytCAaSqw2VMn7%2FzvW2Ugl0GzrTAIoDeGn%2BQJlK7jB3eNHA&amp;busi_data=eyJncm91cENvZGUiOiIxMDQyMzA3MTY3IiwidG9rZW4iOiJTaUZWcG5GZ2NsNDEyVTFpdURqc3cxMnlCQm55RVRockN4SXFaYXBodmJaMnE1RWJyT0lMc0UwTFZxNUMxeDhyIiwidWluIjoiMzg1NDI1MjI5NiJ9&amp;data=8mZrCqkm23VtTo3zJSUtQ_PbJXPZU-Cd_20_ToLzLCNZxrbsfBKzVYIVrtdnRIdbdTJ7sKSQAf2nTw-anceqZw&amp;svctype=4&amp;tempid=h5_group_info" target="_blank" rel="noopener">
+          <svg class="i i-20 s-ico" viewBox="0 0 24 24"><path d="M21.395 15.035a40 40 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.526 4.632 17.351 0 12 0S4.474 4.632 4.474 9.241c0 .274.013.804.014.836l-1.08 2.695a39 39 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.379.646-.301.778.343.578 5.883.369 7.482.189 1.6.18 7.14.389 7.483-.189.078-.132.132-.458-.301-.778-.483-.356-1.233-.646-1.846-.836 1.637-1.384 2.393-3.302 2.393-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673"/></svg>
+          <span class="lab"><span class="zh">QQ 群</span><span class="en">QQ Group</span></span><span class="handle">SCR Hub</span></a>
         <a class="social" href="https://space.bilibili.com/3546384332491100" target="_blank" rel="noopener">
-          <svg class="i i-20 s-ico" viewBox="0 -960 960 960"><path d="M280-280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h120q17 0 28.5 11.5T440-640q0 17-11.5 28.5T400-600H280q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h240q17 0 28.5 11.5T640-480q0 17-11.5 28.5T600-440H360Zm200 160q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h120q50 0 85-35t35-85q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H560Z"/></svg>
+          <svg class="i i-20 s-ico" viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"/></svg>
           <span class="lab"><span class="zh">哔哩哔哩</span><span class="en">Bilibili</span></span><span class="handle">@xzd1314_</span></a>
       </div>
     </div>
@@ -612,14 +642,20 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   <svg class="i" viewBox="0 -960 960 960"><path d="M440-647 244-451q-12 12-28 11.5T188-452q-11-12-11.5-28t11.5-28l264-264q6-6 13-8.5t15-2.5q8 0 15 2.5t13 8.5l264 264q11 11 11 27.5T772-452q-12 12-28.5 12T715-452L520-647v447q0 17-11.5 28.5T480-160q-17 0-28.5-11.5T440-200v-447Z"/></svg>
 </button>
 
-<nav class="bnav">
+<nav class="bnav" id="bnav">
   <a href="#top" class="active"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M360-120q-66 0-113-47t-47-113v-327q-35-13-57.5-43.5T120-720q0-50 35-85t85-35q50 0 85 35t35 85q0 39-22.5 69.5T280-607v327q0 33 23.5 56.5T360-200q33 0 56.5-23.5T440-280v-400q0-66 47-113t113-47q66 0 113 47t47 113v327q35 13 57.5 43.5T840-240q0 50-35 85t-85 35q-50 0-85-35t-35-85q0-39 22.5-70t57.5-43v-327q0-33-23.5-56.5T600-760q-33 0-56.5 23.5T520-680v400q0 66-47 113t-113 47ZM240-680q17 0 28.5-11.5T280-720q0-17-11.5-28.5T240-760q-17 0-28.5 11.5T200-720q0 17 11.5 28.5T240-680Zm480 480q17 0 28.5-11.5T760-240q0-17-11.5-28.5T720-280q-17 0-28.5 11.5T680-240q0 17 11.5 28.5T720-200ZM240-720Zm480 480Z"/></svg></span>
     <span class="zh">首页</span><span class="en">Home</span></a>
   <a href="#projects"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="m193-479 155 155q11 11 11 28t-11 28q-11 11-28 11t-28-11L108-452q-6-6-8.5-13T97-480q0-8 2.5-15t8.5-13l184-184q12-12 28.5-12t28.5 12q12 12 12 28.5T349-635L193-479Zm574-2L612-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L668-268q-12 12-28 11.5T612-269q-12-12-12-28.5t12-28.5l155-155Z"/></svg></span>
     <span class="zh">项目</span><span class="en">Work</span></a>
+  <a href="#downloads"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z"/></svg></span>
+    <span class="zh">下载</span><span class="en">Get</span></a>
+  <a href="#skills"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm187-200-76-76q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l104 104q12 12 12 28t-12 28L328-308q-11 11-27.5 11.5T272-308q-11-11-11-28t11-28l75-76Zm173 160q-17 0-28.5-11.5T480-320q0-17 11.5-28.5T520-360h160q17 0 28.5 11.5T720-320q0 17-11.5 28.5T680-280H520Z"/></svg></span>
+    <span class="zh">技能</span><span class="en">Skills</span></a>
   <a href="#wall"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm640-480L501-453q-5 3-10.5 4.5T480-447q-5 0-10.5-1.5T459-453L160-640v400h640v-400ZM480-520l320-200H160l320 200ZM160-640v10-59 1-32 32-.5 58.5-10 400-400Z"/></svg></span>
     <span class="zh">留言</span><span class="en">Wall</span></a>
-  <a href="#contact"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M280-280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h120q17 0 28.5 11.5T440-640q0 17-11.5 28.5T400-600H280q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h240q17 0 28.5 11.5T640-480q0 17-11.5 28.5T600-440H360Zm200 160q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h120q50 0 85-35t35-85q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H560Z"/></svg></span>
+  <a href="#links"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M280-280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h120q17 0 28.5 11.5T440-640q0 17-11.5 28.5T400-600H280q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h240q17 0 28.5 11.5T640-480q0 17-11.5 28.5T600-440H360Zm200 160q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h120q50 0 85-35t35-85q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H560Z"/></svg></span>
+    <span class="zh">友链</span><span class="en">Links</span></a>
+  <a href="#contact"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm560-584L416-360q-11 11-28 11t-28-11q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104Z"/></svg></span>
     <span class="zh">联系</span><span class="en">Contact</span></a>
 </nav>
 
@@ -746,6 +782,18 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
         c.style.setProperty('--my',(e.clientY-r.top)+'px');
       });
     });
+    document.querySelectorAll('.card,.link-card').forEach(function(card){
+      card.addEventListener('pointermove',function(e){
+        var r=card.getBoundingClientRect();
+        var px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
+        var rx=((py-.5)*-7).toFixed(2), ry=((px-.5)*8).toFixed(2);
+        card.style.transform='perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px) scale(1.015)';
+        card.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        card.style.setProperty('--my',(e.clientY-r.top)+'px');
+      });
+      card.addEventListener('pointerleave',function(){ card.style.transform=''; });
+    });
+
     var pr=document.querySelector('.profile'), hero=document.querySelector('.hero');
     if(pr&&hero){
       hero.addEventListener('pointermove',function(e){
@@ -757,23 +805,22 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     }
   }
 
-  /* ---------- 底部导航高亮 ---------- */
+  /* ---------- 底部导航高亮（按滚动位置，不用 IO） ---------- */
   var links=[].slice.call(document.querySelectorAll('.bnav a'));
-  if(links.length&&'IntersectionObserver' in window){
-    var map={};
-    links.forEach(function(a){ var h=a.getAttribute('href'); if(h&&h[0]==='#') map[h.slice(1)]=a; });
-    var spy=new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if(e.isIntersecting&&map[e.target.id]){
-          links.forEach(function(a){a.classList.remove('active');});
-          map[e.target.id].classList.add('active');
-        }
-      });
-    },{rootMargin:'-45% 0px -50% 0px'});
-    ['projects','downloads','skills','wall','contact'].forEach(function(id){
-      var el=document.getElementById(id); if(el) spy.observe(el);
+  var sectionIds=['projects','downloads','skills','wall','links','contact'];
+  function updateNav(){
+    var y=scrollY+140, current='';
+    for(var i=0;i<sectionIds.length;i++){
+      var el=document.getElementById(sectionIds[i]);
+      if(el && el.offsetTop<=y) current=sectionIds[i];
+    }
+    links.forEach(function(a){
+      var h=a.getAttribute('href').slice(1);
+      a.classList.toggle('active', current ? h===current : h==='top');
     });
   }
+  addEventListener('scroll',updateNav,{passive:true});
+  updateNav();
 })();
 
 /* ================= 留言墙 ================= */
@@ -877,6 +924,18 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 })();
 </script>
 
+
+<div class="dlg-backdrop" id="iosBackdrop" hidden>
+  <div class="dlg" role="dialog" aria-modal="true">
+    <h3><span class="zh">iOS 版已停止更新</span><span class="en">iOS version discontinued</span></h3>
+    <p><span class="zh">iPhone / iPad 版本永久停留在 V11，不会再更新，功能可能落后于安卓版。确定继续下载吗？</span>
+       <span class="en">The iOS build is permanently stuck on V11 and will not be updated. Continue anyway?</span></p>
+    <div class="dlg-actions">
+      <button class="btn btn-outlined" id="iosCancel" type="button"><span class="zh">取消</span><span class="en">Cancel</span></button>
+      <button class="btn btn-filled" id="iosOk" type="button"><span class="zh">继续下载</span><span class="en">Continue</span></button>
+    </div>
+  </div>
+</div>
 <div class="dlg-backdrop" id="dlgBackdrop" hidden>
   <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
     <h3 id="dlgTitle"><span class="zh">下载前先验证</span><span class="en">Verify before download</span></h3>
@@ -941,14 +1000,53 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     }
   }
 
+  var iosDlg=document.getElementById('iosBackdrop');
+
+  function startDownload(href){
+    if(!href) return;
+    if(sessionStorage.getItem('dl_ok')==='1'){ location.href=href; return; }
+    pending=href; openDlg();
+  }
+
   document.querySelectorAll('.dl-item').forEach(function(a){
-    a.addEventListener('click',function(e){
-      if(sessionStorage.getItem('dl_ok')==='1') return;
-      e.preventDefault();
-      pending=a.getAttribute('href');
-      openDlg();
+    function activate(e){
+      if(e) e.preventDefault();
+      var href=a.getAttribute('data-href');
+      if(a.hasAttribute('data-ios') && !sessionStorage.getItem('ios_ack')){
+        pending=href; if(iosDlg) iosDlg.hidden=false; return;
+      }
+      startDownload(href);
+    }
+    a.addEventListener('click',activate);
+    a.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); activate(); }
     });
   });
+
+  if(iosDlg){
+    document.getElementById('iosOk').addEventListener('click',function(){
+      try{ sessionStorage.setItem('ios_ack','1'); }catch(e){}
+      iosDlg.hidden=true;
+      startDownload(pending);
+    });
+    document.getElementById('iosCancel').addEventListener('click',function(){
+      iosDlg.hidden=true; pending=null;
+    });
+    iosDlg.addEventListener('click',function(e){ if(e.target===iosDlg){ iosDlg.hidden=true; pending=null; } });
+  }
+
+  /* 邮箱复制 */
+  var mailBtn=document.getElementById('mailBtn');
+  if(mailBtn){
+    mailBtn.addEventListener('click',function(){
+      var addr='robloxxzd1314@gmail.com';
+      var tip=document.getElementById('mailText');
+      function done(txt){ if(!tip) return; var old=tip.textContent; tip.textContent=txt; setTimeout(function(){ tip.textContent=old; },1600); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(addr).then(function(){ done('已复制 / Copied'); },function(){ done(addr); });
+      } else { done(addr); }
+    });
+  }
   document.getElementById('dlgCancel').addEventListener('click',function(){
     dlg.hidden=true; pending=null;
     try{ turnstile.reset('#dlTs'); }catch(e){}
@@ -962,6 +1060,34 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     bnav.addEventListener('dragstart',function(e){ e.preventDefault(); });
     bnav.addEventListener('contextmenu',function(e){ e.preventDefault(); });
     bnav.querySelectorAll('a').forEach(function(a){ a.setAttribute('draggable','false'); });
+
+    /* 长按拖动玻璃条：上下滑动快速翻页，左右滑动切换导航项 */
+    var dragging=false, startY=0, startX=0, startTop=0, moved=false, pid=null;
+    bnav.addEventListener('pointerdown',function(e){
+      if(e.target.closest('a')) return;
+      dragging=true; moved=false; pid=e.pointerId;
+      startY=e.clientY; startX=e.clientX; startTop=window.scrollY;
+      try{ bnav.setPointerCapture(pid); }catch(err){}
+    });
+    bnav.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      var dy=e.clientY-startY, dx=e.clientX-startX;
+      if(Math.abs(dy)>4||Math.abs(dx)>4) moved=true;
+      if(moved){
+        e.preventDefault();
+        window.scrollTo(0, startTop - dy*4);
+        bnav.scrollLeft -= dx*0.8;
+      }
+    },{passive:false});
+    function endDrag(){
+      if(!dragging) return;
+      dragging=false;
+      try{ if(pid!==null) bnav.releasePointerCapture(pid); }catch(err){}
+      pid=null;
+    }
+    bnav.addEventListener('pointerup',endDrag);
+    bnav.addEventListener('pointercancel',endDrag);
+    bnav.addEventListener('pointerleave',endDrag);
   }
 
   /* 回到顶部 */
