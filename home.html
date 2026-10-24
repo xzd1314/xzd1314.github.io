@@ -774,8 +774,8 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 
 /* ================= 留言墙 ================= */
 (function(){
-  var SB_URL='https://bvtcdknbvpyeyqvotmrk.supabase.co';
-  var SB_KEY='sb_publishable_NRo4jlxhWuDP1YEYeSMbbQ_Kjjmsj3b';
+  /* 通过自家 Worker 代理（/api/wall/*），避免直连 supabase 在国内被墙 */
+  var SB_URL='/api/wall';
   var listEl=document.getElementById('gbList');
   var form=document.getElementById('gbForm');
   var input=document.getElementById('gbInput');
@@ -823,9 +823,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   }
 
   function load(){
-    fetch(SB_URL+'/rest/v1/feedback?select=id,user_id,content,reply,created_at&order=created_at.desc&limit=30',{
-      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}
-    }).then(function(r){
+    fetch(SB_URL+'/rest/v1/feedback?select=id,user_id,content,reply,created_at&order=created_at.desc&limit=30').then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
       return r.json();
     }).then(render).catch(function(e){
@@ -850,7 +848,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     btn.disabled=true; status(en?'Posting…':'发送中…','');
     fetch(SB_URL+'/rest/v1/feedback',{
       method:'POST',
-      headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
+      headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
       body:JSON.stringify({user_id:uid(),content:text})
     }).then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
