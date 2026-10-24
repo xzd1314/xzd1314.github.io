@@ -364,6 +364,20 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 }
 .no-motion .bg i,.no-motion .spark,.no-motion .fab,.no-motion .eyebrow .dot,.no-motion .bnav::after{animation:none!important}
 .no-motion [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
+
+/* ===== Turnstile / 下载验证弹窗 ===== */
+.ts-box{margin-top:12px;min-height:0}
+.dlg-backdrop{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:20px;
+  background:rgba(20,12,8,.42);backdrop-filter:blur(6px);animation:fadeIn .2s var(--ease)}
+.dlg-backdrop[hidden]{display:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.dlg{width:min(420px,100%);background:var(--surface-container-high);color:var(--on-surface);
+  border-radius:var(--r-lg);padding:24px;box-shadow:0 12px 40px rgba(0,0,0,.35);
+  animation:pop .26s var(--ease)}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.dlg h3{font-size:20px;font-weight:500;margin-bottom:8px}
+.dlg p{font-size:13.5px;line-height:20px;color:var(--on-surface-variant);margin-bottom:6px}
+.dlg-actions{display:flex;justify-content:flex-end;margin-top:16px}
 </style>
 </head>
 <body>
@@ -375,7 +389,6 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     <span class="title">xzd1314</span>
     <div class="spacer"></div>
     <nav class="navlinks">
-      <a href="#now"><span class="zh">此刻</span><span class="en">Now</span></a>
       <a href="#projects"><span class="zh">项目</span><span class="en">Projects</span></a>
       <a href="#downloads"><span class="zh">下载</span><span class="en">Downloads</span></a>
       <a href="#wall"><span class="zh">留言</span><span class="en">Wall</span></a>
@@ -443,25 +456,6 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     </aside>
   </section>
 
-  <section id="now">
-    <div class="sec-head"><span class="num">01</span>
-      <h2><span class="zh">此刻在做</span><span class="en">Now</span></h2>
-      <span class="en-label">Now</span></div>
-    <div class="now-grid">
-      <div class="now-card"><div class="now-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm187-200-76-76q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l104 104q12 12 12 28t-12 28L328-308q-11 11-27.5 11.5T272-308q-11-11-11-28t11-28l75-76Zm173 160q-17 0-28.5-11.5T480-320q0-17 11.5-28.5T520-360h160q17 0 28.5 11.5T720-320q0 17-11.5 28.5T680-280H520Z"/></svg></div>
-        <div><h3><span class="zh">维护 xzd1314.top</span><span class="en">Maintaining xzd1314.top</span></h3>
-          <p><span class="zh">持续改这个站点，改到满意为止</span><span class="en">Iterating until it feels right</span></p></div></div>
-      <div class="now-card"><div class="now-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M320-200v20q0 25-17.5 42.5T260-120q-25 0-42.5-17.5T200-180v-62q-18-20-29-44.5T160-340v-380q0-83 77-121.5T480-880q172 0 246 37t74 123v380q0 29-11 53.5T760-242v62q0 25-17.5 42.5T700-120q-25 0-42.5-17.5T640-180v-20H320Zm162-560h224-448 224Zm158 280H240h480-80Zm-400-80h480v-120H240v120Zm100 240q25 0 42.5-17.5T400-380q0-25-17.5-42.5T340-440q-25 0-42.5 17.5T280-380q0 25 17.5 42.5T340-320Zm280 0q25 0 42.5-17.5T680-380q0-25-17.5-42.5T620-440q-25 0-42.5 17.5T560-380q0 25 17.5 42.5T620-320ZM258-760h448q-15-17-64.5-28.5T482-800q-107 0-156.5 12.5T258-760Zm62 480h320q33 0 56.5-23.5T720-360v-120H240v120q0 33 23.5 56.5T320-280Z"/></svg></div>
-        <div><h3><span class="zh">写 猪来了 的 Boss AI</span><span class="en">Writing Boss AI for Zhulaile</span></h3>
-          <p><span class="zh">用 Lua 给新 Boss 做行为逻辑</span><span class="en">Lua behaviour for the new bosses</span></p></div></div>
-      <div class="now-card"><div class="now-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="m193-479 155 155q11 11 11 28t-11 28q-11 11-28 11t-28-11L108-452q-6-6-8.5-13T97-480q0-8 2.5-15t8.5-13l184-184q12-12 28.5-12t28.5 12q12 12 12 28.5T349-635L193-479Zm574-2L612-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L668-268q-12 12-28 11.5T612-269q-12-12-12-28.5t12-28.5l155-155Z"/></svg></div>
-        <div><h3><span class="zh">折腾引擎与逆向</span><span class="en">Tinkering with engines</span></h3>
-          <p><span class="zh">拆包、分析、学 UE</span><span class="en">Unpacking, analysing, learning UE</span></p></div></div>
-      <div class="now-card"><div class="now-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M360-120q-66 0-113-47t-47-113v-327q-35-13-57.5-43.5T120-720q0-50 35-85t85-35q50 0 85 35t35 85q0 39-22.5 69.5T280-607v327q0 33 23.5 56.5T360-200q33 0 56.5-23.5T440-280v-400q0-66 47-113t113-47q66 0 113 47t47 113v327q35 13 57.5 43.5T840-240q0 50-35 85t-85 35q-50 0-85-35t-35-85q0-39 22.5-70t57.5-43v-327q0-33-23.5-56.5T600-760q-33 0-56.5 23.5T520-680v400q0 66-47 113t-113 47ZM240-680q17 0 28.5-11.5T280-720q0-17-11.5-28.5T240-760q-17 0-28.5 11.5T200-720q0 17 11.5 28.5T240-680Zm480 480q17 0 28.5-11.5T760-240q0-17-11.5-28.5T720-280q-17 0-28.5 11.5T680-240q0 17 11.5 28.5T720-200ZM240-720Zm480 480Z"/></svg></div>
-        <div><h3><span class="zh">想下一个项目</span><span class="en">Thinking of the next one</span></h3>
-          <p><span class="zh">还没想好，但总会有</span><span class="en">No idea yet, but it will come</span></p></div></div>
-    </div>
-  </section>
 
   <section id="projects">
     <div class="sec-head"><span class="num">02</span>
@@ -551,6 +545,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
           </button>
           <span class="gb-count" id="gbCount">0 / 300</span>
         </div>
+        <div class="ts-box" id="gbTs"></div>
         <div class="gb-status" id="gbStatus"></div>
       </form>
       <div class="gb-list" id="gbList">
@@ -766,7 +761,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
         }
       });
     },{rootMargin:'-45% 0px -50% 0px'});
-    ['now','projects','downloads','skills','wall','contact'].forEach(function(id){
+    ['projects','downloads','skills','wall','contact'].forEach(function(id){
       var el=document.getElementById(id); if(el) spy.observe(el);
     });
   }
@@ -784,6 +779,8 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   var countEl=document.getElementById('gbCount');
   var LANG=function(){ return document.documentElement.getAttribute('data-lang')==='en'?'en':'zh'; };
   var COOLDOWN=60000, LAST=0;
+  var GB_TOKEN='';
+  window.__setGbToken=function(t){ GB_TOKEN=t||''; };
 
   function uid(){
     var k='gb_uid', v=localStorage.getItem(k);
@@ -845,16 +842,19 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       status((en?'Wait ':'请稍等 ')+Math.ceil((COOLDOWN-(now-LAST))/1000)+(en?'s':' 秒')+(en?' before posting again.':' 后再发。'),'err');
       return;
     }
+    if(!GB_TOKEN){ status(en?'Please complete the verification first.':'请先完成人机验证。','err'); return; }
     btn.disabled=true; status(en?'Posting…':'发送中…','');
     fetch(SB_URL+'/rest/v1/feedback',{
       method:'POST',
-      headers:{'Content-Type':'application/json',Prefer:'return=minimal'},
+      headers:{'Content-Type':'application/json',Prefer:'return=minimal','x-ts-token':GB_TOKEN},
       body:JSON.stringify({user_id:uid(),content:text})
     }).then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
       LAST=Date.now();
       input.value=''; countEl.textContent='0 / 300';
       status(en?'Posted!':'发表成功！','ok');
+      GB_TOKEN='';
+      try{ if(window.turnstile) turnstile.reset('#gbTs'); }catch(e){}
       load();
     }).catch(function(e){
       console.warn('[wall] post',e);
@@ -864,6 +864,88 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 
   document.getElementById('langBtn').addEventListener('click',function(){ setTimeout(load,60); });
   load();
+})();
+</script>
+
+<div class="dlg-backdrop" id="dlgBackdrop" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <h3 id="dlgTitle"><span class="zh">下载前先验证</span><span class="en">Verify before download</span></h3>
+    <p><span class="zh">完成下面的人机验证后会自动开始下载。</span><span class="en">Complete the check below and the download starts automatically.</span></p>
+    <div class="ts-box" id="dlTs"></div>
+    <div class="dlg-actions">
+      <button class="btn btn-outlined" id="dlgCancel" type="button"><span class="zh">取消</span><span class="en">Cancel</span></button>
+    </div>
+  </div>
+</div>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
+<script>
+(function(){
+  var SK='0x4AAAAAAEYslAufS7xZQ-Jn';
+  var root=document.documentElement;
+  function curTheme(){ return root.getAttribute('data-theme')==='dark'?'dark':'light'; }
+  function curLang(){ return root.getAttribute('data-lang')==='en'?'en':'zh-cn'; }
+
+  var gbRendered=false;
+  function initGb(){
+    if(!window.turnstile){ return setTimeout(initGb,300); }
+    if(gbRendered) return;
+    gbRendered=true;
+    turnstile.render('#gbTs',{
+      sitekey:SK, theme:curTheme(), language:curLang(),
+      callback:function(tok){ window.__setGbToken && window.__setGbToken(tok); },
+      'expired-callback':function(){ window.__setGbToken && window.__setGbToken(''); },
+      'error-callback':function(){ window.__setGbToken && window.__setGbToken(''); }
+    });
+  }
+
+  var dlg=document.getElementById('dlgBackdrop');
+  var dlRendered=false, pending=null;
+
+  function onDlToken(tok){
+    fetch('/api/verify',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:tok})
+    }).then(function(r){ return r.json(); }).then(function(j){
+      if(j && j.ok){
+        sessionStorage.setItem('dl_ok','1');
+        dlg.hidden=true;
+        if(pending){ location.href=pending; pending=null; }
+      } else {
+        alert(curLang().indexOf('en')===0?'Verification failed, try again.':'验证失败，请重试。');
+        try{ turnstile.reset('#dlTs'); }catch(e){}
+      }
+    }).catch(function(){
+      alert(curLang().indexOf('en')===0?'Verification failed, try again.':'验证失败，请重试。');
+    });
+  }
+
+  function openDlg(){
+    dlg.hidden=false;
+    if(!window.turnstile){ return setTimeout(openDlg,300); }
+    if(!dlRendered){
+      dlRendered=true;
+      turnstile.render('#dlTs',{sitekey:SK, theme:curTheme(), language:curLang(), callback:onDlToken});
+    } else {
+      try{ turnstile.reset('#dlTs'); }catch(e){}
+    }
+  }
+
+  document.querySelectorAll('.dl-item').forEach(function(a){
+    a.addEventListener('click',function(e){
+      if(sessionStorage.getItem('dl_ok')==='1') return;
+      e.preventDefault();
+      pending=a.getAttribute('href');
+      openDlg();
+    });
+  });
+  document.getElementById('dlgCancel').addEventListener('click',function(){
+    dlg.hidden=true; pending=null;
+    try{ turnstile.reset('#dlTs'); }catch(e){}
+  });
+  dlg.addEventListener('click',function(e){ if(e.target===dlg){ dlg.hidden=true; pending=null; } });
+
+  if(document.getElementById('gbTs')) initGb();
 })();
 </script>
 </body>
