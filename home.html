@@ -171,7 +171,7 @@ h2{font-size:24px;line-height:32px;font-weight:500}
   color:var(--on-secondary-container);display:grid;place-items:center;flex:none;}
 .now-card h3{font-size:15px;font-weight:500;margin-bottom:2px}
 .now-card p{font-size:13.5px;line-height:20px;color:var(--on-surface-variant)}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;perspective:1000px}
 @media(max-width:900px){.cards{grid-template-columns:1fr}}
 .card{background:var(--surface-container-low);border-radius:var(--r-md);overflow:hidden;
   display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(var(--shadow),.2);
@@ -202,9 +202,14 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 .skill-chips{display:flex;flex-wrap:wrap;gap:8px}
 .skill{height:36px;padding:0 14px;border-radius:var(--r-xs);background:var(--surface-container);
   color:var(--on-surface-variant);font-size:13px;font-weight:500;display:inline-flex;align-items:center;
-  transition:.2s var(--ease);cursor:default;}
-.skill:hover{background:var(--secondary-container);color:var(--on-secondary-container)}
-.link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  border:1px solid transparent;cursor:default;will-change:transform;
+  transition:transform .3s var(--ease),background .3s var(--ease),color .3s var(--ease),
+             box-shadow .3s var(--ease),border-color .3s var(--ease);}
+.skill:hover{background:var(--secondary-container);color:var(--on-secondary-container);
+  transform:translateY(-4px) scale(1.05);
+  border-color:var(--primary);
+  box-shadow:0 10px 20px -10px rgba(80,50,20,.55)}
+.link-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;perspective:1000px}
 @media(max-width:760px){.link-grid{grid-template-columns:1fr}}
 .link-card{background:var(--surface-container-low);border-radius:var(--r-md);padding:20px;
   display:flex;align-items:center;gap:16px;}
@@ -316,14 +321,14 @@ h2{font-size:24px;line-height:32px;font-weight:500}
   80%{opacity:.9}100%{transform:translateX(240%) rotate(8deg);opacity:0}}
 .bnav::-webkit-scrollbar{display:none}
 @media(max-width:600px){.bnav{display:flex}}
-.bnav a{flex:0 0 auto;width:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+.bnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-  font-size:10.5px;color:var(--on-surface-variant);font-weight:500;position:relative;z-index:1;
+  font-size:11px;color:var(--on-surface-variant);font-weight:500;position:relative;z-index:1;
   border-radius:20px;margin:6px 2px;transition:color .2s var(--ease),background .25s var(--ease);}
 .bnav a.active{color:var(--primary);background:rgba(255,255,255,.62);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
 [data-theme="dark"] .bnav a.active{background:rgba(255,255,255,.08);color:var(--primary)}
-.bn-ico{width:42px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
+.bn-ico{width:56px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
 .bnav svg,.bnav img{pointer-events:none;-webkit-user-drag:none}
 .bnav a.active .bn-ico{background:var(--primary-container);color:var(--on-primary-container)}
 
@@ -373,12 +378,13 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 .card[data-reveal] .card-img img{transform:scale(1.08);transition:transform 1.2s var(--ease)}
 .card[data-reveal].in .card-img img{transform:scale(1)}
 .card,.link-card{position:relative;isolation:isolate;transform-style:preserve-3d;
-  transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .25s var(--ease)}
-.card:hover,.link-card:hover{transform:translateY(-3px)}
-.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
-  background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.16),transparent 65%);
+  transition:transform .45s var(--ease),box-shadow .35s var(--ease),background .25s var(--ease);
+  will-change:transform}
+.card.tilting,.link-card.tilting{transition:transform .08s linear,box-shadow .35s var(--ease)}
+.card::after,.link-card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;z-index:1;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.28),transparent 62%);
   transition:opacity .3s var(--ease)}
-.card:hover::after{opacity:1}
+.card:hover::after,.link-card:hover::after{opacity:1}
 .btn,.icon-btn,.chip,.skill,.now-card,.dl-item,.link-card,.social{position:relative;overflow:hidden}
 .ripple{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;
   background:currentColor;opacity:.18;animation:rip .6s var(--ease) forwards}
@@ -647,14 +653,8 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     <span class="zh">首页</span><span class="en">Home</span></a>
   <a href="#projects"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="m193-479 155 155q11 11 11 28t-11 28q-11 11-28 11t-28-11L108-452q-6-6-8.5-13T97-480q0-8 2.5-15t8.5-13l184-184q12-12 28.5-12t28.5 12q12 12 12 28.5T349-635L193-479Zm574-2L612-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L668-268q-12 12-28 11.5T612-269q-12-12-12-28.5t12-28.5l155-155Z"/></svg></span>
     <span class="zh">项目</span><span class="en">Work</span></a>
-  <a href="#downloads"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z"/></svg></span>
-    <span class="zh">下载</span><span class="en">Get</span></a>
-  <a href="#skills"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H160v400Zm187-200-76-76q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5l104 104q12 12 12 28t-12 28L328-308q-11 11-27.5 11.5T272-308q-11-11-11-28t11-28l75-76Zm173 160q-17 0-28.5-11.5T480-320q0-17 11.5-28.5T520-360h160q17 0 28.5 11.5T720-320q0 17-11.5 28.5T680-280H520Z"/></svg></span>
-    <span class="zh">技能</span><span class="en">Skills</span></a>
   <a href="#wall"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm640-480L501-453q-5 3-10.5 4.5T480-447q-5 0-10.5-1.5T459-453L160-640v400h640v-400ZM480-520l320-200H160l320 200ZM160-640v10-59 1-32 32-.5 58.5-10 400-400Z"/></svg></span>
     <span class="zh">留言</span><span class="en">Wall</span></a>
-  <a href="#links"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M280-280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h120q17 0 28.5 11.5T440-640q0 17-11.5 28.5T400-600H280q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h240q17 0 28.5 11.5T640-480q0 17-11.5 28.5T600-440H360Zm200 160q-17 0-28.5-11.5T520-320q0-17 11.5-28.5T560-360h120q50 0 85-35t35-85q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H560Z"/></svg></span>
-    <span class="zh">友链</span><span class="en">Links</span></a>
   <a href="#contact"><span class="bn-ico"><svg class="i i-20" viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240q17 0 28.5 11.5T480-800q0 17-11.5 28.5T440-760H200v560h560v-240q0-17 11.5-28.5T800-480q17 0 28.5 11.5T840-440v240q0 33-23.5 56.5T760-120H200Zm560-584L416-360q-11 11-28 11t-28-11q-11-11-11-28t11-28l344-344H600q-17 0-28.5-11.5T560-800q0-17 11.5-28.5T600-840h200q17 0 28.5 11.5T840-800v200q0 17-11.5 28.5T800-560q-17 0-28.5-11.5T760-600v-104Z"/></svg></span>
     <span class="zh">联系</span><span class="en">Contact</span></a>
 </nav>
@@ -783,15 +783,19 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       });
     });
     document.querySelectorAll('.card,.link-card').forEach(function(card){
+      card.addEventListener('pointerenter',function(){ card.classList.add('tilting'); });
       card.addEventListener('pointermove',function(e){
         var r=card.getBoundingClientRect();
         var px=(e.clientX-r.left)/r.width, py=(e.clientY-r.top)/r.height;
-        var rx=((py-.5)*-7).toFixed(2), ry=((px-.5)*8).toFixed(2);
-        card.style.transform='perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px) scale(1.015)';
+        var rx=((py-.5)*-13).toFixed(2), ry=((px-.5)*15).toFixed(2);
+        card.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg) translateZ(14px) scale(1.03)';
         card.style.setProperty('--mx',(e.clientX-r.left)+'px');
         card.style.setProperty('--my',(e.clientY-r.top)+'px');
       });
-      card.addEventListener('pointerleave',function(){ card.style.transform=''; });
+      card.addEventListener('pointerleave',function(){
+        card.classList.remove('tilting');
+        card.style.transform='';
+      });
     });
 
     var pr=document.querySelector('.profile'), hero=document.querySelector('.hero');
@@ -807,7 +811,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 
   /* ---------- 底部导航高亮（按滚动位置，不用 IO） ---------- */
   var links=[].slice.call(document.querySelectorAll('.bnav a'));
-  var sectionIds=['projects','downloads','skills','wall','links','contact'];
+  var sectionIds=['projects','wall','contact'];
   function updateNav(){
     var y=scrollY+140, current='';
     for(var i=0;i<sectionIds.length;i++){
