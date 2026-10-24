@@ -271,7 +271,7 @@ h2{font-size:24px;line-height:32px;font-weight:500}
   display:none;position:fixed;z-index:95;
   left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));
   height:64px;border-radius:26px;padding:0 6px;
-  background:var(--glass);
+  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,.30));
   -webkit-backdrop-filter:blur(34px) saturate(230%) brightness(1.08);
   backdrop-filter:blur(34px) saturate(230%) brightness(1.08);
   border:1px solid var(--glass-border);
@@ -281,6 +281,7 @@ h2{font-size:24px;line-height:32px;font-weight:500}
              inset 0 0 30px rgba(255,255,255,.22);
   overflow:hidden;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  -webkit-user-drag:none;user-drag:none;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
 }
 /* 高光扫过 + 顶部反光 */
@@ -291,6 +292,7 @@ h2{font-size:24px;line-height:32px;font-weight:500}
     linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,0) 48%);
   opacity:.85;mix-blend-mode:screen;
 }
+[data-theme="dark"] .bnav{background:linear-gradient(180deg,rgba(60,49,43,.55),rgba(28,22,19,.42))}
 [data-theme="dark"] .bnav::before{
   background:radial-gradient(120% 60% at 50% -20%,rgba(255,255,255,.22),rgba(255,255,255,0) 60%);
   opacity:.9;
@@ -311,6 +313,7 @@ h2{font-size:24px;line-height:32px;font-weight:500}
 .bnav a.active{color:var(--primary);background:rgba(255,255,255,.62);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
 [data-theme="dark"] .bnav a.active{background:rgba(255,255,255,.08);color:var(--primary)}
 .bn-ico{width:52px;height:26px;border-radius:var(--r-full);display:grid;place-items:center;transition:.25s var(--ease)}
+.bnav svg,.bnav img{pointer-events:none;-webkit-user-drag:none}
 .bnav a.active .bn-ico{background:var(--primary-container);color:var(--on-primary-container)}
 
 footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-variant);
@@ -952,6 +955,14 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   });
   dlg.addEventListener('click',function(e){ if(e.target===dlg){ dlg.hidden=true; pending=null; } });
 
+
+  /* 底部导航禁止拖拽 */
+  var bnav=document.querySelector('.bnav');
+  if(bnav){
+    bnav.addEventListener('dragstart',function(e){ e.preventDefault(); });
+    bnav.addEventListener('contextmenu',function(e){ e.preventDefault(); });
+    bnav.querySelectorAll('a').forEach(function(a){ a.setAttribute('draggable','false'); });
+  }
 
   /* 回到顶部 */
   var topBtn=document.getElementById('toTop');
