@@ -1064,7 +1064,6 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     /* 长按拖动玻璃条：上下滑动快速翻页，左右滑动切换导航项 */
     var dragging=false, startY=0, startX=0, startTop=0, moved=false, pid=null;
     bnav.addEventListener('pointerdown',function(e){
-      if(e.target.closest('a')) return;
       dragging=true; moved=false; pid=e.pointerId;
       startY=e.clientY; startX=e.clientX; startTop=window.scrollY;
       try{ bnav.setPointerCapture(pid); }catch(err){}
@@ -1085,6 +1084,9 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       try{ if(pid!==null) bnav.releasePointerCapture(pid); }catch(err){}
       pid=null;
     }
+    bnav.addEventListener('click',function(e){
+      if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; }
+    },true);
     bnav.addEventListener('pointerup',endDrag);
     bnav.addEventListener('pointercancel',endDrag);
     bnav.addEventListener('pointerleave',endDrag);
