@@ -1,0 +1,3 @@
+zcode-ownership-verify: xzd1314.top
+token: 0ac2bad192304c8385c992e772569b15081a36e952394d2c
+issued: 2026-10-31
