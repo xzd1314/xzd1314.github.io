@@ -1067,6 +1067,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     <h3 id="dlgTitle"><span class="zh">下载前先验证</span><span class="en">Verify before download</span></h3>
     <p><span class="zh">完成下面的人机验证后会自动开始下载。</span><span class="en">Complete the check below and the download starts automatically.</span></p>
     <div class="ts-box" id="dlTs"></div>
+    <p id="dlStatus" style="min-height:18px;margin:10px 0 0;font-size:13.5px;font-weight:500;color:var(--tertiary)"></p>
     <div class="dlg-actions">
       <button class="btn btn-outlined" id="dlgCancel" type="button"><span class="zh">取消</span><span class="en">Cancel</span></button>
     </div>
@@ -1096,17 +1097,29 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 
   var dlg=document.getElementById('dlgBackdrop');
   var dlRendered=false, pending=null;
+  var dlgOpenedAt=0, dlTimer=null, dlDone=false;
+  /* 弹窗至少展示这么久，让 Turnstile 的验证/成功动画播完再关（无感通过时令牌来得很快） */
+  var DL_MIN_SHOW=1200;
 
   function onDlToken(tok){
+    if(dlDone) return;
     fetch('/api/verify',{
       method:'POST', headers:{'Content-Type':'application/json'},
       body:JSON.stringify({token:tok})
     }).then(function(r){ return r.json(); }).then(function(j){
-      if(j && j.ok){
+      if(j && j.ok && !dlDone){
+        dlDone=true;
         sessionStorage.setItem('dl_ok','1');
-        dlg.hidden=true;
-        if(pending){ location.href=pending; pending=null; }
-      } else {
+        var st=document.getElementById('dlStatus');
+        var en=curLang().indexOf('en')===0;
+        if(st) st.textContent=en?'Verified — starting download…':'验证成功，即将开始下载…';
+        var wait=Math.max(0, DL_MIN_SHOW-(Date.now()-dlgOpenedAt));
+        dlTimer=setTimeout(function(){
+          dlg.hidden=true;
+          if(st) st.textContent='';
+          if(pending){ location.href=pending; pending=null; }
+        }, wait);
+      } else if(!dlDone) {
         alert(curLang().indexOf('en')===0?'Verification failed, try again.':'验证失败，请重试。');
         try{ turnstile.reset('#dlTs'); }catch(e){}
       }
@@ -1117,6 +1130,9 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
 
   function openDlg(){
     dlg.hidden=false;
+    dlgOpenedAt=Date.now(); dlDone=false;
+    if(dlTimer){ clearTimeout(dlTimer); dlTimer=null; }
+    var st=document.getElementById('dlStatus'); if(st) st.textContent='';
     if(!window.turnstile){ return setTimeout(openDlg,300); }
     if(!dlRendered){
       dlRendered=true;
@@ -1182,11 +1198,15 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       } else { fallback(); }
     });
   }
-  document.getElementById('dlgCancel').addEventListener('click',function(){
+  function closeDlg(){
     dlg.hidden=true; pending=null;
+    if(dlTimer){ clearTimeout(dlTimer); dlTimer=null; }
+    dlDone=false;
+    var st=document.getElementById('dlStatus'); if(st) st.textContent='';
     try{ turnstile.reset('#dlTs'); }catch(e){}
-  });
-  dlg.addEventListener('click',function(e){ if(e.target===dlg){ dlg.hidden=true; pending=null; } });
+  }
+  document.getElementById('dlgCancel').addEventListener('click',closeDlg);
+  dlg.addEventListener('click',function(e){ if(e.target===dlg) closeDlg(); });
 
 
   /* 底部导航禁止拖拽 */
