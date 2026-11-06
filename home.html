@@ -464,7 +464,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 </style>
 </head>
-<body>
+<body id="top">
 <div class="bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
 <div class="bg-noise" aria-hidden="true"></div>
 
@@ -827,7 +827,7 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
   },{passive:true});
 
   /* ---------- 卡片光斑 ---------- */
-  if(!reduce&&matchMedia('(hover:hover)')){
+  if(!reduce&&matchMedia('(hover:hover)').matches){
     document.querySelectorAll('.card').forEach(function(c){
       c.addEventListener('pointermove',function(e){
         var r=c.getBoundingClientRect();
@@ -886,7 +886,8 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       if(el && el.offsetTop<=y) current=sectionIds[i];
     }
     links.forEach(function(a){
-      var h=a.getAttribute('href').slice(1);
+      /* href 可能被"隐藏链接预览"脚本移除，回退到 data-link */
+      var h=(a.getAttribute('href')||a.getAttribute('data-link')||'').slice(1);
       a.classList.toggle('active', current ? h===current : h==='top');
     });
   }
@@ -1167,9 +1168,18 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
       var addr='robloxxzd1314@gmail.com';
       var tip=document.getElementById('mailText');
       function done(txt){ if(!tip) return; var old=tip.innerHTML; tip.textContent=txt; setTimeout(function(){ tip.innerHTML=old; },1600); }
+      function fallback(){
+        var ta=document.createElement('textarea');
+        ta.value=addr; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        var ok=false;
+        try{ ok=document.execCommand('copy'); }catch(e){}
+        ta.remove();
+        done(ok?'已复制 / Copied':addr);
+      }
       if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(addr).then(function(){ done('已复制 / Copied'); },function(){ done(addr); });
-      } else { done(addr); }
+        navigator.clipboard.writeText(addr).then(function(){ done('已复制 / Copied'); },fallback);
+      } else { fallback(); }
     });
   }
   document.getElementById('dlgCancel').addEventListener('click',function(){
@@ -1186,21 +1196,25 @@ footer{padding:32px 0 40px;margin-top:24px;border-top:1px solid var(--outline-va
     bnav.addEventListener('contextmenu',function(e){ e.preventDefault(); });
     bnav.querySelectorAll('a').forEach(function(a){ a.setAttribute('draggable','false'); });
 
-    /* 长按拖动玻璃条：上下滑动快速翻页，左右滑动切换导航项 */
+    /* 长按拖动玻璃条：上下滑动快速翻页。
+       注意：不能在 pointerdown 立即 setPointerCapture，否则 click 会被
+       重定向到 bnav 容器，导航链接永远收不到点击（手机端无法导航）。
+       只有当移动量超过阈值、判定为拖动手势后才捕获指针。 */
     var dragging=false, startY=0, startX=0, startTop=0, moved=false, pid=null;
     bnav.addEventListener('pointerdown',function(e){
       dragging=true; moved=false; pid=e.pointerId;
       startY=e.clientY; startX=e.clientX; startTop=window.scrollY;
-      try{ bnav.setPointerCapture(pid); }catch(err){}
     });
     bnav.addEventListener('pointermove',function(e){
       if(!dragging) return;
       var dy=e.clientY-startY, dx=e.clientX-startX;
-      if(Math.abs(dy)>4||Math.abs(dx)>4) moved=true;
+      if(!moved && (Math.abs(dy)>6||Math.abs(dx)>6)){
+        moved=true;
+        try{ bnav.setPointerCapture(pid); }catch(err){}
+      }
       if(moved){
         e.preventDefault();
         window.scrollTo(0, startTop - dy*4);
-        bnav.scrollLeft -= dx*0.8;
       }
     },{passive:false});
     function endDrag(){
