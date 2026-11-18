@@ -107,11 +107,6 @@ button{font-family:inherit}
 .appbar.scrolled{border-bottom-color:var(--outline-variant);background:var(--surface-container)}
 .appbar .wrap{height:100%;display:flex;align-items:center;gap:6px}
 .appbar .title{font-size:18px;font-weight:600;margin-left:2px;letter-spacing:-.2px}
-.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
-  color:var(--on-surface-variant);padding:6px 10px;border-radius:var(--r-full);margin-left:6px;
-  transition:background .2s,color .2s}
-.back-link:hover{background:var(--state-hover);color:var(--on-surface)}
-.back-link .i{width:16px;height:16px}
 .appbar .spacer{flex:1}
 .icon-btn{width:40px;height:40px;border-radius:var(--r-full);border:0;background:transparent;
   color:var(--on-surface-variant);display:grid;place-items:center;cursor:pointer;
@@ -198,7 +193,6 @@ h2{font-size:22px;line-height:30px;font-weight:500}
 /* ===== Footer ===== */
 .foot{text-align:center;color:var(--on-surface-variant);font-size:12px;line-height:20px;
   padding:36px 16px 40px;opacity:.8}
-.foot a{color:var(--primary);font-weight:500}
 </style>
 </head>
 <body id="top">
@@ -208,10 +202,6 @@ h2{font-size:22px;line-height:30px;font-weight:500}
 <header class="appbar" id="appbar">
   <div class="wrap">
     <span class="title">xzd1314</span>
-    <a class="back-link" href="/" aria-label="返回主页">
-      <svg class="i" viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-      <span class="zh">主页</span><span class="en">Home</span>
-    </a>
     <div class="spacer"></div>
     <button class="lang-btn" id="langBtn" aria-label="Switch language">
       <span class="zh">EN</span><span class="en">中文</span>
@@ -252,8 +242,7 @@ h2{font-size:22px;line-height:30px;font-weight:500}
 </main>
 
 <div class="foot">
-  <span class="zh">© 2026 xzd1314 · </span><span class="en">© 2026 xzd1314 · </span>
-  <a href="/"><span class="zh">返回主页</span><span class="en">Back to home</span></a>
+  <span class="zh">© 2026 xzd1314</span><span class="en">© 2026 xzd1314</span>
 </div>
 
 <!-- iOS 停止更新提示 -->
@@ -430,7 +419,7 @@ h2{font-size:22px;line-height:30px;font-weight:500}
 
   /* ---------- 触控涟漪 ---------- */
   document.addEventListener('pointerdown',function(ev){
-    var host=ev.target.closest('.btn,.icon-btn,.lang-btn,.dl-item,.back-link');
+    var host=ev.target.closest('.btn,.icon-btn,.lang-btn,.dl-item');
     if(!host) return;
     var r=host.getBoundingClientRect();
     var d=Math.max(r.width,r.height);
